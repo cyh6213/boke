@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>文章 | 程愚瀚</title>
+    <link rel="stylesheet" href="../资源/css/style.css" />
+    <style>
+        .article-list { max-width: 960px; padding: 120px 60px 80px; }
+        .article-item {
+            background: #ffffff; border: 1px solid #e9edf4;
+            border-radius: 16px; padding: 28px 32px; margin-bottom: 20px;
+            transition: all 0.25s; display: block; text-decoration: none; color: inherit;
+        }
+        .article-item:hover { border-color: #c7d2fe; box-shadow: 0 8px 24px rgba(79,70,229,0.06); transform: translateY(-2px); }
+        .article-item .article-date { font-size: 12px; color: #94a3b8; margin-bottom: 8px; }
+        .article-item h3 { font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+        .article-item p { font-size: 14px; color: #475569; line-height: 1.8; }
+        .article-item .article-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+        .article-item .article-tags span {
+            padding: 3px 10px; border-radius: 20px; font-size: 12px;
+            font-weight: 500; background: #eef2ff; color: #4f46e5;
+        }
+        .empty-state {
+            text-align: center; padding: 80px 20px; color: #94a3b8;
+        }
+        .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+        .empty-state p { font-size: 16px; }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <a href="../" class="nav-brand">程愚瀚</a>
+        <div class="nav-links">
+            <a href="../">首页</a>
+            <a href="./" class="active">文章</a>
+            <a href="../项目/">项目</a>
+        </div>
+    </nav>
+
+    <div class="main" style="margin-left: 0;">
+        <div class="article-list">
+            <div class="section-label">Articles</div>
+            <h2 class="section-title">文章</h2>
+
+            <div class="empty-state">
+                <div class="icon">📝</div>
+                <p>文章正在路上，敬请期待...</p>
+            </div>
+
+            <!-- 示例：以后文章条目像这样
+            <a class="article-item" href="posts/hello-world.html">
+                <div class="article-date">2026 年 6 月 22 日</div>
+                <h3>我的第一篇博客</h3>
+                <p>这里是文章摘要，用来简要描述文章内容...</p>
+                <div class="article-tags">
+                    <span>技术</span>
+                    <span>随笔</span>
+                </div>
+            </a>
+            -->
+        </div>
+    </div>
+
+    <footer style="margin-left: 0;">
+        &copy; 2026 程愚瀚 · Built with &hearts;
+    </footer>
+
+</body>
+</html>
