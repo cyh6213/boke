@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agent 测评思路 | 程愚瀚</title>
+    <link rel="stylesheet" href="../../资源/css/style.css" />
+    <style>
+        .article-content { max-width: 900px; padding: 120px 60px 80px; }
+        .article-content .article-header { margin-bottom: 40px; }
+        .article-content .article-header .article-date { font-size: 13px; color: #94a3b8; margin-bottom: 8px; }
+        .article-content .article-header h1 { font-size: 36px; font-weight: 800; color: #0f172a; line-height: 1.25; margin-bottom: 12px; }
+        .article-content .article-header .article-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .article-content .article-header .article-tags span {
+            padding: 3px 10px; border-radius: 20px; font-size: 12px;
+            font-weight: 500; background: #eef2ff; color: #4f46e5;
+        }
+        
+        .body .intro { font-size: 16px; color: #64748b; line-height: 1.8; margin-bottom: 40px; }
+        
+        .body .section-title {
+            font-size: 28px; font-weight: 800; color: #0f172a;
+            margin-top: 60px; margin-bottom: 30px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .body .section-title::before {
+            content: ''; width: 4px; height: 28px; background: #4f46e5; border-radius: 2px;
+        }
+        
+        .body .subsection-title {
+            font-size: 22px; font-weight: 700; color: #1e293b;
+            margin-top: 40px; margin-bottom: 20px;
+        }
+        
+        .body .key-point {
+            font-size: 18px; font-weight: 600; color: #334155;
+            margin-bottom: 16px; padding-left: 16px;
+            border-left: 3px solid #4f46e5;
+        }
+        
+        .body .desc-text {
+            font-size: 15px; color: #64748b; line-height: 1.9;
+            margin-bottom: 20px;
+        }
+        
+        .body .bullet-list {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px; margin-bottom: 24px;
+        }
+        .body .bullet-item {
+            background: #f8fafc; padding: 16px 20px;
+            border-radius: 10px; font-size: 14px; color: #475569;
+            line-height: 1.7;
+        }
+        
+        .body .card-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px; margin-bottom: 24px;
+        }
+        .body .card {
+            background: #fff; border: 1px solid #e2e8f0;
+            border-radius: 12px; padding: 20px 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .body .card .card-title {
+            font-size: 15px; font-weight: 700; color: #0f172a;
+            margin-bottom: 12px;
+        }
+        .body .card ul { padding-left: 18px; margin: 0; }
+        .body .card li { font-size: 14px; color: #64748b; line-height: 1.8; margin-bottom: 6px; }
+        
+        .body .tip-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-left: 3px solid #f59e0b;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: #92400e;
+            line-height: 1.7;
+        }
+        .body .tip-box .tip-icon {
+            flex-shrink: 0;
+            font-size: 16px;
+            margin-top: 1px;
+        }
+        
+        .body .step-list {
+            counter-reset: step;
+            margin-bottom: 24px;
+        }
+        .body .step-item {
+            counter-increment: step;
+            display: flex; gap: 16px;
+            margin-bottom: 20px; padding-bottom: 20px;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .body .step-item:last-child { border-bottom: none; }
+        .body .step-num {
+            width: 36px; height: 36px; background: #4f46e5;
+            color: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 15px; font-weight: 700; flex-shrink: 0;
+        }
+        .body .step-content { font-size: 15px; color: #475569; line-height: 1.7; }
+        
+        .body .highlight-box {
+            background: #f0fdf4; border-left: 4px solid #22c55e;
+            padding: 20px 24px; border-radius: 0 12px 12px 0;
+            margin-bottom: 24px;
+        }
+        .body .highlight-box .label {
+            font-size: 12px; font-weight: 600; color: #16a34a;
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+        }
+        .body .highlight-box p { font-size: 15px; color: #14532d; line-height: 1.8; margin: 0; }
+        
+        .body .comparison-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 16px; margin-bottom: 24px;
+        }
+        .body .comparison-item {
+            padding: 20px; border-radius: 12px;
+        }
+        .body .comparison-item.result {
+            background: #eff6ff; border: 1px solid #bfdbfe;
+        }
+        .body .comparison-item.process {
+            background: #fef3c7; border: 1px solid #fcd34d;
+        }
+        .body .comparison-item .label {
+            font-size: 14px; font-weight: 700; margin-bottom: 12px;
+        }
+        .body .comparison-item.result .label { color: #1d4ed8; }
+        .body .comparison-item.process .label { color: #d97706; }
+        .body .comparison-item ul { padding-left: 18px; margin: 0; }
+        .body .comparison-item li { font-size: 14px; line-height: 1.8; margin-bottom: 6px; }
+        .body .comparison-item.result li { color: #3b82f6; }
+        .body .comparison-item.process li { color: #f59e0b; }
+        
+        .body .image-container {
+            text-align: center; margin-bottom: 40px;
+            border-radius: 16px; overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        .body .image-container img {
+            max-width: 100%; height: auto;
+        }
+        
+        .body .code-box {
+            background: #1e293b; color: #e2e8f0; padding: 20px 24px;
+            border-radius: 12px; overflow-x: auto; margin-bottom: 20px;
+            font-size: 14px; line-height: 1.7;
+        }
+        
+        .article-nav { margin-top: 60px; padding-top: 24px; border-top: 1px solid #e9edf4; }
+        .article-nav a { color: #4f46e5; text-decoration: none; font-size: 14px; font-weight: 500; }
+        .article-nav a:hover { text-decoration: underline; }
+        
+        /* TOC Styles */
+        html { scroll-behavior: smooth; }
+        .toc-container {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f4f9 100%);
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        .toc-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #4f46e5, #7c3aed, #a855f7);
+            border-radius: 16px 16px 0 0;
+        }
+        .toc-title {
+            font-size: 18px; font-weight: 700; color: #0f172a;
+            margin-bottom: 20px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .toc-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .toc-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 14px; font-weight: 500;
+            color: #334155;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+        .toc-item:hover {
+            background: #fff;
+            border-color: #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            color: #4f46e5;
+        }
+        .toc-item .toc-num {
+            width: 24px; height: 24px;
+            background: #eef2ff; color: #4f46e5;
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 700;
+            flex-shrink: 0;
+        }
+        .toc-sub-list {
+            margin-left: 34px;
+            display: flex; flex-direction: column;
+            gap: 4px;
+        }
+        .toc-sub-item {
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px; color: #64748b;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .toc-sub-item:hover {
+            background: #f1f5f9; color: #4f46e5;
+        }
+        .toc-sub-item .dot {
+            width: 4px; height: 4px;
+            background: #cbd5e1;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <a href="../../" class="nav-brand">程愚瀚</a>
+        <div class="nav-links">
+            <a href="../../">首页</a>
+            <a href="../" class="active">文章</a>
+            <a href="../../项目/">项目</a>
+        </div>
+    </nav>
+
+    <!-- ===== Sidebar ===== -->
+    <aside class="sidebar">
+        <div class="name">程愚瀚</div>
+        <div class="title">Java 后端和 agent 开发</div>
+        <nav>
+            <a href="#sec-what-to-test" class="active"><span class="dot"></span> 一、测什么</a>
+            <a href="#sec-how-to-test"><span class="dot"></span> 二、怎么测</a>
+            <a href="#sec-workflow"><span class="dot"></span> 三、测评流程</a>
+            <a href="#sec-project"><span class="dot"></span> 四、回归项目</a>
+        </nav>
+    </aside>
+
+    <div class="main">
+        <div class="article-content">
+            <div class="article-header">
+                <div class="article-date">2026 年 6 月 23 日</div>
+                <h1>Agent 测评思路</h1>
+                <div class="article-tags">
+                    <span>Agent</span>
+                    <span>测试</span>
+                    <span>Workflow</span>
+                </div>
+            </div>
+
+            <div class="body">
+                <div class="image-container">
+                    <img src="../../资源/images/exported_image (1).png" alt="Agent 测评思路思维导图" />
+                </div>
+
+                <div class="intro">
+                    本文梳理 Agent 测评的整体思路，包含四个核心部分：明确测什么、落地怎么测、新人可执行的测评流程，以及回归到项目实践。你可以通过下方目录快速跳转到感兴趣的部分。
+                </div>
+
+                <!-- ===== 目录 ===== -->
+                <div class="toc-container">
+                    <div class="toc-title">📖 目录</div>
+                    <div class="toc-list">
+                        <a href="#sec-what-to-test" class="toc-item">
+                            <span class="toc-num">1</span> 一、测什么
+                        </a>
+                        <div class="toc-sub-list">
+                            <a href="#sec-general-eval" class="toc-sub-item"><span class="dot"></span> 通用 Agent 全维度评测</a>
+                            <a href="#sec-targeted-eval" class="toc-sub-item"><span class="dot"></span> 针对性的 Agent 测评</a>
+                        </div>
+                        <a href="#sec-how-to-test" class="toc-item">
+                            <span class="toc-num">2</span> 二、怎么测
+                        </a>
+                        <div class="toc-sub-list">
+                            <a href="#sec-dataset" class="toc-sub-item"><span class="dot"></span> 构建测评数据集</a>
+                            <a href="#sec-scorer" class="toc-sub-item"><span class="dot"></span> 设计评分器</a>
+                            <a href="#sec-methods" class="toc-sub-item"><span class="dot"></span> 选择测评方法</a>
+                            <a href="#sec-trace" class="toc-sub-item"><span class="dot"></span> 获得任务执行的 Trace</a>
+                        </div>
+                        <a href="#sec-workflow" class="toc-item">
+                            <span class="toc-num">3</span> 三、Agent 测评流程
+                        </a>
+                        <a href="#sec-project" class="toc-item">
+                            <span class="toc-num">4</span> 四、回归项目
+                        </a>
+                    </div>
+                </div>
+
+                <section id="sec-what-to-test">
+                    <div class="section-title">一、测什么</div>
+
+                <div class="subsection-title" id="sec-general-eval">方向一：通用 Agent 全维度评测（结果 + 过程）</div>
+
+                <div class="tip-box">
+                    <span class="tip-icon">💡</span>
+                    <div>
+                        <strong>要点：</strong>过程很重要，不要只测结果。<br>
+                        Agent = LLM（感知+规划）+ 记忆 + 工具，是一个复杂决策系统。单纯测结果，难以获得对优化 Agent 的有用信息。<br><br>
+                        <strong>举例：</strong>
+                        <div style="margin-top: 6px; padding-left: 4px;">
+                            <div style="margin-bottom: 6px;">• <strong>结果正确，但过程错误</strong> — 可能漏做了什么、顺序不对、只是运气好。没有过程数据，这些问题永远发现不了。</div>
+                            <div>• <strong>结果错误，不知道错在哪</strong> — 是没有 plan 好？记忆没获取到？工具调用错了？没有过程记录就无法归因。</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="comparison-grid">
+                    <div class="comparison-item result">
+                        <div class="label">结果维度</div>
+                        <ul>
+                            <li>需求完成度</li>
+                            <li>格式规范</li>
+                            <li>总完成时间</li>
+                            <li>总 Token 消耗</li>
+                            <li>用户满意度</li>
+                        </ul>
+                    </div>
+                    <div class="comparison-item process">
+                        <div class="label">过程维度 <span style="font-weight: 400; color: #f59e0b; font-size: 12px;">（核心）</span></div>
+                        <ul>
+                            <li>工具调用</li>
+                            <li>规划链路</li>
+                            <li>记忆能力</li>
+                            <li>异常处理</li>
+                            <li>成本、耗时、安全、权限</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsection-title" id="sec-targeted-eval">方向二：针对性的 Agent 测评</div>
+
+                <div class="desc-text">
+                    Agent 分为很多类型，不同类型的 Agent 侧重点不同，需要针对性设计测评指标。<strong>以下只是几个常见类型的例子</strong>，实际项目中要根据业务场景灵活调整。
+                </div>
+
+                <div class="card-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    <div class="card">
+                        <div class="card-title">💻 代码 Agent</div>
+                        <ul>
+                            <li>代码生成质量</li>
+                            <li>任务完成度</li>
+                            <li>走对工程路径</li>
+                            <li>运行测试验证</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">💬 客服 Agent</div>
+                        <ul>
+                            <li>会话解决率</li>
+                            <li>多轮交互质量</li>
+                            <li>记忆召回精度</li>
+                            <li>情绪识别与应对</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">🔧 运维 Agent</div>
+                        <ul>
+                            <li>工具调用准确率</li>
+                            <li>异常恢复能力</li>
+                            <li>安全边界遵守</li>
+                        </ul>
+                    </div>
+                </div>
+
+                </section>
+                <section id="sec-how-to-test">
+                    <div class="section-title">二、怎么测</div>
+
+                <div class="subsection-title" id="sec-dataset">构建测评数据集</div>
+
+                <div class="key-point">质量比量重要，测评数据集的质量直接决定了评测结果的可信度。</div>
+
+                <div class="card-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    <div class="card">
+                        <div class="card-title">常规样本</div>
+                        <p style="font-size: 14px; color: #64748b;">常见的用户请求，覆盖核心业务流程。如"查一下我的订单状态"、"帮我重置密码"</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">边界样本</div>
+                        <p style="font-size: 14px; color: #64748b;">参数缺失、边界条件等需要追问或特殊处理的场景。如用户只说"帮我查一下上个月那笔退款"但没有提供订单号</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">对抗样本</div>
+                        <p style="font-size: 14px; color: #64748b;">恶意输入、越权请求、诱导 Agent 忽略系统规则等安全测试场景</p>
+                    </div>
+                </div>
+
+                <div class="key-point">一个好的 Case 有哪些标准？</div>
+
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px;">
+                    <div style="padding: 10px 16px; background: #f8fafc; border-radius: 8px; font-size: 14px; color: #475569; line-height: 1.7;">
+                        <strong>用户输入：</strong>用户会怎么真实表达需求
+                    </div>
+                    <div style="padding: 10px 16px; background: #f8fafc; border-radius: 8px; font-size: 14px; color: #475569; line-height: 1.7;">
+                        <strong>初始环境：</strong>数据库、文件、工具返回值、页面状态
+                    </div>
+                    <div style="padding: 10px 16px; background: #f8fafc; border-radius: 8px; font-size: 14px; color: #475569; line-height: 1.7;">
+                        <strong>成功标准：</strong>什么叫完成任务
+                    </div>
+                    <div style="padding: 10px 16px; background: #f8fafc; border-radius: 8px; font-size: 14px; color: #475569; line-height: 1.7;">
+                        <strong>失败标准：</strong>什么情况必须判失败
+                    </div>
+                    <div style="padding: 10px 16px; background: #f8fafc; border-radius: 8px; font-size: 14px; color: #475569; line-height: 1.7;">
+                        <strong>评分方式：</strong>确定性检查、LLM 裁判，还是人工复核
+                    </div>
+                    <div style="padding: 10px 16px; background: #f8fafc; border-radius: 8px; font-size: 14px; color: #475569; line-height: 1.7;">
+                        <strong>风险点：</strong>是否涉及隐私、权限、资金、删除、外部发送
+                    </div>
+                </div>
+
+                <div class="subsection-title" id="sec-scorer">设计评分器</div>
+
+                <div class="card">
+                    <div class="card-title">确定性评分器</div>
+                    <ul>
+                        <li>是否调用了禁止工具</li>
+                        <li>是否缺少权限校验</li>
+                        <li>是否传了必填参数</li>
+                        <li>是否输出了敏感字段</li>
+                        <li>是否超过最大工具调用次数</li>
+                        <li>是否超过成本阈值</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="margin-top: 16px;">
+                    <div class="card-title">轨迹评分</div>
+                    <ul>
+                        <li>环（是否有循环调用）</li>
+                        <li>顺序（调用顺序是否合理）</li>
+                    </ul>
+                </div>
+
+                <div class="card" style="margin-top: 16px;">
+                    <div class="card-title">LLM-as-Judge</div>
+                    <ul>
+                        <li>回答是否真正解决问题</li>
+                        <li>是否遗漏关键解释</li>
+                        <li>是否把不确定结论说得过满</li>
+                        <li>是否用用户能理解的方式解释</li>
+                        <li>是否把工具结果转述错了</li>
+                    </ul>
+                </div>
+
+                <div class="subsection-title" id="sec-methods">选择测评方法</div>
+
+                <div class="card-grid">
+                    <div class="card">
+                        <div class="card-title">基准测试（Benchmark）</div>
+                        <p style="font-size: 14px; color: #64748b;">在标准数据集上跑分，与基线版本或竞品横向对比。适合评估 Agent 的通用能力水平，了解当前版本在行业中的位置。</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">回归测试（Regression）</div>
+                        <p style="font-size: 14px; color: #64748b;">每次迭代后自动运行，确保新改动不破坏已有能力。Agent 的行为会被 Prompt、上下文、工具和模型共同影响，不做回归测试很难知道哪次改动埋了坑。</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">AB 测试</div>
+                        <p style="font-size: 14px; color: #64748b;">线上真实流量分流，对比不同策略/配置的业务效果。能反映 Agent 在真实环境中的表现，但周期较长，适合验证重大改动。</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">Trace Diff（轨迹对比）</div>
+                        <p style="font-size: 14px; color: #64748b;">对比新旧版本在同一样本上的执行轨迹差异，直接定位退化原因，而不是猜测"模型是不是变笨了"。</p>
+                    </div>
+                </div>
+
+                <div class="subsection-title" id="sec-trace">获得任务执行的 Trace</div>
+
+                </section>
+                <section id="sec-workflow">
+                    <div class="section-title">三、一个新人可落地的 Agent 测评流程</div>
+
+                <div class="step-list">
+                    <div class="step-item">
+                        <div class="step-num">1</div>
+                        <div class="step-content">明确业务目标 — 先写清楚 Agent 到底要帮用户完成什么任务，不要从模型能力出发。</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">2</div>
+                        <div class="step-content">收集 20 个真实 Case — 从你自己测试、用户反馈、面试演示场景里整理，不求多，但要有代表性。</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">3</div>
+                        <div class="step-content">给每个 Case 写成功标准 — 不要写"回答好"，要写"订单状态变更""测试通过""引用来源不少于 3 个"。</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">4</div>
+                        <div class="step-content">设计评分器 — 确定哪些用代码检查，哪些用 LLM 裁判，哪些要人工抽查。</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">5</div>
+                        <div class="step-content">保存完整 Trace — 记录每次模型输入输出、工具调用、参数、耗时、Token、错误。</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">6</div>
+                        <div class="step-content">每次改动后跑一遍 — 改 Prompt、改工具、换模型、改工作流后，都重新跑黄金 Case。</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">7</div>
+                        <div class="step-content">对失败样本做分类 — 是意图识别错、工具选错、参数错、上下文丢失、模型幻觉，还是评分器写错？</div>
+                    </div>
+                    <div class="step-item">
+                        <div class="step-num">8</div>
+                        <div class="step-content">把线上问题补回评测集 — 用户真实遇到的问题，修完之后要变成新的回归 Case。</div>
+                    </div>
+                </div>
+
+                </section>
+                <section id="sec-project">
+                    <div class="section-title">四、回归项目</div>
+
+                    <div class="desc-text">
+                        回到我们的项目：<strong>Workflow 可视化任务编排与执行系统</strong>
+                    </div>
+
+                    <div class="key-point">测什么</div>
+
+                    <div class="desc-text">
+                        测试的主要方向放在了对比优化上：
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px;">
+                        <div style="padding: 10px 16px; background: #f8fafc; border-radius: 8px; font-size: 14px; color: #475569; line-height: 1.7;">
+                            <strong>Plan 能力：</strong>任务分解、DAG 图构建（无环）、冗余步骤、多步连贯性、并发性
+                        </div>
+                        <div style="padding: 10px 16px; background: #f8fafc; border-radius: 8px; font-size: 14px; color: #475569; line-height: 1.7;">
+                            <strong>任务执行确定化（稳定性指数）：</strong>重试次数
+                        </div>
+                        <div style="padding: 10px 16px; background: #f8fafc; border-radius: 8px; font-size: 14px; color: #475569; line-height: 1.7;">
+                            <strong>成本、效率：</strong>总时间、Token 消耗
+                        </div>
+                        <div style="padding: 10px 16px; background: #f8fafc; border-radius: 8px; font-size: 14px; color: #475569; line-height: 1.7;">
+                            <strong>无效 ReAct 循环占比下降</strong>
+                        </div>
+                        <div style="padding: 10px 16px; background: #f8fafc; border-radius: 8px; font-size: 14px; color: #475569; line-height: 1.7;">
+                            <strong>故障场景流程完整执行率</strong>
+                        </div>
+                    </div>
+
+                    <div class="subsection-title">怎么优化</div>
+
+                    <div class="key-point">问题</div>
+
+                    <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px;">
+                        <div style="padding: 10px 16px; background: #f8fafc; border-radius: 8px; font-size: 14px; color: #475569; line-height: 1.7;">
+                            <strong>任务逻辑错误：</strong>遗漏步骤、颠倒步骤、无效步骤
+                        </div>
+                        <div style="padding: 10px 16px; background: #f8fafc; border-radius: 8px; font-size: 14px; color: #475569; line-height: 1.7;">
+                            <strong>DAG 逻辑错误：</strong>环路、孤立节点、汇聚分支混乱
+                        </div>
+                        <div style="padding: 10px 16px; background: #f8fafc; border-radius: 8px; font-size: 14px; color: #475569; line-height: 1.7;">
+                            <strong>输出格式不正确</strong>
+                        </div>
+                        <div style="padding: 10px 16px; background: #f8fafc; border-radius: 8px; font-size: 14px; color: #475569; line-height: 1.7;">
+                            <strong>任务颗粒度失衡</strong>
+                        </div>
+                        <div style="padding: 10px 16px; background: #f8fafc; border-radius: 8px; font-size: 14px; color: #475569; line-height: 1.7;">
+                            <strong>并行度不够</strong>
+                        </div>
+                    </div>
+
+                    <div class="key-point">优化方案</div>
+
+                    <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+                        <div class="card">
+                            <div class="card-title">Prompt 层</div>
+                            <ul>
+                                <li><strong>强制输出模板：</strong>JsonSchema</li>
+                                <li><strong>拆解规则：</strong>检索/工具操作必须在生成类节点之前；独立无依赖任务拆为并行节点</li>
+                                <li><strong>生成规则：</strong>不存在循环依赖；所有边指向已定义节点；用户需求全部覆盖，无遗漏关键动作</li>
+                                <li><strong>颗粒度规则：</strong>单次工具调用 = 1 个节点；单一独立目标 = 独立节点；禁止跨工具、跨目标合并节点</li>
+                            </ul>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-title">后置校验层</div>
+                            <ul>
+                                <li>环路检测</li>
+                                <li>引用合法性检测</li>
+                                <li>步骤完整性检测</li>
+                            </ul>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-title">FewShot 样本</div>
+                            <ul>
+                                <li><strong>标准样本：</strong>基础串行流程样本、多并行分支样本、带汇聚节点复杂拓扑</li>
+                                <li><strong>反例样本：</strong>展示错误 DAG（易出错反向依赖、环路反例）+ 修正后的正确 DAG，让 Plan 规避常见误区</li>
+                            </ul>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-title">分级 Plan（解决长任务失效问题）</div>
+                            <ul>
+                                <li>针对长任务，先进行粗任务划分，再调用子 Plan 单独生成 DAG</li>
+                                <li>顶层 DAG 串联各个子流程，避免单次生成超大图导致输出截断、逻辑混乱</li>
+                            </ul>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-title">双 Agent 机制</div>
+                            <ul>
+                                <li>引入评审 Agent：独立评审流程逻辑、依赖、环路、需求匹配度，输出修改意见</li>
+                            </ul>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-title">动态需求兼容</div>
+                            <ul>
+                                <li>Plan 预生成多分支备选 DAG，引擎执行中根据节点输出选择对应分支</li>
+                                <li>三级异常策略兜底</li>
+                            </ul>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-title">迭代数据闭环优化（长期持续优化）</div>
+                            <ul>
+                                <li>采集所有校验失败、执行失败的错误 DAG、用户原始需求</li>
+                                <li>自动归类错误类型：环路、步骤遗漏、顺序颠倒、JSON 格式错误</li>
+                                <li>将高频错误案例自动加入 FewShot 样本库，持续迭代 Plan 能力</li>
+                                <li>基于 LLM-as-Judge 量化 DAG 匹配得分，低分样本自动回流训练提示词</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="article-nav">
+                <a href="../">&larr; 返回文章列表</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 程愚瀚 · Built with &hearts;
+    </footer>
+
+    <script src="../../资源/js/main.js"></script>
+</body>
+</html>

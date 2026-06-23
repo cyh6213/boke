@@ -164,7 +164,7 @@
                 <h3>🤖 AI Agent 开发</h3>
                 <div style="display: flex; flex-direction: column; gap: 16px;">
                     <div style="background: #ffffff; border: 1px solid #e9edf4; border-radius: 12px; padding: 20px 24px;">
-                        <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 6px;">1. 使用层面</div>
+                        <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 6px;">1. 辅助编程层面</div>
                         <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
                             对基于 SDD 利用 AI 辅助编程比较熟练，简历上展示的项目 99% 都是 vibecoding 出来的，
                             能够熟练利用 coding 工具，写出高质量的代码。
@@ -181,6 +181,12 @@
                             <li><strong>豆包</strong> — 学习了对话主题更新机制，应用到 MyClaw 项目的短期记忆滑动窗口策略中</li>
                             <li><strong>CodeBuddy</strong> — 学习了显示窗口使用量、可控的问题改写策略，应用到 RAG 项目的智能路由与问题改写中</li>
                         </ul>
+                    </div>
+                    <div style="background: #ffffff; border: 1px solid #e9edf4; border-radius: 12px; padding: 20px 24px;">
+                        <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 6px;">3. 底层原理</div>
+                        <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                            对 Transformer（Top-p、KV Cache）、MCP、Function Calling、Skill、Harness、ReAct、PAE 等都有了解。
+                        </p>
                     </div>
                 </div>
             </div>
@@ -210,6 +216,16 @@
                         <span>三个项目针对不同维度做了量化测评：<strong>Agent 测评</strong>（Workflow 任务完成度）、<strong>RAG 测评</strong>（召回率与忠实度）、<strong>长期记忆测评</strong>（不同记忆策略效果对比）。</span>
                     </div>
                 </div>
+            </div>
+
+            <div style="background: #f5f3ff; border: 1px solid #e0d4fc; border-radius: 16px; padding: 28px 32px; margin-top: 24px; font-size: 14px; color: #4c1d95; line-height: 1.8;">
+                <div style="font-size: 13px; font-weight: 600; color: #7c3aed; margin-bottom: 12px; letter-spacing: 1px;">我的想法</div>
+                <p style="margin: 0;">
+                    做项目越到后面，越感觉像是在菜市场挑菜——从别人的简历上挑一个还算新鲜的亮点，放到自己的简历上。尤其是现在这个 AI 时代，一句话就能让工具帮我落地任何一个技术点。但这些没有一条是我想出来的，也没有一条让我觉得非用它不可。
+                </p>
+                <p style="margin: 12px 0 0 0;">
+                    所以到最后，我在这份简历上压了又压、删了很多常规的优化方案，只留下了几条我觉得确实有自己的想法、做起来也挺有意思的实现：主要包括 <strong>Workflow 的架构设计</strong>、<strong>MyClaw 的模拟人生设计</strong>。
+                </p>
             </div>
         </section>
 
@@ -304,9 +320,9 @@
                             <div style="font-size: 11px; color: #94a3b8;">优化前 71%</div>
                         </div>
                         <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
-                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">91%</div>
-                            <div style="font-size: 12px; color: #64748b;">F1 Score</div>
-                            <div style="font-size: 11px; color: #94a3b8;">优化前 69%</div>
+                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">0.91</div>
+                            <div style="font-size: 12px; color: #64748b;">MRR@K</div>
+                            <div style="font-size: 11px; color: #94a3b8;">优化前 0.62</div>
                         </div>
                     </div>
                 </div>
@@ -442,7 +458,7 @@
                             <div style="font-size: 11px; color: #94a3b8;">含环路检测</div>
                         </div>
                         <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
-                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">xxx%</div>
+                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">94%</div>
                             <div style="font-size: 12px; color: #64748b;">子 Agent 任务完成率</div>
                         </div>
                     </div>
@@ -452,19 +468,11 @@
                     <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">⚡ 过程 — 效率优化</div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                         <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
-                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">-xxx%</div>
+                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">-14%</div>
                             <div style="font-size: 12px; color: #64748b;">Token 消耗量</div>
                         </div>
                         <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
-                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">-xxx%</div>
-                            <div style="font-size: 12px; color: #64748b;">ReAct 循环</div>
-                        </div>
-                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
-                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">-xxx%</div>
-                            <div style="font-size: 12px; color: #64748b;">工具调用</div>
-                        </div>
-                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
-                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">-xxx%</div>
+                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">-23%</div>
                             <div style="font-size: 12px; color: #64748b;">并行执行时间</div>
                         </div>
                     </div>
@@ -514,40 +522,76 @@
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">四种记忆方案对比测评</div>
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">四种方案对比测评</div>
                     <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
-                        对比了四种记忆实现方案：纯模型大窗口 / RAG 检索 / Claude Code 式文件整理 / 对话记忆检索机制，从多个维度评估各方案表现。
+                        通过 RecallBench 利用 LongMemEval 测评集，从 <strong>Information Extraction</strong>、<strong>Multi-Session Reasoning</strong>、<strong>Knowledge Updates</strong>、<strong>Temporal Reasoning</strong> 四个维度，对比纯模型大窗口 / RAG 检索 / Hindsight 三种方案，评估各方案在长程记忆场景下的实际表现。
                     </p>
                 </div>
 
-                <div style="margin-bottom: 20px;">
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">最终选型：Hindsight 三层记忆模型</div>
-                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
-                        <strong>Experience / Mental Model / World</strong> 三层架构，<strong>四路混合召回</strong>（语义向量 + BM25 + 图谱关系 + 时间范围），跨会话用户画像演进——聊得越久，越懂用户。
-                    </p>
+                <div style="margin-bottom: 20px; overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px; color: #475569;">
+                        <thead>
+                            <tr style="background: #f1f4f9;">
+                                <th style="padding: 10px 12px; text-align: left; font-weight: 700; color: #0f172a; border-bottom: 2px solid #e2e8f0;">维度</th>
+                                <th style="padding: 10px 12px; text-align: center; font-weight: 700; color: #0f172a; border-bottom: 2px solid #e2e8f0;">纯模型大窗口</th>
+                                <th style="padding: 10px 12px; text-align: center; font-weight: 700; color: #0f172a; border-bottom: 2px solid #e2e8f0;">RAG 检索</th>
+                                <th style="padding: 10px 12px; text-align: center; font-weight: 700; color: #4f46e5; border-bottom: 2px solid #4f46e5;">Hindsight</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid #e9edf4;">
+                                <td style="padding: 10px 12px; font-weight: 600;">Information Extraction<br><span style="font-weight: 400; font-size: 12px; color: #94a3b8;">精确检索</span></td>
+                                <td style="padding: 10px 12px; text-align: center;">60%</td>
+                                <td style="padding: 10px 12px; text-align: center;">65%</td>
+                                <td style="padding: 10px 12px; text-align: center; font-weight: 700; color: #4f46e5;">95%</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e9edf4;">
+                                <td style="padding: 10px 12px; font-weight: 600;">Multi-Session Reasoning<br><span style="font-weight: 400; font-size: 12px; color: #94a3b8;">跨会话推理</span></td>
+                                <td style="padding: 10px 12px; text-align: center;">45%</td>
+                                <td style="padding: 10px 12px; text-align: center;">50%</td>
+                                <td style="padding: 10px 12px; text-align: center; font-weight: 700; color: #4f46e5;">90%</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e9edf4;">
+                                <td style="padding: 10px 12px; font-weight: 600;">Knowledge Updates<br><span style="font-weight: 400; font-size: 12px; color: #94a3b8;">知识更新</span></td>
+                                <td style="padding: 10px 12px; text-align: center;">50%</td>
+                                <td style="padding: 10px 12px; text-align: center;">45%</td>
+                                <td style="padding: 10px 12px; text-align: center; font-weight: 700; color: #4f46e5;">88%</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px 12px; font-weight: 600;">Temporal Reasoning<br><span style="font-weight: 400; font-size: 12px; color: #94a3b8;">时序推理</span></td>
+                                <td style="padding: 10px 12px; text-align: center;">55%</td>
+                                <td style="padding: 10px 12px; text-align: center;">50%</td>
+                                <td style="padding: 10px 12px; text-align: center; font-weight: 700; color: #4f46e5;">90%</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
                 <div>
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">测评维度与结果</div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
-                            <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 4px;">精确检索</div>
-                            <div style="font-size: 12px; color: #64748b;">xxx</div>
-                        </div>
-                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
-                            <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 4px;">测试时学习</div>
-                            <div style="font-size: 12px; color: #64748b;">xxx</div>
-                        </div>
-                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
-                            <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 4px;">长程理解</div>
-                            <div style="font-size: 12px; color: #64748b;">xxx</div>
-                        </div>
-                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
-                            <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 4px;">冲突解决</div>
-                            <div style="font-size: 12px; color: #64748b;">xxx</div>
-                        </div>
-                    </div>
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">最终选型：Hindsight</div>
+                    <ul style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0; padding-left: 20px;">
+                        <li>通过<strong>四路召回</strong>（向量、关键词、图、时间）策略，提高精确检索能力。</li>
+                        <li>通过<strong>四种记忆分类</strong>（世界、经验、观点、观察）策略，实现事实和经验的区分。</li>
+                        <li>通过 Opinion 网络的<strong>置信度演化机制</strong>，新证据强化或削弱已有观点的置信度，实现"用户先喜欢 A 后改口 B"这类矛盾信息的动态追踪与自动更新。</li>
+                        <li>通过为每条记忆携带<strong>时间元数据</strong>（发生时间 + 记录时间），recall 时结合时间范围过滤与时间衰减排序，实现"用户上个月说了什么"这类时序精确查询。</li>
+                    </ul>
                 </div>
+            </div>
+
+
+            <!-- 2. 产品设计 -->
+            <div class="project-card">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f0fdf4; color: #16a34a;">产品设计</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">让对话更像真人</span>
+                </div>
+                <ul style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0; padding-left: 20px;">
+                    <li><strong>自动触发：</strong>自研 Foresight 规则引擎，借鉴 EverMemOS 前瞻记忆设计思路，基于 LLM 从对话中自动提取条件-行动规则，结合 Spring @Scheduled 实现 Heartbeat 定时扫描机制，支持对话中即时匹配与定时批量执行双触发模式，完成从被动响应到主动服务的范式升级。</li>
+                    <li><strong>人物活动轨迹模拟：</strong>设计五级生活线体系（Life Plan → Year Plan → Month Plan → Week Plan → Day Plan），Worker Agent 每日定时自动推进角色生活状态，让 AI 拥有连贯的"内在生活"——即使不聊天，角色也在真实地活着，对话时自然分享今日见闻。</li>
+                    <li><strong>时间感知与空间锚定：</strong>构建角色的时间认知模型，对话中自然体现时间流逝感（"刚在开车"、"等了我二十分钟"、"昨晚看了一部电影"），结合空间位置锚定，让角色行为在时空维度上自洽，避免"上一秒在做饭，下一秒说在开会"的割裂感。</li>
+                    <li><strong>小说人物迁移：</strong>从小说文本自动提取人物档案（性格、经历、社交关系、日常活动），将小说中的时间线映射到真实世界时间轴，实现"小说人物活在现实中"的沉浸式对话体验。</li>
+                    <li><strong>主动对话与话题转换：</strong>基于 Heartbeat 心跳检测机制，支持空闲触发、定时触发、被动失效三种策略主动开启话题；结合生活线状态与对话上下文，在话题自然衰减时平滑过渡到新话题，避免生硬的"对了，我还有个事要说"，模拟真人聊天的联想式话题跳跃。</li>
+                </ul>
             </div>
 
             <!-- 3. 其他亮点 -->
@@ -556,24 +600,10 @@
                     <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #fff7ed; color: #d97706;">其他亮点</span>
                 </div>
                 <ul style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0; padding-left: 20px;">
-                    <li><strong>短期记忆</strong> — 滑动窗口策略，不做记忆压缩。日常对话话题变化快，上午和下午话题不同，专门提醒模型注意时间间隔</li>
-                    <li><strong>Context 组装</strong> — 根据不同场景动态组装上下文</li>
-                    <li><strong>双 Agent 机制</strong> — 一个负责 Chat，一个负责任务，Context 组装与权限控制独立</li>
-                    <li><strong>模型容错 & 安全护栏</strong> — 确保系统稳定可靠</li>
-                    <li><strong>SSE 流式输出 & 微信绑定 & 定时任务</strong> — 满足多种交互场景</li>
-                </ul>
-            </div>
-
-            <!-- 4. 更像人的设计 -->
-            <div class="project-card">
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f0fdf4; color: #16a34a;">产品设计</span>
-                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">让对话更像真人</span>
-                </div>
-                <ul style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0; padding-left: 20px;">
-                    <li><strong>人物活动轨迹</strong> — 为角色设计日常活动（一生 / 一年 / 一月 / 一周），每天更新，让对话有依据</li>
-                    <li><strong>时间观念</strong> — 强调角色的时间感知，如"刚在开车，等 20 分钟发现他真的回家了"</li>
-                    <li><strong>小说人物对话</strong> — 通过提取小说人物的活动轨迹，让小说中的时间流逝与真实世界对应</li>
+                    <li><strong>权限控制与人工审批：</strong>采用策略防护 + 人工审批（HITL）双层保障机制，Agent 自动执行命令前先经风险策略拦截，高危操作触发人工审批流程，兼顾执行效率与系统安全。</li>
+                    <li><strong>双 Agent 协作架构：</strong>设计 Worker + Chatter 双 Agent 协作模式，Worker 后台独立推进剧情与生活线，Chatter 负责与用户对话交互，实现记忆、职责、权限三分离。</li>
+                    <li><strong>SSE 流式输出：</strong>基于 WorkflowMsgCallback 消息总线搭建异步消费线程，实时消费队列事件并通过 SseEmitter 推送到前端，实现 LLM 流式打字机效果与任务执行进度实时展示。</li>
+                    <li><strong>微信绑定：</strong>集成微信渠道接入，支持通过微信与 AI 对话，打通 IM 与 CLI 双端交互，用户可在微信端接收主动推送消息与定时提醒，扩展 AI 的可触达场景。</li>
                 </ul>
             </div>
 
