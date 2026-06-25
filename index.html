@@ -398,6 +398,9 @@
                             <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
                                 拥有全局任务执行逻辑后可以做出更大程度的优化。并行执行逻辑基于 KAHN 算法：入度为 0 的节点可以直接执行，每执行一个节点就将其指向的节点的入度减一，于是就会有新的可执行节点出现。将节点分为一批一批执行，实现更大程度的并行。
                             </p>
+                            <div style="margin-top: 24px; text-align: center;">
+                                <img src="资源/images/kahn.png" alt="KAHN 算法示意图" style="max-width: 100%; border-radius: 12px; border: 1px solid #e9edf4; box-shadow: 0 4px 16px rgba(79,70,229,0.08);" />
+                            </div>
                         </div>
                     </div>
                     <div style="display: flex; gap: 12px; align-items: flex-start;">

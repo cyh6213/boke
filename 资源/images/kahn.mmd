@@ -1,0 +1,55 @@
+%%{init: {'theme': 'base', 'themeVariables': {
+  'primaryColor': '#FFFFFF',
+  'primaryTextColor': '#1E293B',
+  'primaryBorderColor': '#4F46E5',
+  'lineColor': '#4F46E5',
+  'secondaryColor': '#FFFFFF',
+  'tertiaryColor': '#FFFFFF',
+  'noteBkgColor': '#FFFFFF',
+  'noteTextColor': '#475569',
+  'noteBorderColor': '#4F46E5',
+  'classTextColor': '#1E293B',
+  'classBorderColor': '#4F46E5',
+  'classFontSize': '20px',
+  'fontFamily': 'Inter, PingFang SC, Microsoft YaHei, sans-serif',
+  'fontSize': '20px'
+}}}%%
+
+flowchart LR
+    subgraph dagSec["   ① 初始 DAG   "]
+        direction TB
+        A("A 入度:0") --> C("C 入度:1")
+        B("B 入度:0") --> D("D 入度:1")
+        C --> E("E 入度:1")
+        C --> F("F 入度:2")
+        D --> F
+    end
+
+    subgraph algoSec["   ② KAHN 算法   "]
+        direction TB
+        step1["找入度=0 的节点"] --> step2["并行执行"] --> step3["减下游入度"] --> step4["重复"]
+    end
+
+    subgraph b1["   ③ 批次 1   "]
+        direction TB
+        a1["A"] --> c1["C 入度:1→0"]
+        b1n["B"] --> d1n["D 入度:1→0"]
+    end
+
+    subgraph b2["   ④ 批次 2   "]
+        direction TB
+        c2["C"] --> e2["E 入度:1→0"]
+        c2 --> f2["F 入度:2→1"]
+        d2["D"] --> f3["F 入度:1→0"]
+    end
+
+    subgraph b3["   ⑤ 批次 3   "]
+        direction TB
+        e3["E"]
+        f4["F"]
+    end
+
+    dagSec --> algoSec
+    algoSec --> b1
+    b1 --> b2
+    b2 --> b3

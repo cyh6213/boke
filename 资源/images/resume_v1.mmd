@@ -1,0 +1,23 @@
+%%{init: {'theme': 'base', 'themeVariables': {
+  'primaryColor': '#EEF2FF',
+  'primaryTextColor': '#1E293B',
+  'primaryBorderColor': '#4F46E5',
+  'lineColor': '#4F46E5',
+  'secondaryColor': '#FFFFFF',
+  'tertiaryColor': '#FFFFFF',
+  'noteBkgColor': '#FFFFFF',
+  'noteTextColor': '#475569',
+  'noteBorderColor': '#4F46E5',
+  'classTextColor': '#1E293B',
+  'classBorderColor': '#4F46E5',
+  'classFontSize': '20px',
+  'fontFamily': 'Inter, PingFang SC, Microsoft YaHei, sans-serif',
+  'fontSize': '20px'
+}}}%%
+
+flowchart LR
+    step1["加载\nExecutionSnapshot"] --> step2["resolveResumeStartNodeId\n确定恢复起点"]
+    step2 --> step3["buildResumeState\n构建恢复状态"]
+    step3 --> step4["保存用户修改的变量\n到 execution_variable"]
+    step4 --> step5["更新状态\nstatus = RUNNING"]
+    step5 --> step6["executeNodes\n从断点继续执行"]

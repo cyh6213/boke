@@ -28,6 +28,14 @@
         }
         .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
         .empty-state p { font-size: 16px; }
+        .sidebar-sub { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #64748b; text-decoration: none; transition: all 0.2s; }
+        .sidebar-sub:hover { background: #f1f4f9; color: #0f172a; }
+        .sidebar-sub.active { background: #eef2ff; color: #4f46e5; }
+        .sidebar-sub .dot { width: 4px; height: 4px; border-radius: 50%; background: #cbd5e1; flex-shrink: 0; transition: background 0.2s; }
+        .sidebar-sub:hover .dot { background: #4f46e5; }
+        .sidebar-sub.active .dot { background: #4f46e5; }
+        .sidebar-sub-group { margin: 2px 0 6px 20px; border-left: 2px solid #e2e8f0; padding-left: 6px; }
+        [id] { scroll-margin-top: 120px; }
     </style>
 </head>
 <body>
@@ -41,32 +49,659 @@
         </div>
     </nav>
 
-    <div class="main" style="margin-left: 0;">
-        <div class="project-list">
-            <div class="section-label">Projects</div>
-            <h2 class="section-title">项目</h2>
+    <!-- ===== Sidebar ===== -->
+    <aside class="sidebar">
+        <div class="name">程愚瀚</div>
+        <div class="title">Java 后端和 agent 开发</div>
+        <nav>
+            <a href="#workflow-v1" class="active"><span class="dot"></span> Workflow 1.0（前身）</a>
+            <a href="#origin"><span class="dot"></span> 项目来源</a>
+            <a href="#core"><span class="dot"></span> 核心亮点</a>
+            <div class="sidebar-sub-group">
+                <a href="#kahn" class="sidebar-sub"><span class="dot"></span> KAHN 算法</a>
+                <a href="#rollback" class="sidebar-sub"><span class="dot"></span> 节点级回滚</a>
+                <a href="#visual" class="sidebar-sub"><span class="dot"></span> 执行轨迹 Trace</a>
+            </div>
+            <a href="#other"><span class="dot"></span> 其他亮点</a>
+            <div class="sidebar-sub-group">
+                <a href="#sub-agent" class="sidebar-sub"><span class="dot"></span> Sub Agent 执行</a>
+                <a href="#exception" class="sidebar-sub"><span class="dot"></span> 三级异常处理</a>
+                <a href="#sse" class="sidebar-sub"><span class="dot"></span> SSE 实时推送</a>
+                <a href="#branch" class="sidebar-sub"><span class="dot"></span> 条件边分支</a>
+            </div>
+            <a href="#plan-opt"><span class="dot"></span> Plan 优化</a>
+            <a href="#eval"><span class="dot"></span> 测评结果</a>
+        </nav>
+    </aside>
 
-            <div class="empty-state">
-                <div class="icon">🚧</div>
-                <p>项目详情页面正在建设中...</p>
+    <div class="main">
+        <div class="project-list">
+            <div class="section-label">Project 02</div>
+            <h2 class="section-title">可视化任务编排与执行系统</h2>
+
+            <!-- 前世：Workflow 1.0 背景 -->
+            <div class="project-card" id="workflow-v1">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f1f4f9; color: #64748b;">前身 · Workflow 1.0</span>
+                </div>
+                <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 16px 0;">
+                    Workflow 1.0 是一个 AI 工作流编排平台，让用户通过<strong>"拖拽"</strong>的方式把多个 AI 能力和插件串起来，自动完成复杂任务。
+                </p>
+                <div style="font-size: 14px; color: #475569; line-height: 1.8; padding: 16px 20px; background: linear-gradient(135deg, #f8fafc 0%, #f1f4f9 100%); border-radius: 10px; margin-bottom: 16px;">
+                    <strong>例如：</strong>博主构建播客工作流 — <strong>发送文章 → 大模型处理 → 语音插件转音频 → 发送博客</strong>，全部由用户可视化拖拽定义。
+                </div>
+                <div style="font-size: 14px; color: #475569; line-height: 1.8;">
+                    <span style="font-weight: 700; color: #0f172a;">核心亮点：</span>业务人员无需写代码，仅需在界面上编排节点即可搭建 AI 应用。
+                </div>
+                <div style="font-size: 14px; color: #92400e; line-height: 1.8; margin-top: 12px; padding: 12px 16px; background: #fffbeb; border-left: 3px solid #f59e0b; border-radius: 0 8px 8px 0;">
+                    <span style="font-weight: 700;">局限性：</span>不智能，所谓的AI能力仅仅是LLM最基本的文字处理，无 ReAct、无 PAE。所有流程和参数需用户手动定义。
+                </div>
+                <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e9edf4; font-size: 14px; color: #475569; line-height: 1.8;">
+                    <span style="font-weight: 700; color: #0f172a;">涉及功能：</span>DAG 图构建 · 节点 JSON 格式 · 节点状态 · 串行执行 · 大模型接入 · 插件接入 · 异常处理 · SSE 流式输出
+                </div>
             </div>
 
-            <!-- 示例：以后项目条目像这样
-            <a class="project-item" href="rag-demo.html">
-                <h3>企业知识库 Agentic RAG</h3>
-                <p>全链路优化的企业级 RAG 系统，召回率从 68% 提升至 93%...</p>
-                <div class="project-tags">
-                    <span class="tag-rag">RAG</span>
-                    <span class="tag-rag">Java</span>
+            <!-- 1. 项目来源 -->
+            <div class="project-card" id="origin">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;">项目来源</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">为什么做这个项目</span>
                 </div>
-            </a>
-            -->
+                <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                    使用 Agent 时发现指令明确但 Agent 不执行（如要求检索后回答却跳过检索），因此思考如何将 Agent 行为确定化。核心思路是通过预定义 Agent 无法修改的 DAG 图，将任务执行流程固定化，保证可见即所得。
+                </p>
+            </div>
+
+            <!-- 2. 核心亮点 -->
+            <div class="project-card" id="core">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #ecfdf5; color: #059669;">核心亮点</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">规划与执行彻底解耦</span>
+                </div>
+
+                <div style="margin-bottom: 20px; padding: 12px 16px; background: #f5f3ff; border-left: 3px solid #7c3aed; border-radius: 0 8px 8px 0; font-size: 13px; color: #6d28d9; line-height: 1.7;">
+                    💡 有了 Workflow 1.0 的铺垫，自然而然地想到了将 DAG 图构建的步骤<strong>交给大模型来完成</strong>，与 PAE 架构联系起来。
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                        摒弃 Master 集中调度。<strong>Plan Agent</strong> 只负责根据用户任务逻辑，输出一份完整、结构化的 DAG 数据（节点列表 + 边关系 JSON），不再参与后续调度；<strong>执行引擎</strong> 读取这份独立 DAG 数据，自主完成全流程调度、节点分发、并行运算。总结一下就是把"人去定义执行计划"的过程交给了 Plan 节点。
+                    </p>
+                </div>
+
+                <div style="margin-bottom: 20px; padding: 16px 20px; background: #f8f9fc; border-radius: 10px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">好处</div>
+                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                        将 Agent 执行任务的流程固定化，DAG 图可视化后可以清楚判断任务执行逻辑是否是我们想要的，保证可见即所得，不会出现"明面一套背地一套"的情况。
+                    </p>
+                </div>
+
+                <div style="margin-bottom: 20px; padding: 16px 20px; background: #f8f9fc; border-radius: 10px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">坏处</div>
+                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                        相比 PAE 框架可根据前一步结果动态改变下一步计划，本方案是固定化的。但针对节点执行失败的情况，支持三种异常处理机制确保流程完整执行。
+                    </p>
+                </div>
+
+                <div style="margin-top: 24px; padding: 24px; background: #f8fafc; border-radius: 14px; border: 1px solid #e9edf4;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+                        <span style="padding: 2px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; background: #eef2ff; color: #4f46e5;">子优势</span>
+                        <span style="font-size: 14px; font-weight: 700; color: #0f172a;">由此带来的三个子优势</span>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <div style="display: flex; gap: 12px; align-items: flex-start;" id="kahn">
+                        <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #f59e0b; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">1</div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">KAHN 算法 — 更大程度并行</div>
+
+                            <div style="display: flex; flex-direction: column; gap: 14px;">
+
+                                <!-- 1. KAHN 算法是什么（基础铺垫） -->
+                                <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                                    <div style="font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px;">KAHN 算法是什么</div>
+                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                                        Kahn 算法，核心思路是基于<strong>入度的拓扑排序</strong>。入度（In-Degree）指一个节点被多少条边指向，入度为 0 表示该节点没有任何前置依赖，可以直接执行。通过不断移除入度为 0 的节点并更新下游入度，最终得到一个拓扑有序的执行序列。
+                                    </p>
+                                </div>
+
+                                <!-- 2. 更彻底的并行策略（重点突出） -->
+                                <div style="padding: 20px 22px; background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 12px; box-shadow: 0 2px 8px rgba(79,70,229,0.06);">
+                                    <div style="font-size: 15px; font-weight: 700; color: #4f46e5; margin-bottom: 10px;">更彻底的并行策略 ← 核心</div>
+                                    <p style="font-size: 14px; color: #1e293b; line-height: 1.9; margin: 0 0 12px 0;">
+                                        拥有全局任务执行逻辑后可以做出更大程度的优化。并行执行逻辑基于 KAHN 算法：入度为 0 的节点可以直接执行，每执行一个节点就将其指向的节点的入度减一，于是就会有新的可执行节点出现。将节点分为一批一批执行，实现更大程度的并行。
+                                    </p>
+                                    <div style="text-align: center;">
+                                        <img src="../资源/images/kahn.png" alt="KAHN 算法示意图" style="max-width: 100%; border-radius: 10px; border: 1px solid #c7d2fe;" />
+                                    </div>
+                                </div>
+
+                                <!-- 3. 环路检测 -->
+                                <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                                    <div style="font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px;">环路检测</div>
+                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
+                                        首先是一个链表记录每一个节点的入度（指向该节点的节点的数量），再是一个队列记录入度为0的节点。
+                                    </p>
+                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                                        然后对入度为0的节点，对他指向的节点的入度减一，如果入度减为0，就加入队列，直到队列为空。如果最后还有入度不为0的节点，就有环。
+                                    </p>
+                                </div>
+
+                                <!-- 4. 并行 / 双重并行 -->
+                                <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                                    <div style="font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px;">双重并行</div>
+                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
+                                        除了节点任务层级的并行外，还有颗粒度为单个工具调用，比如读文件的并行等级。
+                                    </p>
+                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                                        也就是说我们现在有<strong>双重的并行策略</strong>。
+                                    </p>
+                                </div>
+
+                                <!-- 5. 输出隔离 -->
+                                <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                                    <div style="font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px;">输出隔离</div>
+                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
+                                        多线程并行场景下如果直接往 System.out 打印，由于线程调度抢占，不同任务的日志会交错混杂，可读性很差。
+                                    </p>
+                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
+                                        我们的做法是做输出隔离，给每个执行步骤单独分配独立的 ByteArrayOutputStream 内存缓冲区，每个任务执行时不直接写标准输出，全部写入自己专属的本地缓冲，从根源上避免多线程输出互相干扰。
+                                    </p>
+                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                                        等所有并行任务全部执行完毕后，再按照业务定义的步骤原始顺序，依次把每个缓冲区的内容批量刷新到标准输出。这样既保留了多线程并行执行的性能优势，又能保证最终日志按固定顺序完整输出，每条任务的日志整块连贯，不会出现穿插乱序的情况。
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 12px; align-items: flex-start;" id="rollback">
+                        <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #f59e0b; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">2</div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">节点级回滚与断点恢复</div>
+
+                            <div style="display: flex; flex-direction: column; gap: 14px;">
+
+                                <!-- 我的实现方式 -->
+                                <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                                    <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">每个节点的输入、输出、状态单独存储</div>
+                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
+                                        三张表各司其职：<strong>workflow.flow_data</strong>（JSON 列）存 DAG 拓扑结构，<strong>execution_snapshot</strong> 存每个节点的输入输出和状态，<strong>execution_record</strong> 存整次执行的全局汇总。
+                                    </p>
+                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
+                                        运行时的数据传递纯走内存 HashMap，节点执行完顺手把快照同步写入 MySQL，但不从数据库读。
+                                    </p>
+                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                                        只有断点继续触发时，才从 execution_snapshot 读出快照恢复到内存，结合 flow_data 重新解析的拓扑图确定从哪个失败节点开始，跳过已成功的，接着往下跑。最后把 execution_record 状态从 FAILED 改回 RUNNING，执行完再更新。
+                                    </p>
+                                </div>
+
+                                <!-- 断点恢复流程 -->
+                                <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                                    <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 12px;">断点恢复流程</div>
+                                    <div style="display: flex; flex-direction: column;">
+
+                                        <!-- step 1 -->
+                                        <div style="display: flex; gap: 14px; align-items: flex-start;">
+                                            <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #4f46e5; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">1</div>
+                                            <div style="font-size: 14px; color: #475569; line-height: 1.8; padding-top: 3px;">查询执行记录，校验归属</div>
+                                        </div>
+                                        <div style="margin-left: 13px; width: 2px; height: 18px; background: #c7d2fe;"></div>
+
+                                        <!-- step 2 -->
+                                        <div style="display: flex; gap: 14px; align-items: flex-start;">
+                                            <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #4f46e5; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">2</div>
+                                            <div style="font-size: 14px; color: #475569; line-height: 1.8; padding-top: 3px;">重新解析 DAG，进行拓扑排序</div>
+                                        </div>
+                                        <div style="margin-left: 13px; width: 2px; height: 18px; background: #c7d2fe;"></div>
+
+                                        <!-- step 3 -->
+                                        <div style="display: flex; gap: 14px; align-items: flex-start;">
+                                            <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #4f46e5; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">3</div>
+                                            <div style="font-size: 14px; color: #475569; line-height: 1.8; padding-top: 3px;">加载该执行记录的所有执行快照</div>
+                                        </div>
+                                        <div style="margin-left: 13px; width: 2px; height: 18px; background: #c7d2fe;"></div>
+
+                                        <!-- step 4 -->
+                                        <div style="display: flex; gap: 14px; align-items: flex-start;">
+                                            <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #f59e0b; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">4</div>
+                                            <div>
+                                                <div style="font-size: 14px; color: #475569; line-height: 1.8; padding-top: 3px;">确定从哪个节点恢复开始</div>
+                                                <div style="padding-left: 4px; margin-top: 4px; font-size: 13px; color: #64748b; line-height: 1.7; border-left: 2px solid #e2e8f0; padding-left: 12px;">
+                                                    优先级：请求指定 > 第一个失败的节点 > 第一个未完成的节点
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="margin-left: 13px; width: 2px; height: 18px; background: #c7d2fe;"></div>
+
+                                        <!-- step 5 -->
+                                        <div style="display: flex; gap: 14px; align-items: flex-start;">
+                                            <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #f59e0b; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">5</div>
+                                            <div>
+                                                <div style="font-size: 14px; color: #475569; line-height: 1.8; padding-top: 3px;">构建恢复状态</div>
+                                                <div style="padding-left: 4px; margin-top: 4px; font-size: 13px; color: #64748b; line-height: 1.7; border-left: 2px solid #e2e8f0; padding-left: 12px;">
+                                                    收集恢复起始节点之前所有成功节点的输出<br>
+                                                    恢复条件节点的分支选中信息（跳过的节点）
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="margin-left: 13px; width: 2px; height: 18px; background: #c7d2fe;"></div>
+
+                                        <!-- step 6 -->
+                                        <div style="display: flex; gap: 14px; align-items: flex-start;">
+                                            <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #4f46e5; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">6</div>
+                                            <div style="font-size: 14px; color: #475569; line-height: 1.8; padding-top: 3px;">保存用户修改的变量</div>
+                                        </div>
+                                        <div style="margin-left: 13px; width: 2px; height: 18px; background: #c7d2fe;"></div>
+
+                                        <!-- step 7 -->
+                                        <div style="display: flex; gap: 14px; align-items: flex-start;">
+                                            <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #4f46e5; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">7</div>
+                                            <div style="font-size: 14px; color: #475569; line-height: 1.8; padding-top: 3px;">更新执行记录状态为"运行中"</div>
+                                        </div>
+                                        <div style="margin-left: 13px; width: 2px; height: 18px; background: #c7d2fe;"></div>
+
+                                        <!-- step 8 -->
+                                        <div style="display: flex; gap: 14px; align-items: flex-start;">
+                                            <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #10b981; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">8</div>
+                                            <div style="font-size: 14px; color: #475569; line-height: 1.8; padding-top: 3px;">从恢复状态开始执行</div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <!-- LangGraph 的断点继续实现方式 -->
+                                <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                                    <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 6px;">LangGraph 的断点继续实现方式</div>
+                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
+                                        LangGraph 的断点继续基于内置的 checkpoint 机制，核心是"整体状态快照"而非"逐节点记录"。
+                                    </p>
+                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
+                                        框架内部维护一个全局 AgentState，所有节点共享同一个状态字典。每当一个或一批并行的节点执行完毕，就自动生成一个 checkpoint。恢复时定位到最近的 checkpoint，接着往下跑。
+                                    </p>
+                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                                        之所以用整体快照而不是逐节点存，是因为 LangGraph 的节点间没有"我这个节点的输出属于我"的概念。所有节点的输出都写进同一份全局状态的不同字段。
+                                    </p>
+                                </div>
+
+                                <!-- 对比 -->
+                                <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                                    <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 12px;">对比</div>
+
+                                    <!-- DAG 优势 -->
+                                    <div style="margin-bottom: 14px;">
+                                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                            <span style="width: 8px; height: 8px; border-radius: 50%; background: #059669; flex-shrink: 0;"></span>
+                                            <span style="font-size: 13px; font-weight: 700; color: #059669;">DAG 图方式更优</span>
+                                        </div>
+                                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                                            <div style="padding: 10px 14px; background: #f0fdf4; border-left: 3px solid #059669; border-radius: 0 8px 8px 0; font-size: 13px; color: #475569; line-height: 1.6;">
+                                                <strong style="color: #0f172a;">存储开销</strong> — 只需记录每个节点的输入输出和状态，存储效率高。LangGraph 每次保存完整全局状态快照，存储开销大。
+                                            </div>
+                                            <div style="padding: 10px 14px; background: #f0fdf4; border-left: 3px solid #059669; border-radius: 0 8px 8px 0; font-size: 13px; color: #475569; line-height: 1.6;">
+                                                <strong style="color: #0f172a;">恢复灵活性</strong> — 可精确指定从任意节点开始，恢复前可手动修改节点输出或变量。LangGraph 只能从最近 checkpoint 继续，无法跳过或修改中间节点。
+                                            </div>
+                                            <div style="padding: 10px 14px; background: #f0fdf4; border-left: 3px solid #059669; border-radius: 0 8px 8px 0; font-size: 13px; color: #475569; line-height: 1.6;">
+                                                <strong style="color: #0f172a;">调试粒度</strong> — 清晰看到每个节点的执行历史和输入输出，排查问题直观。LangGraph 只能看到完整状态，单节点调试不如 DAG 图方便。
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- LangGraph 优势 -->
+                                    <div style="margin-bottom: 14px;">
+                                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                            <span style="width: 8px; height: 8px; border-radius: 50%; background: #d97706; flex-shrink: 0;"></span>
+                                            <span style="font-size: 13px; font-weight: 700; color: #d97706;">LangGraph 更优</span>
+                                        </div>
+                                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                                            <div style="padding: 10px 14px; background: #fff7ed; border-left: 3px solid #d97706; border-radius: 0 8px 8px 0; font-size: 13px; color: #475569; line-height: 1.6;">
+                                                <strong style="color: #0f172a;">实现复杂度</strong> — DAG 图需设计多张表、处理节点依赖、收集恢复状态，实现复杂。LangGraph 框架自动维护状态和 checkpoint，实现简单。
+                                            </div>
+                                            <div style="padding: 10px 14px; background: #fff7ed; border-left: 3px solid #d97706; border-radius: 0 8px 8px 0; font-size: 13px; color: #475569; line-height: 1.6;">
+                                                <strong style="color: #0f172a;">状态一致性</strong> — DAG 图手动构建恢复状态时易出错，特别是复杂依赖场景。LangGraph 每次保存完整快照，恢复时直接加载，不易出错。
+                                            </div>
+                                            <div style="padding: 10px 14px; background: #fff7ed; border-left: 3px solid #d97706; border-radius: 0 8px 8px 0; font-size: 13px; color: #475569; line-height: 1.6;">
+                                                <strong style="color: #0f172a;">动态结构支持</strong> — DAG 图拓扑预定义，动态分支和循环处理困难。LangGraph 整体快照天然支持循环、动态分支等复杂结构。
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 中性 -->
+                                    <div>
+                                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                                            <span style="width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; flex-shrink: 0;"></span>
+                                            <span style="font-size: 13px; font-weight: 700; color: #64748b;">各有利弊</span>
+                                        </div>
+                                        <div style="padding: 10px 14px; background: #f8fafc; border: 1px solid #e9edf4; border-radius: 8px; font-size: 13px; color: #475569; line-height: 1.6;">
+                                            <strong style="color: #0f172a;">适用场景</strong> — DAG 图适合流程固定、需要精细控制恢复点、存储资源有限的场景；LangGraph 适合复杂动态工作流、追求开发效率、需要时间旅行调试的场景。
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 12px; align-items: flex-start;" id="visual">
+                        <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #f59e0b; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">3</div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">天然保留执行轨迹（Trace）</div>
+                            <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 10px 0;">
+                                节点分开存储意味着每个节点的输入、输出、状态都被完整保留下来，相当于自动为每一次执行保存了一份完整的 <strong>Trace</strong>。
+                            </p>
+                            <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 10px 0;">
+                                这份 Trace 记录了每一步做了什么、用了什么工具、花了多少 Token、耗时多久、有没有出错。所有数据都在，不需要额外打点或插桩。
+                            </p>
+                            <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                                做测评时，我们可以直接用这份 Trace 来评估流程的执行质量——比如任务完成度、工具调用正确率、异常恢复情况，给整个流程打分。LangGraph 的整体快照方式虽然也能记录状态，但难以精确追溯到单一步骤的执行细节。
+                            </p>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 其他亮点 -->
+            <div class="project-card" id="other">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #fff7ed; color: #d97706;">其他亮点</span>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 24px;">
+                    <!-- 1. Sub Agent -->
+                    <div style="display: flex; gap: 14px; align-items: flex-start;" id="sub-agent">
+                        <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #f59e0b; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">1</div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">Sub Agent 执行机制</div>
+                            <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                                Plan Agent 输出 DAG 后，执行引擎将每个节点分发给专门的 Sub Agent 执行。Sub Agent 只关注自身节点的任务，无需感知全局流程。不同任务可以交给不同角色的 Sub Agent 处理（如调研、代码审查、安全检查等），实现<strong>上下文隔离</strong>与<strong>任务拆分</strong>。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 2. 异常处理 -->
+                    <div style="display: flex; gap: 14px; align-items: flex-start;" id="exception">
+                        <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #f59e0b; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">2</div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">三级异常处理机制</div>
+                            <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
+                                基于模板方法模式，分三层实现超时控制、重试和异常处理，确保 DAG 流程稳定执行。
+                            </p>
+                            <div style="padding: 12px 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 8px;">
+                                <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">顶层 · execute（重试）</div>
+                                <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
+                                    总入口。需要重试时通过循环调用 doExecuteWithTimeout，无需重试则直接执行。重试间隔支持<strong>固定、线性、指数退避</strong>三种策略，根据配置计算等待时间后 sleep 再执行。
+                                </p>
+                            </div>
+                            <div style="padding: 12px 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 8px;">
+                                <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">中层 · doExecuteWithTimeout（超时）</div>
+                                <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
+                                    通过 AsyncUtil 工具类将节点执行放入限时任务中，到达设定时间直接抛出超时异常。
+                                </p>
+                            </div>
+                            <div style="padding: 12px 16px; background: #f8fafc; border-radius: 8px;">
+                                <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 6px;">底层 · doExecute（异常处理）</div>
+                                <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 6px 0;">
+                                    执行节点逻辑，捕获所有异常后统一包装，按配置分三种处理方式：
+                                </p>
+                                <div style="padding-left: 14px; border-left: 2px solid #e2e8f0; font-size: 13px; color: #475569; line-height: 1.7;">
+                                    <div style="margin-bottom: 6px;">
+                                        <strong style="color: #dc2626;">① 直接中断</strong> — 关键节点失败后整体进入失败状态。适用于支付、扣款、核心写操作等。
+                                    </div>
+                                    <div style="margin-bottom: 6px;">
+                                        <strong style="color: #d97706;">② 错误码策略</strong> — 按预配置的错误码或默认值继续执行。适用于辅助查询、非核心推荐等，保证主流程不被阻断。
+                                    </div>
+                                    <div>
+                                        <strong style="color: #4f46e5;">③ 失败条件分支策略</strong> — 引导到异常处理分支，用于告警、补偿、回滚或特定兜底逻辑。
+                                    </div>
+                                </div>
+                            </div>
+                            <p style="font-size: 13px; color: #64748b; line-height: 1.7; margin: 8px 0 0 0;">
+                                所有异常记录日志，通过回调同步状态，保证流程稳定可控。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 3. SSE -->
+                    <div style="display: flex; gap: 14px; align-items: flex-start;" id="sse">
+                        <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #f59e0b; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">3</div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">SSE 实时推送节点进度</div>
+                            <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
+                                在 Controller 层创建 SseEmitter，包装成 SseStreamCallback 传给工作流引擎，再包装成 WorkflowMsgCallback。采用<strong>装饰器模式</strong>增强推送能力，放入 streamQueue 队列缓冲，异步执行避免阻塞引擎。
+                            </p>
+                            <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                                节点执行时触发事件，WorkflowMsgCallback 封装为标准格式（节点开始、结束、流式输出、异常等）放入队列，后台线程消费并调用 send() 推送到前端，实现进度实时展示。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 4. 条件边分支 -->
+                    <div style="display: flex; gap: 14px; align-items: flex-start;" id="branch">
+                        <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #f59e0b; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">4</div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">条件边分支策略（设计）</div>
+                            <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
+                                Plan Agent 可生成多个分支备选 DAG，执行时根据节点输出选择对应分支。实现方式是在每条边上加 <strong>condition</strong> 字段——节点执行完成后，只有匹配条件的边被"激活"，仅减少激活路径上节点的入度。
+                            </p>
+                            <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                                未选中分支的节点永远不会入度为 0，自然不会被调度执行。通过这种 <strong>级联裁剪</strong> 策略，可以在不修改 KAHN 调度器的情况下原生支持分支与选择。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Plan 优化 -->
+            <div class="project-card" id="plan-opt">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f0fdf4; color: #059669;">Plan 优化</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">如何优化 Plan Agent 的 DAG 构建能力</span>
+                </div>
+
+                <!-- 问题分析 -->
+                <div style="margin-bottom: 20px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">问题分析</div>
+                    <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: #475569; line-height: 1.8;">
+                        <div style="display: flex; gap: 10px; align-items: baseline;">
+                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #dc2626; margin-top: 9px;"></span>
+                            <span><strong>任务逻辑错误</strong> — 遗漏步骤、颠倒步骤、无效步骤</span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: baseline;">
+                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #dc2626; margin-top: 9px;"></span>
+                            <span><strong>DAG 逻辑错误</strong> — 环路、孤立节点、汇聚分支混乱</span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: baseline;">
+                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #dc2626; margin-top: 9px;"></span>
+                            <span><strong>输出格式不正确</strong></span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: baseline;">
+                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #dc2626; margin-top: 9px;"></span>
+                            <span><strong>任务颗粒度失衡</strong> — 节点太大或太小，影响并行度和可复用性</span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: baseline;">
+                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #dc2626; margin-top: 9px;"></span>
+                            <span><strong>并行度不够</strong> — 未能充分利用 DAG 的并发能力</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 优化手段 -->
+                <div style="margin-bottom: 20px; padding: 20px 24px; background: #f8fafc; border-radius: 14px; border: 1px solid #e9edf4;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">优化手段</div>
+
+                    <div style="display: flex; flex-direction: column; gap: 14px; font-size: 14px; color: #475569; line-height: 1.8;">
+                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
+                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">Prompt 层</div>
+                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
+                                <li><strong>强制输出模板</strong> — JsonSchema 约束输出格式</li>
+                                <li><strong>拆解规则</strong> — 检索/工具操作必须在生成类节点之前；独立无依赖任务拆为并行节点</li>
+                                <li><strong>生成规则</strong> — 不存在循环依赖；所有边指向已定义节点；用户需求全部覆盖</li>
+                                <li><strong>颗粒度规则</strong> — 单次工具调用 = 1 个节点；单一独立目标 = 独立节点；禁止跨工具、跨目标合并节点</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
+                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">后置校验层</div>
+                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
+                                <li>环路检测</li>
+                                <li>引用合法性检测</li>
+                                <li>步骤完整性检测</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
+                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">FewShot 样本</div>
+                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
+                                <li><strong>标准样本</strong> — 基础串行流程、多并行分支、带汇聚节点复杂拓扑</li>
+                                <li><strong>反例样本</strong> — 展示错误 DAG（反向依赖、环路反例）+ 修正后的正确 DAG，让 Plan 规避常见误区</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
+                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">分级 Plan（解决长任务失效问题）</div>
+                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
+                                <li>针对长任务先进行粗任务划分，再调用子 Plan 单独生成 DAG</li>
+                                <li>顶层 DAG 串联各个子流程，避免单次生成超大图导致输出截断、逻辑混乱</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
+                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">双 Agent 机制</div>
+                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
+                                <li>引入评审 Agent，独立评审流程逻辑、依赖、环路、需求匹配度，输出修改意见</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
+                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">迭代数据闭环优化（长期持续优化）</div>
+                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
+                                <li>采集所有校验失败、执行失败的错误 DAG 和用户原始需求</li>
+                                <li>自动归类错误类型：环路、步骤遗漏、顺序颠倒、JSON 格式错误</li>
+                                <li>将高频错误案例自动加入 FewShot 样本库，持续迭代 Plan 能力</li>
+                                <li>基于 LLM-as-Judge 量化 DAG 匹配得分，低分样本自动回流训练提示词</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 测试维度 -->
+                <div>
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">测试维度</div>
+                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 12px 0;">
+                        测试的主要方向放在对比优化上，从以下维度评估：
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: #475569; line-height: 1.8;">
+                        <div style="display: flex; gap: 10px; align-items: baseline;">
+                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #4f46e5; margin-top: 9px;"></span>
+                            <span><strong>Plan 能力</strong> — 任务分解、DAG 图构建（无环）、冗余步骤、多步连贯性、并发性</span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: baseline;">
+                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #4f46e5; margin-top: 9px;"></span>
+                            <span><strong>任务执行确定性</strong> — 重试次数、稳定性指数</span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: baseline;">
+                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #4f46e5; margin-top: 9px;"></span>
+                            <span><strong>成本效率</strong> — 总执行时间、Token 消耗量</span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: baseline;">
+                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #4f46e5; margin-top: 9px;"></span>
+                            <span><strong>无效 ReAct 循环占比下降</strong></span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: baseline;">
+                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #4f46e5; margin-top: 9px;"></span>
+                            <span><strong>故障场景流程完整执行率</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. 测评结果 -->
+            <div class="project-card" id="eval">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f5f3ff; color: #7c3aed;">测评结果</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">Agent 测评数据</span>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">📊 结果 — 任务完成率</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">97%</div>
+                            <div style="font-size: 12px; color: #64748b;">DAG 图构建正确率</div>
+                            <div style="font-size: 11px; color: #94a3b8;">含环路检测</div>
+                        </div>
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">94%</div>
+                            <div style="font-size: 12px; color: #64748b;">子 Agent 任务完成率</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">⚡ 过程 — 效率优化</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">-14%</div>
+                            <div style="font-size: 12px; color: #64748b;">Token 消耗量</div>
+                        </div>
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">-23%</div>
+                            <div style="font-size: 12px; color: #64748b;">并行执行时间</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">🔒 安全</div>
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
+                            <div style="font-size: 13px; color: #64748b;">相关内容已放到 MyClaw 项目中</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <footer style="margin-left: 0;">
+    <footer>
         &copy; 2026 程愚瀚 · Built with &hearts;
     </footer>
 
+    <script src="../资源/js/main.js"></script>
+    <script>
+        // 项目页也支持 project-card 和 sidebar-sub 的滚动高亮
+        document.addEventListener('DOMContentLoaded', function() {
+            function updateProjectNav() {
+                var cards = document.querySelectorAll('.project-card[id], section[id]');
+                var subTargets = document.querySelectorAll('[id="kahn"],[id="rollback"],[id="visual"],[id="sub-agent"],[id="exception"],[id="sse"],[id="branch"]');
+                var navLinks = document.querySelectorAll('.sidebar nav a, .sidebar-sub');
+                var current = '';
+                cards.forEach(function(c) {
+                    var top = c.offsetTop - 130;
+                    var bottom = top + c.offsetHeight;
+                    if (window.scrollY >= top && window.scrollY < bottom) {
+                        current = c.getAttribute('id');
+                    }
+                });
+                subTargets.forEach(function(s) {
+                    var top = s.offsetTop - 130;
+                    var bottom = top + s.offsetHeight;
+                    if (window.scrollY >= top && window.scrollY < bottom) {
+                        current = s.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(function(link) {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+            window.addEventListener('scroll', updateProjectNav);
+            window.addEventListener('load', updateProjectNav);
+            updateProjectNav();
+        });
+    </script>
 </body>
 </html>
