@@ -51,211 +51,141 @@
                     <span style="font-size: 16px; font-weight: 700; color: #0f172a;">全链路优化</span>
                 </div>
 
-                <!-- ① 文本分块优化 -->
-                <div class="flow-step" id="chunking">
-                    <div class="flow-step-num" style="background: #4f46e5; color: #fff;">1</div>
-                    <div>
-                        <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">文本分块优化</div>
+                <div style="display: flex; flex-direction: column; gap: 24px;">
 
-                        <div style="padding: 12px 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 10px;">
-                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">为什么需要分块</div>
-                            <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
-                                向量模型有长度限制、长文本语义太杂检索不准、大模型有窗口限制。
-                            </p>
+                    <!-- ===== 1. 召回率优化（最大块） ===== -->
+                    <div id="recall-opt">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+                            <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;">召回率优化</span>
+                            <span style="font-size: 15px; font-weight: 700; color: #0f172a;">提升召回率（68% → 93%）</span>
                         </div>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
 
-                        <div style="padding: 12px 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 10px;">
-                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">两级四层语义分块策略</div>
-                            <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 8px 0;">
-                                <strong>第一层父块：</strong>流式解析，达到 parentChunkSize（1MB）自动切割，避免整个文章加载到内存导致 OOM。
-                            </p>
-                            <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
-                                <strong>第二层子块（四级语义切割）：</strong>将父块按 chunkSize 512 Token 分割为子切片，优先按段落（\n\n）→ 过长按句子 → 再长按词语（HanLP 分词）→ 兜底按字符分割，全程保证语义完整性。
-                            </p>
-                        </div>
+                            <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                                <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 6px;">文本分块策略</div>
+                                <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 6px 0;">
+                                    两级四层语义分块：第一层父块流式解析（1MB 自动切割，避免 OOM），第二层子块按 512 Token 四级切割（段落 → 句子 → 词语 → 字符），全程保证语义完整性。引入重叠分块机制，保留上下文冗余。
+                                </p>
+                                <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
+                                    代码文件使用 JavaParser 做 AST 分析，按类/方法提取，保持语义完整性。同时提取五种关系（extends / implements / imports / contains / calls）构建关系图谱。
+                                </p>
+                            </div>
 
-                        <div style="padding: 12px 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 10px;">
-                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">重叠分块机制</div>
-                            <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
-                                每个分块前后保留上下文冗余，Embedding 模型处理时不会遗漏边界关键信息，召回率提升明显。
-                            </p>
-                        </div>
+                            <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                                <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 6px;">问题改写策略</div>
+                                <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
+                                    五种策略分层组合：简单改写（消除代词、补充隐含信息）、问题拆解（多问题分开查询）、HyDE（LLM 生成假设答案后检索）、多角度扩写（3-5 种表述分别检索后合并去重）、后退提问（先检索背景知识再细化）。
+                                </p>
+                            </div>
 
-                        <div style="padding: 12px 16px; background: #f8fafc; border-radius: 8px;">
-                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">代码文件分块（AST 分析）</div>
-                            <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 6px 0;">
-                                使用 JavaParser 做 AST 分析，把源码解析成语法树，提取类和方法的起止行号，再根据行号提取对应文本。类 chunk 只取前 5 行签名，保持语义完整性。
-                            </p>
-                            <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
-                                同时通过 AST 提取五种关系（extends / implements / imports / contains / calls）构建关系图谱，存在 MySQL 中，支持 Agent 执行代码任务时查询。
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="flow-line" style="background: #c7d2fe;"></div>
+                            <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                                <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 6px;">混合检索流程</div>
+                                <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+                                    <div style="margin-bottom: 4px;">1. 问题改写（不同问题不同策略）</div>
+                                    <div style="margin-bottom: 4px;">2. 调用 Embedding 模型转 2048 维查询向量 + IK 分词</div>
+                                    <div style="margin-bottom: 4px;">3. 向量检索（knn 余弦相似度），召回候选池</div>
+                                    <div style="margin-bottom: 4px;">4. BM25 关键词检索，计算精确相关性分数</div>
+                                    <div style="margin-bottom: 4px;">5. RRF 融合排序，合并两路结果</div>
+                                    <div style="margin-bottom: 4px;">6. ReRank 精细排序，取前 k 篇</div>
+                                </div>
+                            </div>
 
-                <!-- ② 检索优化 -->
-                <div class="flow-step" id="retrieval">
-                    <div class="flow-step-num" style="background: #4f46e5; color: #fff;">2</div>
-                    <div>
-                        <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">检索优化</div>
+                            <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                                <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 6px;">文件上传流程</div>
+                                <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 6px 0;">
+                                    前端按 5MB 分片上传 + MD5 校验。Redis Bitmap 防重复。所有分片上传完成后后端校验完整性，MinIO 合并，RocketMQ 异步触发解析分块向量化。
+                                </p>
+                                <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
+                                    异常处理：幂等设计防重复上传、断点续传、分片重试、MD5 校验、定时任务核对 MinIO 与 MySQL 状态保证最终一致。
+                                </p>
+                            </div>
 
-                        <div style="padding: 12px 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 10px;">
-                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">文件上传流程</div>
-                            <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 6px 0;">
-                                前端按 5MB 分片上传，同时计算文件 MD5。上传前通过 Redis Bitmap 校验防重复。所有分片上传承诺完成后，后端校验分片完整性，调用 MinIO 合并，更新 MySQL 状态为已完成，发送 RocketMQ 消息异步触发解析、分块、向量化。
-                            </p>
-                            <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
-                                异常处理：幂等设计防重复、断点续传、分片重试、MD5 校验完整性、定时任务核对 MinIO 与 MySQL 状态保证最终一致。
-                            </p>
-                        </div>
+                            <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                                <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">技术原理</div>
 
-                        <div style="padding: 12px 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 10px;">
-                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">问题改写策略</div>
-                            <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
-                                五种策略分层组合：<strong>简单改写</strong>（消除代词、补充隐含信息）、<strong>问题拆解</strong>（多问题分开查）、<strong>HyDE</strong>（LLM 生成假设答案后检索）、<strong>多角度扩写</strong>（3-5 种表述分别检索后合并去重）、<strong>后退提问</strong>（抽象到通用原理层面再检索）。
-                            </p>
-                        </div>
-
-                        <div style="padding: 12px 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 10px;">
-                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">混合检索流程</div>
-                            <div style="font-size: 13px; color: #475569; line-height: 1.7;">
-                                <div style="margin-bottom: 4px;">1. 问题改写（不同问题不同策略）</div>
-                                <div style="margin-bottom: 4px;">2. 调用 Embedding 模型转 2048 维查询向量</div>
-                                <div style="margin-bottom: 4px;">3. IK 分词器对问题进行中文分词</div>
-                                <div style="margin-bottom: 4px;">4. 向量检索（knn 查询，余弦相似度），召回候选池</div>
-                                <div style="margin-bottom: 4px;">5. BM25 关键词检索，计算精确相关性分数</div>
-                                <div style="margin-bottom: 4px;">6. RRF 融合排序，合并两路结果</div>
-                                <div style="margin-bottom: 4px;">7. ReRank 精细排序，取前 k 篇</div>
+                                <div style="margin-bottom: 10px;">
+                                    <div style="font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 4px;">向量检索原理</div>
+                                    <p style="font-size: 12px; color: #64748b; line-height: 1.7; margin: 0;">
+                                        余弦相似度（只看方向）、欧式距离（看距离）、点积（方向+长度，需归一化）。长度代表信息量，角度代表语义。
+                                    </p>
+                                </div>
+                                <div style="margin-bottom: 10px;">
+                                    <div style="font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 4px;">BM25 原理</div>
+                                    <p style="font-size: 12px; color: #64748b; line-height: 1.7; margin: 0;">
+                                        ES 默认关键词算法，k1 控制词频影响，b 控制长文档惩罚。
+                                    </p>
+                                </div>
+                                <div style="margin-bottom: 10px;">
+                                    <div style="font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 4px;">RRF 重排序</div>
+                                    <p style="font-size: 12px; color: #64748b; line-height: 1.7; margin: 0;">
+                                        倒数打分 1/(k+rank)，忽略分数只看排名。k=60 平滑常数。
+                                    </p>
+                                </div>
+                                <div style="margin-bottom: 10px;">
+                                    <div style="font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 4px;">ReRank 原理</div>
+                                    <p style="font-size: 12px; color: #64748b; line-height: 1.7; margin: 0;">
+                                        Embedding（Bi-Encoder）搜广度，Rerank（Cross-Encoder）做深度交互重排。
+                                    </p>
+                                </div>
+                                <div>
+                                    <div style="font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 4px;">选型</div>
+                                    <p style="font-size: 12px; color: #64748b; line-height: 1.7; margin: 0;">
+                                        Spring AI 框架 + 阿里 text-embedding-v4（MTEB 前三）+ ES / Milvus 存储 + BGE-Rerank / Cohere 重排。
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="flow-line" style="background: #c7d2fe;"></div>
 
-                <!-- ③ 问题理解优化 -->
-                <div class="flow-step" id="query-opt">
-                    <div class="flow-step-num" style="background: #f59e0b; color: #fff;">3</div>
-                    <div>
-                        <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">问题理解优化</div>
-
-                        <div style="padding: 12px 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 10px;">
-                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">智能路由</div>
-                            <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
-                                通过关键词/正则匹配对问题分类，简单问题（问候、数学等）直接回答，跳过向量检索，提升速度并降低 Embedding API 调用成本。
-                            </p>
+                    <!-- ===== 2. 幻觉优化 ===== -->
+                    <div id="halluc-opt">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+                            <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #ecfdf5; color: #059669;">幻觉优化</span>
+                            <span style="font-size: 15px; font-weight: 700; color: #0f172a;">降低幻觉率（18% → 5%）</span>
                         </div>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
 
-                        <div style="padding: 12px 16px; background: #f8fafc; border-radius: 8px;">
-                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">多跳推理</div>
-                            <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
-                                针对复杂问题分解为子查询链，每步基于前序结论动态构建新查询。例如"程愚瀚和鲁迅的关系"→ 先查程愚瀚（电子科大学生）→ 再查电子科大的人才 → 关联到鲁迅。弥补向量 RAG 在全局性问题和多跳推理上的短板。
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="flow-line" style="background: #c7d2fe;"></div>
+                            <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                                <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 6px;">幻觉控制措施</div>
+                                <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
+                                    <strong>Prompt 优化</strong> + <strong>结构化输出约束</strong> + <strong>低分拒答</strong> + <strong>幻觉检测机制</strong>，确保生成内容忠实于检索结果。
+                                </p>
+                            </div>
 
-                <!-- ④ 生成优化 -->
-                <div class="flow-step" id="generation">
-                    <div class="flow-step-num" style="background: #f59e0b; color: #fff;">4</div>
-                    <div>
-                        <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">生成优化</div>
-
-                        <div style="padding: 12px 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 10px;">
-                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">幻觉控制</div>
-                            <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
-                                <strong>Prompt 优化</strong> + <strong>结构化输出约束</strong> + <strong>低分拒答</strong> + <strong>幻觉检测机制</strong>，确保生成内容忠实于检索结果。
-                            </p>
-                        </div>
-
-                        <div style="padding: 12px 16px; background: #f8fafc; border-radius: 8px;">
-                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">问答流程</div>
-                            <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 6px 0;">
-                                用户提问后，前置决策判断是否需要检索。需要则执行问题改写 → 向量检索 → 低分时触发联网搜索兜底。送入大模型前自动抽取偏好信息、拉取历史上下文、记忆压缩。
-                            </p>
-                            <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
-                                全链路加入双层内容审核：生成前风控拦截，生成后通过 RAGAS 校验忠实性，综合判定是否需要多轮迭代补全重生成。
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- ====== 技术原理与选型 ====== -->
-            <div class="project-card" id="principles">
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f5f3ff; color: #7c3aed;">技术原理</span>
-                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">核心技术原理与选型</span>
-                </div>
-
-                <div style="display: flex; flex-direction: column; gap: 14px;">
-
-                    <!-- 向量检索 -->
-                    <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
-                        <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">向量检索原理</div>
-                        <div style="font-size: 13px; color: #475569; line-height: 1.7;">
-                            <div style="margin-bottom: 6px;">长度代表内容的多少、信息量的大小；角度代表语义。</div>
-                            <div style="margin-bottom: 6px;"><strong>余弦相似度：</strong>计算两个向量的夹角，夹角越小越相似。只看方向。</div>
-                            <div style="margin-bottom: 6px;"><strong>欧式距离：</strong>计算两个向量的距离，距离越小越近。</div>
-                            <div style="margin-bottom: 6px;"><strong>点积：</strong>计算方向一致性与长度的乘积（l₁·l₂·cosθ），结果越大越相似。既看方向又看长度，但需要归一化，否则长度差异会掩盖角度。</div>
+                            <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                                <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 6px;">问答流程</div>
+                                <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 6px 0;">
+                                    用户提问 → 前置决策 → 问题改写 → 检索 → 低分时联网搜索兜底 → 记忆压缩 → 生成。
+                                </p>
+                                <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
+                                    全链路双层内容审核：生成前风控拦截，生成后 RAGAS 校验忠实性，必要时多轮迭代补全。
+                                </p>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- BM25 -->
-                    <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
-                        <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">BM25 原理</div>
-                        <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 6px 0;">
-                            ES 默认的关键词相关性算法，根据词频、文档长度计算匹配度。通过两个参数控制：
-                        </p>
-                        <div style="font-size: 13px; color: #475569; line-height: 1.7;">
-                            <div><strong>k1：</strong>越大，关键词频率对匹配度影响越大</div>
-                            <div><strong>b：</strong>越大，对长文档的惩罚越重（相同词语出现次数，文章越长匹配度越低）</div>
+                    <!-- ===== 3. 智能路由 ===== -->
+                    <div id="router">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+                            <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #fff7ed; color: #d97706;">智能路由</span>
+                            <span style="font-size: 15px; font-weight: 700; color: #0f172a;">简单问题跳过检索</span>
                         </div>
-                    </div>
-
-                    <!-- RRF -->
-                    <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
-                        <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">RRF 重排序原理</div>
-                        <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 6px 0;">
-                            在多路排序列表中忽略不同排序方式的分数，只看排名。好处是兼容不同打分体系，缺点是完全忽略分数差距（如相关性 100 和 1 的文档在排名上差距不大）。
-                        </p>
-                        <div style="font-size: 13px; color: #475569; line-height: 1.7;">
-                            <div style="margin-bottom: 4px;">• 倒数打分：每个列表里按位置算分 1/(k+rank)</div>
-                            <div style="margin-bottom: 4px;">• 分数累加：同一文档在所有列表中得分求和</div>
-                            <div style="margin-bottom: 4px;">• 重排输出：按总分排序得融合结果</div>
-                            <div><strong>k：</strong>平滑常数，默认 60。k 越大越平均，重"出现次数"；k 越小第一名优势越强，适合强头部场景。</div>
-                        </div>
-                    </div>
-
-                    <!-- ReRank -->
-                    <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
-                        <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">ReRank 原理</div>
-                        <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 6px 0;">
-                            <strong>Embedding 模型（Bi-Encoder）：</strong>分别计算 Query 和文档的向量后对比相似度。速度快、可全库搜索，但只做了表面匹配，没有深度交互。
-                        </p>
-                        <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 6px 0;">
-                            <strong>Rerank 模型（Cross-Encoder）：</strong>把 Query 和文档拼接在一起直接分析词间关系，输出 0~1 相关性分数。更深层理解，但速度慢、开销大。
-                        </p>
                         <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
-                            先 Embedding 搜广度，再 Rerank 做精细化筛选。
+                            通过关键词/正则匹配对问题分类，简单问题（问候、数学等）直接回答，跳过向量检索，提升速度并降低 Embedding API 调用成本。
                         </p>
                     </div>
 
-                    <!-- 选型 -->
-                    <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
-                        <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">技术选型</div>
-                        <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 6px 0;">
-                            遵循不要钱、能快速跑起来为第一原则。
-                        </p>
-                        <div style="font-size: 13px; color: #475569; line-height: 1.7;">
-                            <div style="margin-bottom: 4px;"><strong>Embedding 框架：</strong>Spring AI 的 EmbeddingModel，适配主流向量模型，配置即用</div>
-                            <div style="margin-bottom: 4px;"><strong>向量模型：</strong>阿里 text-embedding-v4（MTEB 评测第三，国内使用首选）</div>
-                            <div style="margin-bottom: 4px;"><strong>向量模型（免费）：</strong>豆包</div>
-                            <div style="margin-bottom: 4px;"><strong>存储检索：</strong>Elasticsearch（最早使用）、Milvus / Pinecone 等专业向量数据库</div>
-                            <div><strong>Rerank：</strong>BGE-Rerank / Cohere Rerank 等</div>
+                    <!-- ===== 4. 多跳推理 ===== -->
+                    <div id="multi-hop">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+                            <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f5f3ff; color: #7c3aed;">多跳推理</span>
+                            <span style="font-size: 15px; font-weight: 700; color: #0f172a;">弥补全局性问题短板</span>
                         </div>
+                        <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
+                            针对复杂问题分解为子查询链，每步基于前序结论动态构建新查询。例如"程愚瀚和鲁迅的关系"→ 先查程愚瀚（电子科大学生）→ 再查电子科大的人才 → 关联到鲁迅。弥补向量 RAG 在全局性问题和多跳推理上的短板。
+                        </p>
                     </div>
+
                 </div>
             </div>
 
