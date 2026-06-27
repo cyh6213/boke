@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>企业知识库 Agentic RAG | 程愚瀚</title>
+    <link rel="stylesheet" href="../资源/css/style.css" />
+    <style>
+        .project-list { max-width: 960px; padding: 120px 60px 80px; }
+        .sidebar-sub { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #64748b; text-decoration: none; transition: all 0.2s; }
+        .sidebar-sub:hover { background: #f1f4f9; color: #0f172a; }
+        .sidebar-sub.active { background: #eef2ff; color: #4f46e5; }
+        .sidebar-sub .dot { width: 4px; height: 4px; border-radius: 50%; background: #cbd5e1; flex-shrink: 0; transition: background 0.2s; }
+        .sidebar-sub:hover .dot { background: #4f46e5; }
+        .sidebar-sub.active .dot { background: #4f46e5; }
+        .sidebar-sub-group { margin: 2px 0 6px 20px; border-left: 2px solid #e2e8f0; padding-left: 6px; }
+        [id] { scroll-margin-top: 120px; }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <a href="../" class="nav-brand">程愚瀚</a>
+        <div class="nav-links">
+            <a href="../">首页</a>
+            <a href="../文章/">文章</a>
+            <a href="./" class="active">项目</a>
+        </div>
+    </nav>
+
+    <div class="main" style="margin-left: 0;">
+        <div class="project-list">
+            <div class="section-label">Project 01</div>
+            <h2 class="section-title">企业知识库 Agentic RAG</h2>
+
+            <!-- 1. 项目来源 -->
+            <div class="project-card">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;">项目来源</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">为什么做这个项目</span>
+                </div>
+            </div>
+
+            <!-- 2. 核心优化 -->
+            <div class="project-card">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #ecfdf5; color: #059669;">核心优化</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">全链路优化</span>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">1. 召回率优化 — 提升召回率</div>
+                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                        为了提升召回率，对整条流水线进行了全链路优化：<strong>上传阶段</strong>采用两级四层分片策略；<strong>检索阶段</strong>采用问题改写 + 双路召回（向量 + 关键词）；<strong>排序阶段</strong>采用 RNN 融合策略 + ReRank 重排。经过这些优化，Recall@5 从 <strong>68%</strong> 提升至 <strong>93%</strong>。
+                    </p>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">2. 幻觉优化 — 降低幻觉率</div>
+                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                        为了降低生成阶段的幻觉率，在生成环节进行了多项优化：<strong>Prompt 优化</strong>、<strong>结构化输出</strong>约束、<strong>低分拒答</strong>、<strong>幻觉检测</strong>机制，确保生成内容忠实于检索结果。
+                    </p>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">3. 智能路由 — 简单问题跳过检索</div>
+                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                        为了提升召回速度并降低 Embedding API 调用成本，通过<strong>智能路由</strong>对问题分类：简单问题（问候/数学等）通过关键词/正则匹配直接回答，跳过向量检索，提升召回速度并减少 API 调用。
+                    </p>
+                </div>
+
+                <div>
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">4. 多跳推理 — 弥补向量 RAG 的全局性问题短板</div>
+                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                        针对复杂问题（如多跳推理查询），将其分解为<strong>子查询链</strong>，每步基于前序结论动态构建新查询。例如"程愚瀚和鲁迅的关系"→ 先查程愚瀚（电子科大学生）→ 再查电子科大的人才 → 关联到鲁迅。这一策略弥补了向量 RAG 相较于 GraphRAG 在<strong>全局性问题、多跳推理</strong>等需要逻辑链条的复杂问题上的短板。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 3. 其他优化 -->
+            <div class="project-card">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #fff7ed; color: #d97706;">其他优化</span>
+                </div>
+                <div style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                    <div style="margin-bottom: 16px;">
+                        <div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">上传优化</div>
+                        <div>基于 Redis Bitmap 实现并发分片上传与状态追踪，结合 RocketMQ 异步解析解耦，大文件上传响应速度提升 <strong>65%</strong>。</div>
+                    </div>
+                    <div style="margin-bottom: 16px;">
+                        <div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">权限控制</div>
+                        <div>基于 RBAC + OrgTag + Spring Security + JWT 实现多级权限控制与双令牌认证，支持令牌无感刷新，严格确保用户仅能检索到自身权限范围内的文档。</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">MCP</div>
+                        <div>实现 MCP Server，支持外部 AI Agent 通过标准化协议接入查询知识库，打破工具间的数据孤岛。</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. 测评结果 -->
+            <div class="project-card">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f5f3ff; color: #7c3aed;">测评结果</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">RAG 测评数据</span>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">🔍 检索阶段</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">93%</div>
+                            <div style="font-size: 12px; color: #64748b;">Recall@5</div>
+                            <div style="font-size: 11px; color: #94a3b8;">优化前 68%</div>
+                        </div>
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">97%</div>
+                            <div style="font-size: 12px; color: #64748b;">Precision@5</div>
+                            <div style="font-size: 11px; color: #94a3b8;">优化前 71%</div>
+                        </div>
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">0.91</div>
+                            <div style="font-size: 12px; color: #64748b;">MRR@K</div>
+                            <div style="font-size: 11px; color: #94a3b8;">优化前 0.62</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">📝 生成阶段</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">96%</div>
+                            <div style="font-size: 12px; color: #64748b;">忠实度</div>
+                        </div>
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">5%</div>
+                            <div style="font-size: 12px; color: #64748b;">幻觉率</div>
+                            <div style="font-size: 11px; color: #94a3b8;">优化前 18%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer style="margin-left: 0;">
+        &copy; 2026 程愚瀚 · Built with &hearts;
+    </footer>
+
+</body>
+</html>
