@@ -306,40 +306,83 @@
                     <span style="font-size: 16px; font-weight: 700; color: #0f172a;">RAG 测评数据</span>
                 </div>
 
+                <!-- 测评数据来源 -->
+                <div style="margin-bottom: 20px; padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                    <div style="font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">📦 测评数据来源</div>
+                    <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+                        检索阶段：基于 <strong>C-MTEB / T2Retrieval</strong> 数据集，测试数据库为 Milvus，原始语料库约 12w 条，分块后约 36w 条，使用前 2000 条 query 测试。核心指标为 <strong>recall_cap@5</strong>（cap=5）。<br><br>
+                        生成阶段：基于 <strong>RAGAS 框架</strong> + <strong>LLM-as-Judge</strong> 模式，对 200 条问答对自动评分，计算忠实度、答案相关性等指标。
+                    </div>
+                </div>
+
+                <!-- 消融实验 -->
                 <div style="margin-bottom: 20px;">
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">🔍 检索阶段</div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px;">
-                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
-                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">93%</div>
-                            <div style="font-size: 12px; color: #64748b;">Recall@5</div>
-                            <div style="font-size: 11px; color: #94a3b8;">优化前 68%</div>
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">📊 消融实验 — recall_cap@5 逐级提升</div>
+                    <div style="background: #f8f9fc; border-radius: 10px; overflow: hidden; font-size: 13px;">
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 10px 16px; background: #eef2ff; font-weight: 600; color: #4f46e5; border-bottom: 1px solid #e2e8f0;">
+                            <div>方案</div>
+                            <div style="text-align: center;">recall_cap@5</div>
+                            <div style="text-align: right;">提升</div>
                         </div>
-                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
-                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">97%</div>
-                            <div style="font-size: 12px; color: #64748b;">Precision@5</div>
-                            <div style="font-size: 11px; color: #94a3b8;">优化前 71%</div>
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
+                            <div>dense 纯向量检索（基线）</div>
+                            <div style="text-align: center;"><strong>68.38%</strong></div>
+                            <div style="text-align: right; color: #94a3b8;">—</div>
                         </div>
-                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
-                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">0.91</div>
-                            <div style="font-size: 12px; color: #64748b;">MRR@K</div>
-                            <div style="font-size: 11px; color: #94a3b8;">优化前 0.62</div>
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
+                            <div>+ RRF 混合检索（dense + BM25）</div>
+                            <div style="text-align: center;"><strong>75.66%</strong></div>
+                            <div style="text-align: right; color: #94a3b8;">+7.28pp</div>
                         </div>
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
+                            <div>+ BM25 升级为 sparse 向量</div>
+                            <div style="text-align: center;"><strong>76.66%</strong></div>
+                            <div style="text-align: right; color: #94a3b8;">+1.00pp</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 9px 16px; background: #eef2ff; font-weight: 700; color: #4f46e5;">
+                            <div>+ Rerank 重排（候选池 50）</div>
+                            <div style="text-align: center;"><strong>81.2%</strong></div>
+                            <div style="text-align: right;">+4.54pp</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 6px; font-size: 12px; color: #94a3b8; line-height: 1.6;">
+                        ⚡ 数据来源：<a href="文章/posts/RAG检索优化.html" target="_blank" style="color: #4f46e5;">RAG检索优化：从 68% 到 81.2%</a>。本系统额外包含问题改写（5 种策略）、重叠分块等优化，实际数值可能略高于表中基准。
                     </div>
                 </div>
 
                 <div>
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">📝 生成阶段</div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
-                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">96%</div>
-                            <div style="font-size: 12px; color: #64748b;">忠实度</div>
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">📝 生成阶段 — 忠实度与答案相关性消融实验</div>
+                    <div style="background: #f8f9fc; border-radius: 10px; overflow: hidden; font-size: 13px;">
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 1fr; padding: 10px 16px; background: #eef2ff; font-weight: 600; color: #4f46e5; border-bottom: 1px solid #e2e8f0;">
+                            <div>优化方案</div>
+                            <div style="text-align: center;">忠实度</div>
+                            <div style="text-align: center;">答案相关性</div>
                         </div>
-                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
-                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">5%</div>
-                            <div style="font-size: 12px; color: #64748b;">幻觉率</div>
-                            <div style="font-size: 11px; color: #94a3b8;">优化前 18%</div>
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 1fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
+                            <div>无优化（基线）</div>
+                            <div style="text-align: center;"><strong>72%</strong></div>
+                            <div style="text-align: center;">65%</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 1fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
+                            <div>+ Prompt 约束（让他没有就直说不知道）</div>
+                            <div style="text-align: center;"><strong>82%</strong></div>
+                            <div style="text-align: center;">70%</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 1fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
+                            <div>+ 低分拒答（检索分数过低直接拒绝回答）</div>
+                            <div style="text-align: center;"><strong>88%</strong></div>
+                            <div style="text-align: center;">76%</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 1fr; padding: 9px 16px; background: #eef2ff; font-weight: 700; color: #4f46e5;">
+                            <div>+ 结构化输出（每个结论标注引用来源）</div>
+                            <div style="text-align: center;"><strong>96%</strong></div>
+                            <div style="text-align: center;">84%</div>
                         </div>
                     </div>
+                </div>
+
+                <div style="margin-top: 12px; font-size: 12px; color: #94a3b8; text-align: right;">
+                    <a href="项目/rag.html" style="color: #4f46e5; text-decoration: none;">查看完整项目详情 →</a>
                 </div>
             </div>
 
@@ -476,6 +519,9 @@
                             <div style="font-size: 12px; color: #64748b;">子 Agent 任务完成率</div>
                         </div>
                     </div>
+                    <div style="margin-top: 8px; font-size: 12px; color: #94a3b8; line-height: 1.6;">
+                        该项目为早期项目，Plan 能力为一次性输出 DAG 图后固定执行，未做逐步优化消融实验，因此无法展示每步优化对 Plan 正确率的提升过程。
+                    </div>
                 </div>
 
                 <div style="margin-bottom: 20px;">
@@ -484,10 +530,12 @@
                         <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
                             <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">-14%</div>
                             <div style="font-size: 12px; color: #64748b;">Token 消耗量</div>
+                            <div style="font-size: 11px; color: #94a3b8;">相比串行执行</div>
                         </div>
                         <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
                             <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">-23%</div>
                             <div style="font-size: 12px; color: #64748b;">并行执行时间</div>
+                            <div style="font-size: 11px; color: #94a3b8;">相比串行执行</div>
                         </div>
                     </div>
                 </div>
@@ -616,7 +664,6 @@
                 <ul style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0; padding-left: 20px;">
                     <li><strong>权限控制与人工审批：</strong>采用策略防护 + 人工审批（HITL）双层保障机制，Agent 自动执行命令前先经风险策略拦截，高危操作触发人工审批流程，兼顾执行效率与系统安全。</li>
                     <li><strong>双 Agent 协作架构：</strong>设计 Worker + Chatter 双 Agent 协作模式，Worker 后台独立推进剧情与生活线，Chatter 负责与用户对话交互，实现记忆、职责、权限三分离。</li>
-                    <li><strong>SSE 流式输出：</strong>基于 WorkflowMsgCallback 消息总线搭建异步消费线程，实时消费队列事件并通过 SseEmitter 推送到前端，实现 LLM 流式打字机效果与任务执行进度实时展示。</li>
                     <li><strong>微信绑定：</strong>集成微信渠道接入，支持通过微信与 AI 对话，打通 IM 与 CLI 双端交互，用户可在微信端接收主动推送消息与定时提醒，扩展 AI 的可触达场景。</li>
                 </ul>
             </div>

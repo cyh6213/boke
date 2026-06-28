@@ -28,13 +28,27 @@
         </div>
     </nav>
 
-    <div class="main" style="margin-left: 0;">
+    <!-- ===== Sidebar ===== -->
+    <aside class="sidebar">
+        <div class="name">程愚瀚</div>
+        <div class="title">Java 后端和 agent 开发</div>
+        <nav>
+            <a href="#origin" class="active"><span class="dot"></span> 项目来源</a>
+            <a href="#core"><span class="dot"></span> 核心亮点 · 长期记忆技术选型与测评</a>
+            <a href="#memory-context"><span class="dot"></span> 短期记忆与上下文</a>
+            <a href="#design"><span class="dot"></span> 产品设计 · 让对话更像真人</a>
+            <a href="#other"><span class="dot"></span> 其他亮点</a>
+            <a href="#features"><span class="dot"></span> 基础能力</a>
+        </nav>
+    </aside>
+
+    <div class="main">
         <div class="project-list">
             <div class="section-label">Project 03</div>
             <h2 class="section-title">MyClaw — AI 长期记忆系统</h2>
 
             <!-- 1. 项目来源 -->
-            <div class="project-card">
+            <div class="project-card" id="origin">
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
                     <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;">项目来源</span>
                     <span style="font-size: 16px; font-weight: 700; color: #0f172a;">为什么做这个项目</span>
@@ -50,59 +64,111 @@
                         <li>希望设计一个更像真人朋友的对话系统，让对话更真实、更有依据</li>
                     </ul>
                 </div>
+                <div style="margin-top: 20px; text-align: center;">
+                    <img src="../资源/images/屏幕截图 2026-06-28 124810.png" alt="MyClaw 对话界面" style="max-width: 100%; border-radius: 12px; border: 1px solid #e9edf4; box-shadow: 0 4px 16px rgba(79,70,229,0.08);" />
+                </div>
             </div>
 
             <!-- 2. 核心亮点：长期记忆选型测评 -->
-            <div class="project-card">
+            <div class="project-card" id="core">
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
                     <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #ecfdf5; color: #059669;">核心亮点</span>
                     <span style="font-size: 16px; font-weight: 700; color: #0f172a;">长期记忆技术选型与测评</span>
                 </div>
 
-                <div style="margin-bottom: 20px;">
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">四种方案对比测评</div>
-                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
-                        通过 RecallBench 利用 LongMemEval 测评集，从 <strong>Information Extraction</strong>、<strong>Multi-Session Reasoning</strong>、<strong>Knowledge Updates</strong>、<strong>Temporal Reasoning</strong> 四个维度，对比纯模型大窗口 / RAG 检索 / Hindsight 三种方案，评估各方案在长程记忆场景下的实际表现。
-                    </p>
+                <!-- 测评数据来源 -->
+                <div style="margin-bottom: 20px; padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                    <div style="font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">📦 测评数据来源</div>
+                    <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+                        基于 <strong>LongMemEval</strong> 基准测试集（ICLR 2025），通过 <strong>RecallBench</strong> 框架，从以下四个维度对比纯模型大窗口 / RAG 检索 / Hindsight 三种方案在长程记忆场景下的实际表现：<br><br>
+                        • <strong>Information Extraction</strong>（精确检索）— 例如：<span style="color: #94a3b8;">"用户上次聊天时提到最喜欢吃什么菜？"</span><br>
+                        • <strong>Multi-Session Reasoning</strong>（跨会话推理）— 例如：<span style="color: #94a3b8;">"结合前两次对话，用户最终决定选哪个方案？"</span><br>
+                        • <strong>Knowledge Updates</strong>（知识更新）— 例如：<span style="color: #94a3b8;">"用户之前说喜欢 A，后来改口说 B 更好，现在应该推荐哪个？"</span><br>
+                        • <strong>Temporal Reasoning</strong>（时序推理）— 例如：<span style="color: #94a3b8;">"用户的职业经历按时间顺序是怎样的？"</span>
+                    </div>
                 </div>
 
-                <div style="margin-bottom: 20px; overflow-x: auto;">
-                    <table style="width: 100%; border-collapse: collapse; font-size: 13px; color: #475569;">
-                        <thead>
-                            <tr style="background: #f1f4f9;">
-                                <th style="padding: 10px 12px; text-align: left; font-weight: 700; color: #0f172a; border-bottom: 2px solid #e2e8f0;">维度</th>
-                                <th style="padding: 10px 12px; text-align: center; font-weight: 700; color: #0f172a; border-bottom: 2px solid #e2e8f0;">纯模型大窗口</th>
-                                <th style="padding: 10px 12px; text-align: center; font-weight: 700; color: #0f172a; border-bottom: 2px solid #e2e8f0;">RAG 检索</th>
-                                <th style="padding: 10px 12px; text-align: center; font-weight: 700; color: #4f46e5; border-bottom: 2px solid #4f46e5;">Hindsight</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr style="border-bottom: 1px solid #e9edf4;">
-                                <td style="padding: 10px 12px; font-weight: 600;">Information Extraction<br><span style="font-weight: 400; font-size: 12px; color: #94a3b8;">精确检索</span></td>
-                                <td style="padding: 10px 12px; text-align: center;">60%</td>
-                                <td style="padding: 10px 12px; text-align: center;">65%</td>
-                                <td style="padding: 10px 12px; text-align: center; font-weight: 700; color: #4f46e5;">95%</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid #e9edf4;">
-                                <td style="padding: 10px 12px; font-weight: 600;">Multi-Session Reasoning<br><span style="font-weight: 400; font-size: 12px; color: #94a3b8;">跨会话推理</span></td>
-                                <td style="padding: 10px 12px; text-align: center;">45%</td>
-                                <td style="padding: 10px 12px; text-align: center;">50%</td>
-                                <td style="padding: 10px 12px; text-align: center; font-weight: 700; color: #4f46e5;">90%</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid #e9edf4;">
-                                <td style="padding: 10px 12px; font-weight: 600;">Knowledge Updates<br><span style="font-weight: 400; font-size: 12px; color: #94a3b8;">知识更新</span></td>
-                                <td style="padding: 10px 12px; text-align: center;">50%</td>
-                                <td style="padding: 10px 12px; text-align: center;">45%</td>
-                                <td style="padding: 10px 12px; text-align: center; font-weight: 700; color: #4f46e5;">88%</td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 10px 12px; font-weight: 600;">Temporal Reasoning<br><span style="font-weight: 400; font-size: 12px; color: #94a3b8;">时序推理</span></td>
-                                <td style="padding: 10px 12px; text-align: center;">55%</td>
-                                <td style="padding: 10px 12px; text-align: center;">50%</td>
-                                <td style="padding: 10px 12px; text-align: center; font-weight: 700; color: #4f46e5;">90%</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <!-- 对比表格 -->
+                <div style="margin-bottom: 20px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">📊 四种方案横评 — LongMemEval 四维度准确率</div>
+                    <div style="background: #f8f9fc; border-radius: 10px; overflow: hidden; font-size: 13px;">
+                        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 10px 16px; background: #eef2ff; font-weight: 600; color: #4f46e5; border-bottom: 1px solid #e2e8f0;">
+                            <div>维度</div>
+                            <div style="text-align: center;">纯模型大窗口</div>
+                            <div style="text-align: center;">RAG 检索</div>
+                            <div style="text-align: center; color: #7c3aed;">Hindsight</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
+                            <div>
+                                <div style="font-weight: 600; color: #0f172a;">Information Extraction</div>
+                                <div style="font-size: 12px; color: #94a3b8;">精确检索</div>
+                            </div>
+                            <div style="text-align: center; padding-top: 8px;">60%</div>
+                            <div style="text-align: center; padding-top: 8px;">65%</div>
+                            <div style="text-align: center; padding-top: 8px; font-weight: 700; color: #7c3aed;">95%</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
+                            <div>
+                                <div style="font-weight: 600; color: #0f172a;">Multi-Session Reasoning</div>
+                                <div style="font-size: 12px; color: #94a3b8;">跨会话推理</div>
+                            </div>
+                            <div style="text-align: center; padding-top: 8px;">45%</div>
+                            <div style="text-align: center; padding-top: 8px;">50%</div>
+                            <div style="text-align: center; padding-top: 8px; font-weight: 700; color: #7c3aed;">90%</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
+                            <div>
+                                <div style="font-weight: 600; color: #0f172a;">Knowledge Updates</div>
+                                <div style="font-size: 12px; color: #94a3b8;">知识更新</div>
+                            </div>
+                            <div style="text-align: center; padding-top: 8px;">50%</div>
+                            <div style="text-align: center; padding-top: 8px;">45%</div>
+                            <div style="text-align: center; padding-top: 8px; font-weight: 700; color: #7c3aed;">88%</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 9px 16px; background: #f5f3ff; font-weight: 700;">
+                            <div>
+                                <div style="font-weight: 700; color: #0f172a;">Temporal Reasoning</div>
+                                <div style="font-size: 12px; color: #94a3b8; font-weight: 400;">时序推理</div>
+                            </div>
+                            <div style="text-align: center; padding-top: 8px;">55%</div>
+                            <div style="text-align: center; padding-top: 8px;">50%</div>
+                            <div style="text-align: center; padding-top: 8px; font-weight: 700; color: #7c3aed;">90%</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 6px; font-size: 12px; color: #94a3b8; line-height: 1.6;">
+                        ⚡ Hindsight 在四个维度全面领先，平均准确率 <strong style="color: #7c3aed;">90.8%</strong>，远超纯模型大窗口（52.5%）和 RAG 检索（52.5%），提升约 <strong style="color: #7c3aed;">+38pp</strong>。
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px; padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                    <div style="font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">🔍 结果分析 — 为什么 Hindsight 全面领先？</div>
+                    <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+
+                        <div style="margin-bottom: 6px;"><strong>● Information Extraction（精确检索）</strong></div>
+                        <div style="padding-left: 14px; margin-bottom: 10px;" id="ie-analysis">
+                            RAG 检索（65%）在此维度天然占优，因为精确检索本质就是"问题 → 检索 → 匹配"的过程，与 RAG 的核心机制一致。但 RAG 受限于检索精度（chunk 切分、向量匹配误差），仍有遗漏。<br>
+                            <strong style="color: #7c3aed;">Hindsight（95%）</strong> 通过<strong>四路召回</strong>（向量 + 关键词 + 图 + 时间）大幅提升召回覆盖率，配合时间衰减排序精确命中目标，因此远超其他方案。
+                        </div>
+
+                        <div style="margin-bottom: 6px;"><strong>● Multi-Session Reasoning（跨会话推理）</strong></div>
+                        <div style="padding-left: 14px; margin-bottom: 10px;" id="msr-analysis">
+                            纯模型大窗口（45%）和 RAG 检索（50%）表现接近且偏低。<strong>大窗口模型</strong>存在<strong>"位置偏见"</strong>——更关注近期文本，早期会话信息被稀释；<strong>RAG 检索</strong>以 chunk 为粒度检索，丢失了会话间的时序关联和逻辑链条，无法串联多轮信息。<br>
+                            <strong style="color: #7c3aed;">Hindsight（90%）</strong> 通过<strong>四种记忆分类</strong>（世界/经验/观点/观察）将跨会话信息结构化存储，结合置信度演化机制追踪观点变化，能有效串联多轮对话中的推理链路。
+                        </div>
+
+                        <div style="margin-bottom: 6px;"><strong>● Knowledge Updates（知识更新）</strong></div>
+                        <div style="padding-left: 14px; margin-bottom: 10px;" id="ku-analysis">
+                            这是所有方案差距最大的维度。RAG 检索（45%）甚至低于纯模型大窗口（50%），原因在于 <strong>RAG 无法判断信息优先级</strong>——新旧文档同时被召回后缺乏冲突解决机制，旧信息反而干扰了判断。大窗口模型同样面临"位置偏见"，虽更关注近期信息，但无法理解"用户从喜欢 A 变为喜欢 B"这一更新操作本身。<br>
+                            <strong style="color: #7c3aed;">Hindsight（88%）</strong> 的 <strong>Opinion 置信度演化机制</strong> 专为此场景设计：新证据补充或否定旧观点时，动态调整置信度分数，旧观点被削弱而非直接删除，保留完整的认知演变轨迹。
+                        </div>
+
+                        <div style="margin-bottom: 6px;"><strong>● Temporal Reasoning（时序推理）</strong></div>
+                        <div style="padding-left: 14px;" id="tr-analysis">
+                            RAG 检索（50%）最弱——检索到的是碎片化文档，无法还原完整时间线。大窗口模型（55%）稍好，因为长上下文可以容纳时间线信息，但多跳串联（"A 事件 → B 事件 → C 事件"的因果链）仍然困难。<br>
+                            <strong style="color: #7c3aed;">Hindsight（90%）</strong> 为每条记忆携带<strong>时间元数据</strong>（发生时间 + 记录时间），recall 时结合时间范围过滤与时间衰减排序，天然支持按时间轴检索和推理。
+                        </div>
+
+                    </div>
                 </div>
 
                 <div>
@@ -116,39 +182,280 @@
                 </div>
             </div>
 
+            <!-- 2.5 短期记忆与上下文 -->
+            <div class="project-card" id="memory-context">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;">记忆与上下文</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">短期记忆与上下文</span>
+                </div>
+                <div style="font-size: 14px; color: #475569; line-height: 1.8;">
+
+                    <!-- 短期记忆 -->
+                    <div style="border: 1px solid #e9edf4; border-radius: 12px; padding: 20px 24px; margin-bottom: 16px;">
+                        <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">短期记忆</div>
+                        <p style="margin: 0 0 10px 0;">
+                            短期记忆的实现很简单，就是一个<strong>滑动窗口</strong>。没有做压缩。
+                        </p>
+                        <div style="padding: 10px 14px; background: #f1f4f9; border-radius: 8px; font-size: 13px; color: #64748b; line-height: 1.7;">
+                            <strong>原因：</strong>闲聊场景下，太久的对话内容已经没有保留在 Prompt 里的价值。而之前的事情是靠 <strong>Hindsight</strong> 从对话中提取并长期存储的事实，而不是把昨天的对话原文塞回来。
+                        </div>
+                    </div>
+
+                    <!-- 上下文组装 -->
+                    <div style="border: 1px solid #e9edf4; border-radius: 12px; padding: 20px 24px;">
+                        <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">上下文组装</div>
+                        <p style="margin: 0 0 6px 0;">
+                            <strong>1. 设计思路</strong> — 参考了 OpenClaude 和 Claude Code 中关于系统提示词动态构造的实践，实现 system prompt 的动态拼接。
+                        </p>
+                        <p style="margin: 0 0 10px 0;">
+                            <strong>2. 双 Agent 差异</strong> — 两个 Agent 职责不同，组装结果也不同。Chatter 精简、Worker 完整，具体对比如下：
+                        </p>
+
+                        <div style="margin-bottom: 12px; font-weight: 700; color: #0f172a;">Chatter（聊天 Agent）的 system prompt — 5 层</div>
+                        <div style="background: #f8f9fc; border-radius: 10px; overflow: hidden; font-size: 13px; margin-bottom: 16px;">
+                            <div style="display: grid; grid-template-columns: 1fr 3fr; padding: 8px 14px; background: #eef2ff; font-weight: 600; color: #4f46e5; border-bottom: 1px solid #e2e8f0;">
+                                <div>层</div>
+                                <div>内容</div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 3fr; padding: 7px 14px; border-bottom: 1px solid #f1f4f9;"><div style="font-weight: 600;">1</div><div>身份 + 语言设定 — base.md，剥离了所有工具和策略段</div></div>
+                            <div style="display: grid; grid-template-columns: 1fr 3fr; padding: 7px 14px; border-bottom: 1px solid #f1f4f9;"><div style="font-weight: 600;">2</div><div>角色灵魂 — .paicli/souls/{角色名}/soul.md</div></div>
+                            <div style="display: grid; grid-template-columns: 1fr 3fr; padding: 7px 14px; border-bottom: 1px solid #f1f4f9;"><div style="font-weight: 600;">3</div><div>运行时上下文 — 代码生成的当前日期、时间、时区</div></div>
+                            <div style="display: grid; grid-template-columns: 1fr 3fr; padding: 7px 14px; border-bottom: 1px solid #f1f4f9;"><div style="font-weight: 600;">4</div><div>关于用户 — Hindsight recall 检索出的长期记忆</div></div>
+                            <div style="display: grid; grid-template-columns: 1fr 3fr; padding: 7px 14px;"><div style="font-weight: 600;">5</div><div>聊天规则 + 可用小工具 — handoff-chat.md</div></div>
+                        </div>
+
+                        <div style="margin-bottom: 12px; font-weight: 700; color: #0f172a;">Worker（后台 Agent）的 system prompt — 11 层</div>
+                        <div style="background: #f8f9fc; border-radius: 10px; overflow: hidden; font-size: 13px;">
+                            <div style="display: grid; grid-template-columns: 1fr 3fr; padding: 8px 14px; background: #eef2ff; font-weight: 600; color: #4f46e5; border-bottom: 1px solid #e2e8f0;">
+                                <div>层</div>
+                                <div>内容</div>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 3fr; padding: 7px 14px; border-bottom: 1px solid #f1f4f9; background: #f1f4f9;"><div style="font-weight: 600; color: #64748b;">1~5</div><div style="color: #64748b;">同 Chatter（身份 + 语言设定、角色灵魂、运行时上下文、记忆检索、操作规则）</div></div>
+                            <div style="display: grid; grid-template-columns: 1fr 3fr; padding: 7px 14px; border-bottom: 1px solid #f1f4f9;"><div style="font-weight: 600;">6</div><div>完整身份 + 工具 + 策略 — base.md 完整版，含 Tools、Tool Policy、Memory Policy 等</div></div>
+                            <div style="display: grid; grid-template-columns: 1fr 3fr; padding: 7px 14px; border-bottom: 1px solid #f1f4f9;"><div style="font-weight: 600;">7</div><div>[条件] 工具不可用说明 — 仅当工具被禁用时插入</div></div>
+                            <div style="display: grid; grid-template-columns: 1fr 3fr; padding: 7px 14px; border-bottom: 1px solid #f1f4f9;"><div style="font-weight: 600;">8</div><div>人格设定 — personalities/calm.md</div></div>
+                            <div style="display: grid; grid-template-columns: 1fr 3fr; padding: 7px 14px; border-bottom: 1px solid #f1f4f9;"><div style="font-weight: 600;">9</div><div>模式指令 — modes/agent.md</div></div>
+                            <div style="display: grid; grid-template-columns: 1fr 3fr; padding: 7px 14px; border-bottom: 1px solid #f1f4f9;"><div style="font-weight: 600;">10</div><div>审批规则 — approvals/suggest.md</div></div>
+                            <div style="display: grid; grid-template-columns: 1fr 3fr; padding: 7px 14px;"><div style="font-weight: 600;">11</div><div>Skills + 上下文管理 + 执行规则 — Skills 索引、context-management.md、handoff-manage.md</div></div>
+                        </div>
+                        <div style="margin-top: 12px; padding: 10px 14px; background: #f1f4f9; border-radius: 8px; font-size: 13px; color: #64748b; line-height: 1.7;">
+                            <strong>为什么拆双 Agent：</strong>使用 OpenClaw 时发现，一边想让 AI 执行任务，一边想让它作为朋友自然对话，但同一个 Agent 执行任务后对话人格会变得奇怪。因此设计了 Worker + Chatter 协作模式：<strong>Worker</strong> 后台独立推进剧情与生活线，<strong>Chatter</strong> 负责用户对话交互，实现记忆、职责、权限三分离。
+                        </div>
+                        <div style="margin-top: 8px; padding: 10px 14px; background: #ecfdf5; border-radius: 8px; font-size: 13px; color: #059669; line-height: 1.7;">
+                            <strong>好处：</strong><br>
+                            • Chatter 只带 5 层精简上下文，<strong>Token 消耗更少、回复更快</strong><br>
+                            • Worker 多出 6 层赋予工具调用、策略执行、审批等完整权限，两者天然实现<strong>权限隔离</strong>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
             <!-- 3. 产品设计 -->
-            <div class="project-card">
+            <div class="project-card" id="design">
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
                     <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f0fdf4; color: #16a34a;">产品设计</span>
                     <span style="font-size: 16px; font-weight: 700; color: #0f172a;">让对话更像真人</span>
                 </div>
-                <ul style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0; padding-left: 20px;">
-                    <li><strong>自动触发：</strong>自研 Foresight 规则引擎，借鉴 EverMemOS 前瞻记忆设计思路，基于 LLM 从对话中自动提取条件-行动规则，结合 Spring @Scheduled 实现 Heartbeat 定时扫描机制，支持对话中即时匹配与定时批量执行双触发模式，完成从被动响应到主动服务的范式升级。</li>
-                    <li><strong>人物活动轨迹模拟：</strong>设计五级生活线体系（Life Plan → Year Plan → Month Plan → Week Plan → Day Plan），Worker Agent 每日定时自动推进角色生活状态，让 AI 拥有连贯的"内在生活"——即使不聊天，角色也在真实地活着，对话时自然分享今日见闻。</li>
-                    <li><strong>时间感知与空间锚定：</strong>构建角色的时间认知模型，对话中自然体现时间流逝感（"刚在开车"、"等了我二十分钟"、"昨晚看了一部电影"），结合空间位置锚定，让角色行为在时空维度上自洽，避免"上一秒在做饭，下一秒说在开会"的割裂感。</li>
-                    <li><strong>小说人物迁移：</strong>从小说文本自动提取人物档案（性格、经历、社交关系、日常活动），将小说中的时间线映射到真实世界时间轴，实现"小说人物活在现实中"的沉浸式对话体验。</li>
-                    <li><strong>主动对话与话题转换：</strong>基于 Heartbeat 心跳检测机制，支持空闲触发、定时触发、被动失效三种策略主动开启话题；结合生活线状态与对话上下文，在话题自然衰减时平滑过渡到新话题，避免生硬的"对了，我还有个事要说"，模拟真人聊天的联想式话题跳跃。</li>
-                </ul>
+
+                <div style="font-size: 14px; color: #475569; line-height: 1.8;">
+
+                    <!-- 核心：人物活动轨迹模拟 -->
+                    <div style="border: 1px solid #e9edf4; border-radius: 12px; padding: 20px 24px; margin-bottom: 16px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                            <span style="padding: 2px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; background: #7c3aed; color: #fff;">核心</span>
+                            <div style="font-size: 15px; font-weight: 700; color: #7c3aed;">人物活动轨迹模拟</div>
+                        </div>
+                        <p style="margin: 0 0 10px 0;">
+                            传统 AI 没有"生活"。你问"今天干嘛了"，它会现编一个回答，没有一致性。
+                        </p>
+                        <p style="margin: 0 0 10px 0;">
+                            MyClaw 设计了<strong>五级生活线体系</strong>：Life Plan → Year Plan → Month Plan → Week Plan → Day Plan。从人生阶段一直分解到每日日程：
+                        </p>
+                        <div style="padding: 14px 18px; background: #edf2f7; border-radius: 8px; margin-bottom: 10px; font-size: 13px; line-height: 1.7; white-space: pre; font-family: monospace; border: 1px solid #d4c8f0;">
+Life Plan（人生阶段：败光家产前 → 败光家产后 → 给龙二打工）
+  └─ Year Plan（20 岁，当少爷）
+       └─ Month Plan（春天的日常）
+            └─ Week Plan（这周去镇上赌钱）
+                 └─ Day Plan（今天的具体行程）
+                        </div>
+                        <p style="margin: 0 0 10px 0;">
+                            Worker Agent <strong>每天凌晨 3:00 自动运行</strong>，根据当前阶段规划当天生活，推进剧情事件，生成日志。这样：
+                        </p>
+                        <ul style="margin: 0; padding-left: 20px;">
+                            <li>即使不聊天，角色也在真实地活着</li>
+                            <li>第二天用户问"昨天干嘛了"，角色有真实内容可说，不是现编的</li>
+                            <li>角色的生活是连贯的——昨天去了赌场，今天就不会突然在书房读书</li>
+                        </ul>
+                    </div>
+
+                    <div style="border: 1px solid #e9edf4; border-radius: 12px; padding: 20px 24px; margin-bottom: 16px;">
+                        <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">自动触发与主动话题</div>
+                        <p style="margin: 0 0 10px 0;">
+                            大多数 AI 的对话模式是"你问他答"——你主动找它，它才回应。关掉对话窗口，它就"消失"了。
+                        </p>
+                        <p style="margin: 0 0 10px 0;">
+                            MyClaw 的设计目标之一是<strong>让角色也会主动找你</strong>。每天 Worker 更新角色第二天的生活计划时，会同步设计第二天在哪些时间点、以什么理由主动给用户发消息。比如：
+                        </p>
+                        <ul style="margin: 0 0 10px 0; padding-left: 20px;">
+                            <li>早上 8:00 — "起了没？今天天气预报说要下雨，带伞。"</li>
+                            <li>中午 12:30 — "中午吃了啥？我今儿在镇上下馆子，点了个红烧肉。"</li>
+                            <li>晚上 22:00 — "还不睡？明天不是要早起吗。"</li>
+                        </ul>
+                        <p style="margin: 0 0 10px 0;">
+                            这套主动推送机制由 <strong>Heartbeat 定时扫描</strong> 驱动，支持三种触发策略：
+                        </p>
+                        <ul style="margin: 0 0 10px 0; padding-left: 20px;">
+                            <li><strong>定时触发</strong> — 预设时间点（起床提醒、午饭时间、睡前）</li>
+                            <li><strong>空闲触发</strong> — 用户超过一段时间没说话，角色主动问一句</li>
+                            <li><strong>被动失效</strong> — 一个话题自然衰减后，平滑过渡到新话题</li>
+                        </ul>
+                        <p style="margin: 0 0 10px 0;">
+                            对话过程中，结合生活线状态与上下文，在话题自然衰减时平滑过渡，避免生硬的"对了，我还有个事要说"。目标是模拟真人聊天的<strong>联想式话题跳跃</strong>——不是机械地切换，而是顺着当前话题自然地想到另一件事。
+                        </p>
+                        <p style="margin: 0; color: #4f46e5; font-weight: 600;">
+                            这套机制完成了从<strong>被动响应</strong>到<strong>主动服务</strong>的范式升级。
+                        </p>
+                    </div>
+
+                    <div style="border: 1px solid #e9edf4; border-radius: 12px; padding: 20px 24px; margin-bottom: 16px;">
+                        <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">时间感知与空间锚定</div>
+                        <p style="margin: 0 0 10px 0;">
+                            AI 对话最容易露馅的地方是——<strong>没有时空坐标</strong>。
+                        </p>
+                        <p style="margin: 0 0 10px 0;">
+                            你问"吃饭了吗"，它可能回答"还没呢，刚下班"——但上一句它才说在沙发上躺着。这就是时空割裂感。
+                        </p>
+                        <p style="margin: 0 0 10px 0;">
+                            MyClaw 构建了角色的<strong>时间认知模型</strong>和<strong>空间锚定系统</strong>：
+                        </p>
+                        <ul style="margin: 0 0 10px 0; padding-left: 20px;">
+                            <li><strong>时间感知</strong> — 对话中自然体现时间流逝感："刚在开车"、"等了你有二十分钟了"、"昨晚去看了一部电影"</li>
+                            <li><strong>空间锚定</strong> — 角色知道自己在哪，切换时合理："刚从外面回来"、"在书房看书"、"路过你公司楼下"</li>
+                        </ul>
+                        <p style="margin: 0;">
+                            两套系统配合，让角色行为在时空维度上<strong>自洽</strong>——不会出现"上一秒在做饭，下一秒说在开会"的割裂感。用户能感觉到这是一个真正"活着"的人，而不是一个问答机器人。
+                        </p>
+                    </div>
+
+                    <div style="border: 1px solid #e9edf4; border-radius: 12px; padding: 20px 24px;">
+                        <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">小说人物迁移</div>
+                        <p style="margin: 0 0 10px 0;">
+                            这是获取角色的捷径——不用手动写人物设定，直接从小说的文本描述中提取。
+                        </p>
+                        <p style="margin: 0 0 10px 0;">
+                            系统自动完成三步：
+                        </p>
+                        <ul style="margin: 0 0 10px 0; padding-left: 20px;">
+                            <li><strong>提取性格</strong>（人物档案）——脾气、说话方式、价值观</li>
+                            <li><strong>提取经历与社交关系</strong>（动线）——从出生到结局的关键事件、认识的人、不知道的事</li>
+                            <li><strong>时间线映射</strong>——把小说的虚构时间映射到真实世界时间轴</li>
+                        </ul>
+                        <p style="margin: 0 0 10px 0;">
+                            以《活着》中的福贵为例，过程是这样的：
+                        </p>
+                        <div style="padding: 12px 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 10px; font-size: 13px; line-height: 1.7; white-space: pre; font-family: monospace;">
+小说原文 → SKILL 提取
+  ├─ soul.md——福贵 20 岁，徐家少爷，浪荡好赌，最近刚娶了家珍
+  ├─ timeline-life.md——第一阶段：少爷时期。【关键事件待触发】龙二设赌局
+  └─ "他不知道的事"——家珍已经怀了有庆
+                        </div>
+                        <p style="margin: 0;">
+                            提取完成后，这个角色就自动开始他的"真实生活"——第二天 Worker 会推进他的日常，他在镇上赌钱、被爹骂、晚上回家。用户不需要手动捏人，直接跟小说人物聊天即可。
+                        </p>
+                    </div>
+
+                </div>
             </div>
 
             <!-- 4. 其他亮点 -->
-            <div class="project-card">
+            <div class="project-card" id="other">
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
                     <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #fff7ed; color: #d97706;">其他亮点</span>
                 </div>
                 <ul style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0; padding-left: 20px;">
-                    <li><strong>权限控制与人工审批：</strong>采用策略防护 + 人工审批（HITL）双层保障机制，Agent 自动执行命令前先经风险策略拦截，高危操作触发人工审批流程，兼顾执行效率与系统安全。</li>
-                    <li><strong>双 Agent 协作架构：</strong>设计 Worker + Chatter 双 Agent 协作模式，Worker 后台独立推进剧情与生活线，Chatter 负责与用户对话交互，实现记忆、职责、权限三分离。</li>
-                    <li><strong>SSE 流式输出：</strong>基于 WorkflowMsgCallback 消息总线搭建异步消费线程，实时消费队列事件并通过 SseEmitter 推送到前端，实现 LLM 流式打字机效果与任务执行进度实时展示。</li>
-                    <li><strong>微信绑定：</strong>集成微信渠道接入，支持通过微信与 AI 对话，打通 IM 与 CLI 双端交互，用户可在微信端接收主动推送消息与定时提醒，扩展 AI 的可触达场景。</li>
+
+                    <!-- 安全体系 -->
+                    <li style="margin-bottom: 12px;">
+                        <strong>安全体系：</strong>纵深防御，五层防护。<br>
+                        <div style="margin-top: 6px; padding: 10px 16px; background: #f8fafc; border-radius: 8px; font-size: 13px; color: #475569; line-height: 1.7;">
+                            <div style="margin-bottom: 4px;"><strong>第一层，PathGuard（路径围栏）</strong> — 文件操作不越界。把路径解析为真实路径后判断是否在项目根目录内，防止 LLM 通过绝对路径、<code>..</code> 或软链接访问外部文件。</div>
+                            <div style="margin-bottom: 4px;"><strong>第二层，CommandGuard（命令黑名单）</strong> — 正则会匹配拦截 sudo、rm -rf /、mkfs、Fork Bomb 等破坏性命令，减少 HITL 弹窗骚扰。</div>
+                            <div style="margin-bottom: 4px;"><strong>第三层，NetworkPolicy（网络策略）</strong> — 防 SSRF。Scheme 白名单（仅 http/https）+ DNS 解析拦截内网地址 + Token Bucket 限流每分钟 30 次。</div>
+                            <div style="margin-bottom: 4px;"><strong>第四层，浏览器安全</strong> — 正则匹配敏感页面（bank、银行、Settings、设置），写入操作强制单步审批。</div>
+                            <div><strong>第五层，HITL 人工审批</strong> — 最核心一层。写入类操作需审批，提供批准、全部放行、拒绝、跳过、修改参数后执行五种操作。</div>
+                        </div>
+                    </li>
+
+                    <li>
+                        <strong>微信绑定：</strong>集成微信渠道接入，支持通过微信与 AI 对话，打通 IM 与 CLI 双端交互，用户可在微信端接收主动推送消息与定时提醒，扩展 AI 的可触达场景。
+                        <div style="margin-top: 6px; padding: 8px 14px; background: #f1f4f9; border-radius: 8px; font-size: 13px; color: #64748b; line-height: 1.7;">
+                            需要注意微信对第三方机器人管控很严，个人号容易被风控封号，主动推送频率过高也会触发限制。目前是用 Agent 直接调用微信接口实现的，偏向实验性质，生产环境建议改用企业微信或公众号渠道。
+                        </div>
+                    </li>
                 </ul>
             </div>
+
+            <!-- 5. 基础能力 -->
+            <div class="project-card" id="features">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f1f4f9; color: #64748b;">基础能力</span>
+                </div>
+                <ul style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0; padding-left: 20px;">
+                    <li><strong>多模型支持</strong> — 支持 GLM / DeepSeek / SiliconFlow / StepFun / Kimi 多种 LLM，启动后可通过 /model 动态切换</li>
+                    <li><strong>ReAct 循环</strong> — AI 的思考-调用-反思核心循环，支持多轮工具调用和并行执行</li>
+                    <li><strong>MCP 协议集成</strong> — 通过 MCP 连接外部工具和服务（文件系统、浏览器等），启动时自动加载</li>
+                    <li><strong>Web 搜索与抓取</strong> — 支持联网搜索（智谱/SerpAPI/SearXNG）和网页内容提取</li>
+                    <li><strong>Chrome DevTools 集成</strong> — 连接本机 Chrome，支持页面查看和浏览器自动化</li>
+                    <li><strong>Skill 系统</strong> — 可插拔能力模块，支持动态加载。内置 4 个 Skill：web-access（联网抓取）、daily-simulation（日常模拟）、scheduled-task（定时任务规则）、character-extraction（人物提取）</li>
+                    <li><strong>Inline 渲染器</strong> — 终端内灰度显示思考过程，工具调用可按 Ctrl+O 折叠展开</li>
+                    <li><strong>命令面板与 Tab 补全</strong> — / 触发命令，支持 Tab 补全</li>
+                    <li><strong>快照与回滚</strong> — 操作前自动创建 git 快照，支持撤销</li>
+                    <li><strong>操作审计</strong> — 危险操作记录到 JSONL 日志，可追溯</li>
+                    <li><strong>PathGuard 路径围栏</strong> — 自动校验文件路径，防止越界访问</li>
+                </ul>
+            </div>
+
         </div>
     </div>
 
-    <footer style="margin-left: 0;">
+    <footer>
         &copy; 2026 程愚瀚 · Built with &hearts;
     </footer>
 
+    <script src="../资源/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function updateNav() {
+                var cards = document.querySelectorAll('.project-card[id]');
+                var subTargets = document.querySelectorAll('[id="ie-analysis"],[id="msr-analysis"],[id="ku-analysis"],[id="tr-analysis"]');
+                var navLinks = document.querySelectorAll('.sidebar nav a, .sidebar-sub');
+                var current = '';
+                cards.forEach(function(c) {
+                    var top = c.offsetTop - 130;
+                    var bottom = top + c.offsetHeight;
+                    if (window.scrollY >= top && window.scrollY < bottom) {
+                        current = c.getAttribute('id');
+                    }
+                });
+                subTargets.forEach(function(s) {
+                    var top = s.offsetTop - 130;
+                    var bottom = top + s.offsetHeight;
+                    if (window.scrollY >= top && window.scrollY < bottom) {
+                        current = s.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(function(link) {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+            window.addEventListener('scroll', updateNav);
+            window.addEventListener('load', updateNav);
+            updateNav();
+        });
+    </script>
 </body>
 </html>

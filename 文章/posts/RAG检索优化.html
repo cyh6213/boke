@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RAG检索优化：从 68% 到 81.2% | 程愚瀚</title>
+    <link rel="stylesheet" href="../../资源/css/style.css" />
+    <style>
+        .article-content { max-width: 900px; padding: 120px 60px 80px; }
+        .article-content .article-header { margin-bottom: 40px; }
+        .article-content .article-header .article-date { font-size: 13px; color: #94a3b8; margin-bottom: 8px; }
+        .article-content .article-header h1 { font-size: 36px; font-weight: 800; color: #0f172a; line-height: 1.25; margin-bottom: 12px; }
+        .article-content .article-header .article-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .article-content .article-header .article-tags span {
+            padding: 3px 10px; border-radius: 20px; font-size: 12px;
+            font-weight: 500; background: #eef2ff; color: #4f46e5;
+        }
+
+        .body .intro { font-size: 16px; color: #64748b; line-height: 1.8; margin-bottom: 40px; }
+
+        .body .section-title {
+            font-size: 28px; font-weight: 800; color: #0f172a;
+            margin-top: 60px; margin-bottom: 30px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .body .section-title::before {
+            content: ''; width: 4px; height: 28px; background: #4f46e5; border-radius: 2px;
+        }
+
+        .body .subsection-title {
+            font-size: 22px; font-weight: 700; color: #1e293b;
+            margin-top: 40px; margin-bottom: 20px;
+        }
+
+        .body .key-point {
+            font-size: 18px; font-weight: 600; color: #334155;
+            margin-bottom: 16px; padding-left: 16px;
+            border-left: 3px solid #4f46e5;
+        }
+
+        .body .desc-text {
+            font-size: 15px; color: #64748b; line-height: 1.9;
+            margin-bottom: 20px;
+        }
+
+        .body .card-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px; margin-bottom: 24px;
+        }
+        .body .card {
+            background: #fff; border: 1px solid #e2e8f0;
+            border-radius: 12px; padding: 20px 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .body .card .card-title {
+            font-size: 15px; font-weight: 700; color: #0f172a;
+            margin-bottom: 12px;
+        }
+        .body .card ul { padding-left: 18px; margin: 0; }
+        .body .card li { font-size: 14px; color: #64748b; line-height: 1.8; margin-bottom: 6px; }
+
+        .body .tip-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            border-left: 3px solid #4f46e5;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: #3730a3;
+            line-height: 1.7;
+        }
+        .body .tip-box .tip-icon {
+            flex-shrink: 0;
+            font-size: 16px;
+            margin-top: 1px;
+        }
+
+        .body .formula-box {
+            background: #f8fafc; padding: 16px 20px; border-radius: 10px;
+            margin-bottom: 16px; border: 1px solid #e2e8f0;
+            font-size: 15px; color: #334155; line-height: 1.8;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .body .highlight-box {
+            background: #f0fdf4; border-left: 4px solid #22c55e;
+            padding: 20px 24px; border-radius: 0 12px 12px 0;
+            margin-bottom: 24px;
+        }
+        .body .highlight-box .label {
+            font-size: 12px; font-weight: 600; color: #16a34a;
+            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+        }
+        .body .highlight-box p { font-size: 15px; color: #14532d; line-height: 1.8; margin: 0; }
+
+        .body .code-box {
+            background: #1e293b; color: #e2e8f0; padding: 20px 24px;
+            border-radius: 12px; overflow-x: auto; margin-bottom: 20px;
+            font-size: 14px; line-height: 1.7;
+        }
+
+        .body .feature-list {
+            display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px;
+        }
+        .body .feature-item {
+            padding: 10px 16px; background: #f8fafc; border-radius: 8px;
+            font-size: 14px; color: #475569; line-height: 1.7;
+            border-left: 3px solid #4f46e5;
+        }
+
+        .body .result-grid {
+            display: grid;
+            grid-template-columns: 3fr 1fr 2fr;
+            gap: 0;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+        .body .result-header {
+            display: contents;
+        }
+        .body .result-header > div {
+            padding: 10px 16px;
+            background: #eef2ff;
+            font-weight: 600;
+            color: #4f46e5;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .body .result-row {
+            display: contents;
+        }
+        .body .result-row > div {
+            padding: 9px 16px;
+            border-bottom: 1px solid #f1f4f9;
+            font-size: 14px;
+            color: #475569;
+        }
+        .body .result-row:last-child > div {
+            border-bottom: none;
+        }
+        .body .result-row.highlight > div {
+            background: #eef2ff;
+            font-weight: 700;
+            color: #4f46e5;
+        }
+
+        .body .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .body .metric-card {
+            background: #f8f9fc;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+        }
+        .body .metric-card .metric-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: #4f46e5;
+        }
+        .body .metric-card .metric-label {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+        .body .metric-card .metric-sub {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        .body .note-box {
+            padding: 12px 16px;
+            background: #f8fafc;
+            border-left: 3px solid #d97706;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: #334155;
+            line-height: 1.7;
+        }
+
+        .article-nav { margin-top: 60px; padding-top: 24px; border-top: 1px solid #e9edf4; }
+        .article-nav a { color: #4f46e5; text-decoration: none; font-size: 14px; font-weight: 500; }
+        .article-nav a:hover { text-decoration: underline; }
+
+        /* TOC Styles */
+        html { scroll-behavior: smooth; }
+        .toc-container {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f4f9 100%);
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        .toc-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #4f46e5, #7c3aed, #a855f7);
+            border-radius: 16px 16px 0 0;
+        }
+        .toc-title {
+            font-size: 18px; font-weight: 700; color: #0f172a;
+            margin-bottom: 20px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .toc-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .toc-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 14px; font-weight: 500;
+            color: #334155;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+        .toc-item:hover {
+            background: #fff;
+            border-color: #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            color: #4f46e5;
+        }
+        .toc-item .toc-num {
+            width: 24px; height: 24px;
+            background: #eef2ff; color: #4f46e5;
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 700;
+            flex-shrink: 0;
+        }
+        .toc-sub-list {
+            margin-left: 34px;
+            display: flex; flex-direction: column;
+            gap: 4px;
+        }
+        .toc-sub-item {
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px; color: #64748b;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .toc-sub-item:hover {
+            background: #f1f5f9; color: #4f46e5;
+        }
+        .toc-sub-item .dot {
+            width: 4px; height: 4px;
+            background: #cbd5e1;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <a href="../../" class="nav-brand">程愚瀚</a>
+        <div class="nav-links">
+            <a href="../../">首页</a>
+            <a href="../" class="active">文章</a>
+            <a href="../../项目/">项目</a>
+        </div>
+    </nav>
+
+    <!-- ===== Sidebar ===== -->
+    <aside class="sidebar">
+        <div class="name">程愚瀚</div>
+        <div class="title">Java 后端和 agent 开发</div>
+        <nav>
+            <a href="#sec-summary" class="active"><span class="dot"></span> 技术选型</a>
+            <a href="#sec-results"><span class="dot"></span> 实验结果</a>
+            <a href="#sec-analysis"><span class="dot"></span> 实验分析</a>
+            <a href="#sec-thoughts"><span class="dot"></span> 一些思考</a>
+        </nav>
+    </aside>
+
+    <div class="main">
+        <div class="article-content">
+            <div class="article-header">
+                <div class="article-date">2026 年 4 月 8 日</div>
+                <h1>RAG检索优化：从 68% 到 81.2%</h1>
+                <div class="article-tags">
+                    <span>AI</span>
+                    <span>学习笔记</span>
+                </div>
+            </div>
+
+            <div class="body">
+                <div class="intro">
+                    本文实测了 RAG 检索优化，验证出"混合检索+RRF+重排序"的最优链路，成功将核心召回率从 68% 大幅提升至 81.2%。
+                </div>
+
+
+
+                <!-- ============================================================ -->
+                <!-- 一、技术选型 -->
+                <!-- ============================================================ -->
+                <div class="project-card" id="sec-summary">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                        <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;">技术选型</span>
+                        <span style="font-size: 16px; font-weight: 700; color: #0f172a;">挑选的技术栈与指标</span>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="border: 1px solid #e9edf4; border-radius: 12px;">
+                            <div style="padding: 10px 18px; background: #f8fafc; border-bottom: 1px solid #e9edf4; border-radius: 12px 12px 0 0;">
+                                <span style="font-size: 13px; font-weight: 700; color: #0f172a;">数据集</span>
+                            </div>
+                            <div style="padding: 16px 18px;">
+                                <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 6px;">C-MTEB / T2Retrieval<span style="font-weight: 400; color: #94a3b8;">（数据集）</span></div>
+                                <div style="font-size: 14px; font-weight: 700; color: #4f46e5;">C-MTEB / T2Retrieval-qrels<span style="font-weight: 400; color: #94a3b8;">（对应的问题-答案对）</span></div>
+                            </div>
+                        </div>
+
+                        <div style="border: 1px solid #e9edf4; border-radius: 12px;">
+                            <div style="padding: 10px 18px; background: #f8fafc; border-bottom: 1px solid #e9edf4; border-radius: 12px 12px 0 0;">
+                                <span style="font-size: 13px; font-weight: 700; color: #0f172a;">核心指标（召回质量）</span>
+                            </div>
+                            <div style="padding: 16px 18px;">
+                                <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 4px;">recall_cap@5（cap=5） ✓</div>
+                                <div style="font-size: 13px; color: #475569; line-height: 1.7; margin-bottom: 8px;">
+                                    <strong>公式：recall_cap@K = </strong> 前 K 个检索结果中命中的相关文档数 ÷ min(K, 总相关文档数)
+                                </div>
+
+                                <div style="font-size: 14px; font-weight: 700; color: #dc2626; margin-bottom: 4px;">recall@5 ✗</div>
+                                <div style="font-size: 13px; color: #475569; line-height: 1.7; margin-bottom: 8px;">
+                                    <strong>公式：recall@K = </strong> 前 K 个检索结果中命中的相关文档数 ÷ 总相关文档数
+                                </div>
+
+                                <div style="padding: 8px 12px; background: #fff; border-left: 3px solid #f59e0b; border-radius: 0 6px 6px 0;">
+                                    <div style="font-size: 12px; font-weight: 600; color: #d97706; margin-bottom: 2px;">为什么选 recall_cap@5？</div>
+                                    <div style="font-size: 13px; color: #475569; line-height: 1.6;">一个问题对应的相关文档可能非常多，用普通 recall@5 会严重低估模型能力。recall_cap@5 对分母做了上限截断（取 min），更公平地反映前 5 个结果的召回质量。</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="border: 1px solid #e9edf4; border-radius: 12px;">
+                            <div style="padding: 10px 18px; background: #f8fafc; border-bottom: 1px solid #e9edf4; border-radius: 12px 12px 0 0;">
+                                <span style="font-size: 13px; font-weight: 700; color: #0f172a;">其他指标（排序质量 · 综合质量 · 检索效率）</span>
+                            </div>
+                            <div style="padding: 16px 18px;">
+                                <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 6px;">MRR@5</div>
+                                <div style="font-size: 13px; color: #64748b; margin-bottom: 10px; padding-left: 14px;">平均倒数排名，衡量第一个相关结果是否排得靠前</div>
+                                <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 6px;">NDCG@5</div>
+                                <div style="font-size: 13px; color: #64748b; margin-bottom: 10px; padding-left: 14px;">归一化折损累计增益，衡量排序的整体质量，越相关越靠前得分越高</div>
+                                <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 6px;">Precision@1</div>
+                                <div style="font-size: 13px; color: #64748b; margin-bottom: 10px; padding-left: 14px;">第一个结果是否相关，最严格的精确率指标</div>
+                                <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 6px;">F1</div>
+                                <div style="font-size: 13px; color: #64748b; margin-bottom: 10px; padding-left: 14px;">精确率与召回率的调和平均数，综合衡量检索的精确度和覆盖率</div>
+                                <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 6px;">延迟</div>
+                                <div style="font-size: 13px; color: #64748b; padding-left: 14px;">端到端平均检索延迟，评估各方案的响应速度。增加 rerank 后从 ~60ms 升至 ~360ms</div>
+                            </div>
+                        </div>
+
+                        <div style="border: 1px solid #e9edf4; border-radius: 12px;">
+                            <div style="padding: 10px 18px; background: #f8fafc; border-bottom: 1px solid #e9edf4; border-radius: 12px 12px 0 0;">
+                                <span style="font-size: 13px; font-weight: 700; color: #0f172a;">Embedding 模型</span>
+                            </div>
+                            <div style="padding: 16px 18px;">
+                                <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 8px;">BAAI/bge-m3</div>
+                                <div style="padding: 8px 12px; background: #fff; border-left: 3px solid #7c3aed; border-radius: 0 6px 6px 0;">
+                                    <div style="font-size: 12px; font-weight: 600; color: #7c3aed; margin-bottom: 2px;">为什么选这个模型？</div>
+                                    <div style="font-size: 13px; color: #475569; line-height: 1.6;">
+                                        <div>1. 同时支持 dense + sparse 双向量输出，混合检索时用 sparse 替代 BM25 可提升 ~3%。</div>
+                                        <div>2. MTEB 榜单靠前，国内模型，中文支持更好。</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="border: 1px solid #e9edf4; border-radius: 12px;">
+                            <div style="padding: 10px 18px; background: #f8fafc; border-bottom: 1px solid #e9edf4; border-radius: 12px 12px 0 0;">
+                                <span style="font-size: 13px; font-weight: 700; color: #0f172a;">Reranker 模型</span>
+                            </div>
+                            <div style="padding: 16px 18px;">
+                                <div style="font-size: 14px; font-weight: 700; color: #4f46e5;">BAAI/bge-reranker-v2-m3</div>
+                            </div>
+                        </div>
+
+                        <div style="border: 1px solid #e9edf4; border-radius: 12px;">
+                            <div style="padding: 10px 18px; background: #f8fafc; border-bottom: 1px solid #e9edf4; border-radius: 12px 12px 0 0;">
+                                <span style="font-size: 13px; font-weight: 700; color: #0f172a;">数据库</span>
+                            </div>
+                            <div style="padding: 16px 18px;">
+                                <div style="font-size: 14px; font-weight: 700; color: #4f46e5;">Milvus</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- 二、实验结果 -->
+                <!-- ============================================================ -->
+                <div class="project-card" id="sec-results">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                        <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f1f4f9; color: #64748b;">实验结果</span>
+                        <span style="font-size: 16px; font-weight: 700; color: #0f172a;">C-MTEB 数据集的召回与排序结果</span>
+                    </div>
+
+                    <p class="desc-text">下面是 C-MTEB/T2Retrieval 数据集的一些测试结果，测试数据库为 Milvus，原始语料库 ~12w 条，分块后存入数据库 ~36w 条数据，测试时使用前 2000 条 query 测试：</p>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                        <div class="image-container">
+                            <img src="../../资源/images/43f133a0a12649dba183aec23ecbfe2b.webp" alt="实验结果图1" style="width:100%; border-radius: 8px;">
+                        </div>
+                        <div class="image-container">
+                            <img src="../../资源/images/64fd712754c247afa30f3d6747cc877d.webp" alt="实验结果图2" style="width:100%; border-radius: 8px;">
+                        </div>
+                        <div class="image-container">
+                            <img src="../../资源/images/8d2c97d9861441aca484d699a54c56d1.webp" alt="实验结果图3" style="width:100%; border-radius: 8px;">
+                        </div>
+                        <div class="image-container">
+                            <img src="../../资源/images/a35fbd49861a4c0496aa36be654c944f.webp" alt="实验结果图4" style="width:100%; border-radius: 8px;">
+                        </div>
+                        <div class="image-container">
+                            <img src="../../资源/images/a497b16d4c0b478eb0ad7d756a34df5e.webp" alt="实验结果图5" style="width:100%; border-radius: 8px;">
+                        </div>
+                        <div class="image-container">
+                            <img src="../../资源/images/b193af51307f407bb7d9858c2e96cb5c.webp" alt="实验结果图6" style="width:100%; border-radius: 8px;">
+                        </div>
+                        <div class="image-container" style="grid-column: 1 / -1;">
+                            <img src="../../资源/images/ce1a1364ef054d3e8c78ed03c3345121.webp" alt="实验结果图7" style="width:100%; border-radius: 8px;">
+                        </div>
+                    </div>
+
+                    <div class="note-box">
+                        <strong>环境说明：</strong><br>
+                        • <strong>bm25</strong>：通过 bm25 检索<br>
+                        • <strong>embedding</strong>：通过 bge 生成的 dense 向量检索，数据库索引为 HNSW<br>
+                        • <strong>sparse</strong>：通过 bge 生成的 sparse 向量检索<br>
+                        • <strong>fixed_*</strong>：混合检索后通过固定权重聚合 0.6×dense + 0.4×sparse（分数进行归一化之后）<br>
+                        • <strong>rrf_*</strong>：混合检索后通过 rrf 聚合，k=60<br>
+                        • <strong>rerank_*</strong>：rrf 混合检索后再经过 rerank 模型重排序，重排的候选集为 50 条
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- 三、实验分析 -->
+                <!-- ============================================================ -->
+                <div class="project-card" id="sec-analysis">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                        <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #ecfdf5; color: #059669;">实验分析</span>
+                        <span style="font-size: 16px; font-weight: 700; color: #0f172a;">最优方案与注意事项</span>
+                    </div>
+
+                    <div style="border: 1px solid #e9edf4; border-radius: 12px; padding: 0; margin-bottom: 20px;">
+                        <div style="padding: 10px 18px; background: #f8fafc; border-bottom: 1px solid #e9edf4; border-radius: 12px 12px 0 0;">
+                            <span style="font-size: 13px; font-weight: 700; color: #0f172a;">一、阶梯式提升链路</span>
+                        </div>
+                        <div style="padding: 16px 18px;">
+                            <p style="font-size: 14px; color: #64748b; line-height: 1.8; margin: 0 0 16px 0;">
+                    以单纯的 <strong>dense 向量检索（68.38%）</strong> 为 baseline，逐步叠加优化手段，recall_cap@5 呈阶梯式上升：
+                            </p>
+
+                    <!-- Baseline -->
+                    <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px; margin-bottom: 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-size: 13px; font-weight: 600; color: #94a3b8;">Baseline</div>
+                                <div style="font-size: 13px; color: #64748b; margin-top: 2px;">dense 纯向量检索（HNSW 索引）</div>
+                            </div>
+                            <div style="font-size: 22px; font-weight: 800; color: #94a3b8;">68.38%</div>
+                        </div>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div style="text-align: center; padding: 4px 0; color: #cbd5e1; font-size: 14px;">↓</div>
+
+                    <!-- Step 1 -->
+                    <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px; margin-bottom: 0; border-left: 3px solid #4f46e5;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-size: 13px; font-weight: 600; color: #4f46e5;">① + 混合检索（dense + BM25）</div>
+                                <div style="font-size: 13px; color: #475569; margin-top: 2px;">语义向量 + 关键词双路召回，替代单独 dense</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 18px; font-weight: 800; color: #4f46e5;">+7.28pp</div>
+                                <div style="font-size: 12px; color: #94a3b8;">↑ 75.66%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div style="text-align: center; padding: 4px 0; color: #cbd5e1; font-size: 14px;">↓</div>
+
+                    <!-- Step 2 -->
+                    <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px; margin-bottom: 0; border-left: 3px solid #7c3aed;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-size: 13px; font-weight: 600; color: #7c3aed;">② BM25 升级为 sparse 向量</div>
+                                <div style="font-size: 13px; color: #475569; margin-top: 2px;">BGE 双向量输出，sparse 关键词匹配比 BM25 更精准</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 18px; font-weight: 800; color: #7c3aed;">+1.00pp</div>
+                                <div style="font-size: 12px; color: #94a3b8;">↑ 76.66%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Arrow -->
+                    <div style="text-align: center; padding: 4px 0; color: #cbd5e1; font-size: 14px;">↓</div>
+
+                    <!-- Step 3 -->
+                    <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px; margin-bottom: 20px; border-left: 3px solid #059669;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-size: 13px; font-weight: 600; color: #059669;">③ + Rerank 重排（候选池 50）</div>
+                                <div style="font-size: 13px; color: #475569; margin-top: 2px;">RRF 融合后再经 reranker 精排，提升排序质量</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 18px; font-weight: 800; color: #059669;">+4.54pp</div>
+                                <div style="font-size: 12px; color: #94a3b8;">↑ 81.2%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Final result -->
+                    <div style="padding: 16px 20px; background: #eef2ff; border-radius: 12px; margin-bottom: 28px;">
+                        <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 14px;">最终结果 — 7 项指标全面对比</div>
+                        <div style="font-size: 13px; color: #475569; margin-bottom: 16px;">dense 纯向量 → dense + sparse 混合检索 + RRF 融合 + Rerank 重排</div>
+                        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                            <div style="flex: 1; min-width: 110px; padding: 12px; background: #fff; border-radius: 10px; text-align: center;">
+                                <div style="font-size: 10px; color: #94a3b8; margin-bottom: 4px;">recall_cap@5</div>
+                                <div style="font-size: 14px; font-weight: 800; color: #4f46e5;">68.4%→81.2%</div>
+                                <div style="font-size: 11px; color: #22c55e;">↑ +12.8pp</div>
+                            </div>
+                            <div style="flex: 1; min-width: 110px; padding: 12px; background: #fff; border-radius: 10px; text-align: center;">
+                                <div style="font-size: 10px; color: #94a3b8; margin-bottom: 4px;">recall@5</div>
+                                <div style="font-size: 14px; font-weight: 800; color: #4f46e5;">56.5%→67.5%</div>
+                                <div style="font-size: 11px; color: #22c55e;">↑ +11.0pp</div>
+                            </div>
+                            <div style="flex: 1; min-width: 110px; padding: 12px; background: #fff; border-radius: 10px; text-align: center;">
+                                <div style="font-size: 10px; color: #94a3b8; margin-bottom: 4px;">ndcg@5</div>
+                                <div style="font-size: 14px; font-weight: 800; color: #4f46e5;">71.6%→82.1%</div>
+                                <div style="font-size: 11px; color: #22c55e;">↑ +10.5pp</div>
+                            </div>
+                            <div style="flex: 1; min-width: 110px; padding: 12px; background: #fff; border-radius: 10px; text-align: center;">
+                                <div style="font-size: 10px; color: #94a3b8; margin-bottom: 4px;">mrr@5</div>
+                                <div style="font-size: 14px; font-weight: 800; color: #4f46e5;">85.6%→91.1%</div>
+                                <div style="font-size: 11px; color: #22c55e;">↑ +5.5pp</div>
+                            </div>
+                            <div style="flex: 1; min-width: 110px; padding: 12px; background: #fff; border-radius: 10px; text-align: center;">
+                                <div style="font-size: 10px; color: #94a3b8; margin-bottom: 4px;">precision@1</div>
+                                <div style="font-size: 14px; font-weight: 800; color: #4f46e5;">82.6%→88.2%</div>
+                                <div style="font-size: 11px; color: #22c55e;">↑ +5.6pp</div>
+                            </div>
+                            <div style="flex: 1; min-width: 110px; padding: 12px; background: #fff; border-radius: 10px; text-align: center;">
+                                <div style="font-size: 10px; color: #94a3b8; margin-bottom: 4px;">f1@5</div>
+                                <div style="font-size: 14px; font-weight: 800; color: #4f46e5;">47.9%→57.3%</div>
+                                <div style="font-size: 11px; color: #22c55e;">↑ +9.4pp</div>
+                            </div>
+                            <div style="flex: 1; min-width: 110px; padding: 12px; background: #fff; border-radius: 10px; text-align: center;">
+                                <div style="font-size: 10px; color: #94a3b8; margin-bottom: 4px;">延迟</div>
+                                <div style="font-size: 14px; font-weight: 800; color: #f59e0b;">55ms→360ms</div>
+                                <div style="font-size: 11px; color: #f59e0b;">↑ +305ms</div>
+                            </div>
+                        </div>
+                    </div>
+                        </div>
+                    </div>
+
+                    <div style="border: 1px solid #e9edf4; border-radius: 12px; padding: 0; margin-bottom: 0;">
+                        <div style="padding: 10px 18px; background: #f8fafc; border-bottom: 1px solid #e9edf4; border-radius: 12px 12px 0 0;">
+                            <span style="font-size: 13px; font-weight: 700; color: #0f172a;">二、Rerank 分析</span>
+                        </div>
+                        <div style="padding: 16px 18px;">
+                    <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 20px;">
+                        <!-- 结论一 -->
+                        <div style="border: 1px solid #e9edf4; border-radius: 12px; overflow: hidden;">
+                            <div style="padding: 10px 18px; background: #eef2ff; border-bottom: 1px solid #e9edf4;">
+                                <span style="font-size: 13px; font-weight: 700; color: #4f46e5;">结论一：Rerank 模块性价比验证</span>
+                            </div>
+                            <div style="padding: 14px 18px;">
+                                <div style="font-size: 13px; color: #475569; line-height: 1.7; margin-bottom: 10px;">
+                                    耗时从 60ms 提升至 360ms，核心指标稳定提升 ~3%，该耗时增量在 RAG 系统业务容忍范围内。
+                                </div>
+                                <div style="padding: 10px 14px; background: #f8fafc; border-left: 3px solid #64748b; border-radius: 0 6px 6px 0;">
+                                    <div style="font-size: 12px; font-weight: 600; color: #0f172a; margin-bottom: 2px;">核心结论</div>
+                                    <div style="font-size: 13px; color: #475569; line-height: 1.6;">虽然牺牲了部分推理速度，但换来了明确的效果提升，综合收益大于性能损耗，引入 Rerank 值得落地。</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 结论二 -->
+                        <div style="border: 1px solid #e9edf4; border-radius: 12px; overflow: hidden;">
+                            <div style="padding: 10px 18px; background: #f5f3ff; border-bottom: 1px solid #e9edf4;">
+                                <span style="font-size: 13px; font-weight: 700; color: #7c3aed;">结论二：Rerank 会弱化 Sparse 检索相对 BM25 的优势</span>
+                            </div>
+                            <div style="padding: 14px 18px;">
+                                <div style="font-size: 13px; color: #475569; line-height: 1.7; margin-bottom: 10px;">
+                                    <strong>现象：</strong>未开启 Rerank 时，Sparse 相比 BM25 有明显效果增益；开启 Rerank 后，此优势被大幅削弱。
+                                </div>
+                                <div style="padding: 10px 14px; background: #f8fafc; border-left: 3px solid #64748b; border-radius: 0 6px 6px 0;">
+                                    <div style="font-size: 12px; font-weight: 600; color: #0f172a; margin-bottom: 2px;">核心原因</div>
+                                    <div style="font-size: 13px; color: #475569; line-height: 1.6;">Rerank 扩大了候选召回池，且重排模型精排能力强，能独立将优质文档前置排序，弥补了 BM25 的精度短板，让 Sparse 的差异化优势不再明显。</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 结论三 -->
+                        <div style="border: 1px solid #e9edf4; border-radius: 12px; overflow: hidden;">
+                            <div style="padding: 10px 18px; background: #ecfdf5; border-bottom: 1px solid #e9edf4;">
+                                <span style="font-size: 13px; font-weight: 700; color: #059669;">结论三：RRF 聚合方式更适配 Rerank 重排模块</span>
+                            </div>
+                            <div style="padding: 14px 18px;">
+                                <div style="font-size: 13px; color: #475569; line-height: 1.7; margin-bottom: 10px;">
+                                    <strong>现象：</strong>无重排时两种融合方式效果相近；搭配 Rerank 后，权重融合提升不足 1%，远落后于 RRF。
+                                </div>
+                                <div style="padding: 10px 14px; background: #f8fafc; border-left: 3px solid #64748b; border-radius: 0 6px 6px 0;">
+                                    <div style="font-size: 12px; font-weight: 600; color: #0f172a; margin-bottom: 2px;">核心原理</div>
+                                    <div style="font-size: 13px; color: #475569; line-height: 1.6;">
+                                        <strong>权重融合：</strong>结果偏向 Dense，候选文档同质化，Rerank 没有优化空间。<br>
+                                        <strong>RRF 融合：</strong>兼顾 Sparse 和 Dense 优势，候选池多元，能充分释放 Rerank 的排序能力。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="padding: 14px 18px; background: #f8fafc; border-left: 3px solid #64748b; border-radius: 0 8px 8px 0; margin-bottom: 0;">
+                        <div style="font-size: 12px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">最终综合推论</div>
+                        <div style="font-size: 13px; color: #475569; line-height: 1.7;">结合以上三组消融实验结果可以得出：<strong>BM25+dense+RRF</strong> 的检索链路搭配 Rerank 重排，能够最大化发挥重排模块的增效作用，是所有组合中效果最优的方案。</div>
+                    </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================================ -->
+                <!-- 四、一些思考 -->
+                <!-- ============================================================ -->
+                <div class="project-card" id="sec-thoughts">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                        <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #fff7ed; color: #d97706;">一些思考</span>
+                        <span style="font-size: 16px; font-weight: 700; color: #0f172a;">尝试过与未尝试的优化方法</span>
+                    </div>
+
+                    <div class="subsection-title" id="sub-tried">尝试过提升指标的方法</div>
+
+                    <div class="card" style="margin-bottom: 16px;">
+                        <div class="card-title">① 优化数据分块方法</div>
+                        <p style="font-size: 14px; color: #64748b;">
+                            开始使用固定 chunk 大小+overlap 的方式分块，效果不太好（不过后面发现了是使用的数据集有问题）。现在最终版实验是采用了递归分块+固定 chunk 大小+overlap 的方式，即：优先根据段落、句末标点分块，无法分割的再回退到简单切割的版本。
+                        </p>
+                    </div>
+
+                    <div class="card" style="margin-bottom: 16px;">
+                        <div class="card-title">② 调参</div>
+                        <p style="font-size: 14px; color: #64748b;">
+                            混合检索时可以调整权重或者 rrf 的 k 值，经过测试来看，默认的 0.6/0.4 和 60 效果最好。
+                        </p>
+                    </div>
+
+                    <div class="card" style="margin-bottom: 16px;">
+                        <div class="card-title">③ 增大 Rerank 候选池</div>
+                        <p style="font-size: 14px; color: #64748b;">
+                            答案是：有的，但是会有边际效益。当候选集从 10 增大到 50 时，会有正向提升。但是 50 增大到 200 甚至 500 时，时延增加了十几倍，指标反而下降了。由此可见，过多的候选集不仅会增大模型的计算负担，过多的噪声还会让模型迷惑。
+                        </p>
+                    </div>
+
+                    <div class="card" style="margin-bottom: 16px;">
+                        <div class="card-title">④ Dynamic weight 聚合</div>
+                        <p style="font-size: 14px; color: #64748b;">
+                            原本想过是否可以通过计算句子复杂度动态调整权重，语气词/连词/长词越多则 dense 权重更大。但实际测试效果不如 fixed，因为有些专业词语虽然是长词，但是显然更应该用 bm25 这种稀疏向量去硬匹配。
+                        </p>
+                    </div>
+
+                    <div class="card" style="margin-bottom: 16px;">
+                        <div class="card-title">⑤ Query 扩展</div>
+                        <p style="font-size: 14px; color: #64748b;">
+                            试过本地起一个 Qwen/Qwen3.5-35B-A3B 模型用更加标准的句子对 query 进行扩展以更好地命中数据库中的数据：
+                        </p>
+                        <div style="background: #f8fafc; border: 1px solid #e9edf4; border-radius: 10px; padding: 14px 18px; margin-bottom: 0; font-size: 13px; color: #475569; line-height: 1.7;">
+                            <strong style="color: #0f172a;">原句：</strong><br>
+                            我想知道现在大模型在机器翻译中是怎么使用的？可以结合实际例子说明吗？<br><br>
+                            <strong style="color: #0f172a;">扩展为：</strong><br>
+                            • 我想知道现在大模型在机器翻译中是怎么使用的？可以结合实际例子说明吗？<br>
+                            • 大语言模型在机器翻译中的应用方式及案例分析<br>
+                            • 当前大型预训练模型如何用于机器翻译，有哪些实际案例<br>
+                            • 机器翻译任务中集成大模型的技术路径与实例说明
+                        </div>
+                        <p style="font-size: 14px; color: #64748b; margin-top: 8px;">
+                            但是实际测试中效果并未提升太多（&lt;1%），同时因为引入了大模型，耗时从 ~360ms 飙升至了 ~70s，这对系统的影响将是巨大且不可接受的。
+                        </p>
+                    </div>
+
+                    <div class="subsection-title" id="sub-untried">未尝试但或许对指标有提升的方法</div>
+
+                    <div class="card" style="margin-bottom: 12px;">
+                        <div class="card-title">① 分数加权融合（Rerank + 原始分数）</div>
+                        <p style="font-size: 14px; color: #64748b;">
+                            将 reranker 的分数和原始分数加权相加，根据这个加权后的最终分数再排序。听起来比较有道理，当为了降低时延使用了效果较差的 rerank 模型时，感觉可以使用此方法弥补一些 rerank 模型对语义理解的偏差。
+                        </p>
+                    </div>
+
+                    <div class="card" style="margin-bottom: 12px;">
+                        <div class="card-title">② 语义分块与按主题分块</div>
+                        <p style="font-size: 14px; color: #64748b;">
+                            可以使用更好的数据分块方法，如通过模型使用语义分块，增加章节结构按主题分块（对书籍比较友好）等等。不过之前也有试过用语义分块，结果看起来也并没有太好，有些比较长的专业术语反而会分开。
+                        </p>
+                    </div>
+
+                    <div class="card" style="margin-bottom: 12px;">
+                        <div class="card-title">③ LLM 辅助检索增强</div>
+                        <ul>
+                            <li>让大模型提取问题关键词用于关键词匹配</li>
+                            <li>让大模型先生成一个预设答案（HyDE），连着问题带答案去检索</li>
+                            <li>数据入库时使用大模型对对应 chunk 上下文进行一个总结，后续检索排序时都带上这个总结</li>
+                            <li>是否可以用自有数据对一个小模型进行微调，既能保证生成速度不会太慢，又能让生成内容更好地命中数据库。但这需要考虑各种成本，对于我们这小项目来讲无论是训练还是推理成本都太高，ROI 太低</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title">④ 领域内微调</div>
+                        <p style="font-size: 14px; color: #64748b;">
+                            将领域内的专业名词聚合成一个词表，用于提高分词和 bm25 检索的准确度。或者是用领域内数据对 embedding、rerank 模型微调，同样因为成本问题没有尝试，但是想来应该也会有一些提升。
+                        </p>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+            <div class="article-nav">
+                <a href="../">&larr; 返回文章列表</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 程愚瀚 · Built with &hearts;
+    </footer>
+
+    <script src="../../资源/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function updateNav() {
+                var sections = document.querySelectorAll('.project-card[id]');
+                var subTargets = document.querySelectorAll('[id="sub-tried"],[id="sub-untried"]');
+                var navLinks = document.querySelectorAll('.sidebar nav a');
+                var current = '';
+                sections.forEach(function(s) {
+                    var top = s.offsetTop - 130;
+                    var bottom = top + s.offsetHeight;
+                    if (window.scrollY >= top && window.scrollY < bottom) {
+                        current = s.getAttribute('id');
+                    }
+                });
+                subTargets.forEach(function(s) {
+                    var top = s.offsetTop - 130;
+                    var bottom = top + s.offsetHeight;
+                    if (window.scrollY >= top && window.scrollY < bottom) {
+                        current = s.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(function(link) {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+            window.addEventListener('scroll', updateNav);
+            window.addEventListener('load', updateNav);
+            updateNav();
+        });
+    </script>
+</body>
+</html>
