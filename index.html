@@ -25,9 +25,9 @@
         <nav>
             <a href="#hero" class="active"><span class="dot"></span> 首页</a>
             <a href="#skills"><span class="dot"></span> 技术栈</a>
-            <a href="#philosophy"><span class="dot"></span> 设计理念</a>
+            <a href="#philosophy"><span class="dot"></span> 项目亮点</a>
             <a href="#project-rag"><span class="dot"></span> Agentic RAG</a>
-            <a href="#project-workflow"><span class="dot"></span> 可视化任务编排</a>
+            <a href="#project-workflow"><span class="dot"></span> 可视化任务编排与执行系统</a>
             <a href="#project-myclaw"><span class="dot"></span> MyClaw</a>
             <a href="#contact"><span class="dot"></span> 联系方式</a>
         </nav>
@@ -166,7 +166,7 @@
                     <div style="background: #ffffff; border: 1px solid #e9edf4; border-radius: 12px; padding: 20px 24px;">
                         <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 6px;">1. 辅助编程层面</div>
                         <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
-                            对基于 SDD 利用 AI 辅助编程比较熟练，简历上展示的项目 99% 都是 vibecoding 出来的，
+                            对基于 <a href="文章/posts/从VibeCoding到SDD.html" style="color: #4f46e5; text-decoration: underline; text-underline-offset: 2px;">SDD</a> 利用 AI 辅助编程比较熟练，简历上展示的项目 99% 都是 vibecoding 出来的，
                             能够熟练利用 coding 工具，写出高质量的代码。
                         </p>
                     </div>
@@ -192,40 +192,66 @@
             </div>
         </section>
 
-        <!-- ===== 三个项目的设计理念 ===== -->
+        <!-- ===== 项目亮点 ===== -->
         <section id="philosophy">
-            <div class="section-label">Philosophy</div>
-            <h2 class="section-title">三个项目的设计理念</h2>
+            <div class="section-label">Highlights</div>
+            <h2 class="section-title">项目亮点</h2>
 
-            <div class="project-card" style="margin-bottom: 0;">
-                <p class="project-desc">
-                    三个项目遵循<strong>最小化隔离化</strong>原则，每个功能独立拆分，职责清晰。
-                </p>
-
-                <div class="highlight-points">
-                    <div class="point">
-                        <span class="badge badge-blue">拆分原则</span>
-                        <span>每个功能模块独立实现，互不耦合，便于维护、测试与迭代。</span>
-                    </div>
-                    <div class="point">
-                        <span class="badge badge-green">技术方向</span>
-                        <span><strong>Workflow 框架</strong>（自研）— <strong>Agentic RAG</strong> — <strong>MyClaw</strong>（主打长期记忆）</span>
-                    </div>
-                    <div class="point">
-                        <span class="badge badge-purple">测评维度</span>
-                        <span>三个项目针对不同维度做了量化测评：<strong>Agent 测评</strong>（Workflow 任务完成度）、<strong>RAG 测评</strong>（召回率与忠实度）、<strong>长期记忆测评</strong>（不同记忆策略效果对比）。</span>
+            <!-- 亮点 1：创新实现 -->
+            <div class="project-card" style="padding: 44px 44px; margin-bottom: 28px; border-left: 4px solid #4f46e5;">
+                <div style="display: flex; gap: 24px; align-items: flex-start;">
+                    <div style="flex-shrink: 0; width: 60px; height: 60px; border-radius: 16px; background: linear-gradient(135deg, #4f46e5, #7c3aed); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 26px; font-weight: 800; box-shadow: 0 4px 16px rgba(79,70,229,0.25);">01</div>
+                    <div style="flex: 1;">
+                        <div style="font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 16px; letter-spacing: -0.3px;">
+                            <span style="display: inline-block; padding: 3px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #eef2ff; color: #4f46e5; vertical-align: middle; margin-right: 12px;">创新实现</span>
+                            不止于调 API，我交出了自己的方案
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 16px;">
+                            <div style="padding: 18px 22px; background: #f8f9fc; border-radius: 12px; border-left: 3px solid #7c3aed;">
+                                <div style="font-weight: 700; color: #4f46e5; font-size: 16px; margin-bottom: 6px;">可视化任务编排与执行系统</div>
+                                <div style="font-size: 15px; color: #475569; line-height: 1.8;">针对 Agent 任务偏移、遗漏问题，提出了自己的创新思路，自研了一套适配的 Workflow 框架——通过 DAG 驱动代替 Master 集中调度，实现规划与执行彻底解耦，从架构层面保证 Agent 行为确定化。</div>
+                            </div>
+                            <div style="padding: 18px 22px; background: #f8f9fc; border-radius: 12px; border-left: 3px solid #7c3aed;">
+                                <div style="font-weight: 700; color: #4f46e5; font-size: 16px; margin-bottom: 6px;">MyClaw — 模拟人生</div>
+                                <div style="font-size: 15px; color: #475569; line-height: 1.8;">创新性地设计了"模拟人生"策略——五级生活线体系、双 Agent 协作、时间感知与空间锚定，让对话 Agent 拥有连贯的"内在生活"，显著提升拟人化程度。</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div style="background: #f5f3ff; border: 1px solid #e0d4fc; border-radius: 16px; padding: 28px 32px; margin-top: 24px; font-size: 14px; color: #4c1d95; line-height: 1.8;">
-                <div style="font-size: 13px; font-weight: 600; color: #7c3aed; margin-bottom: 12px; letter-spacing: 1px;">我的想法</div>
-                <p style="margin: 0;">
-                    做项目越到后面，越感觉像是在菜市场挑菜——从别人的简历上挑一个还算新鲜的亮点，放到自己的简历上。尤其是现在这个 AI 时代，一句话就能让工具帮我落地任何一个技术点。但这些没有一条是我想出来的，也没有一条让我觉得非用它不可。
-                </p>
-                <p style="margin: 12px 0 0 0;">
-                    所以到最后，我在这份简历上压了又压、删了很多常规的优化方案，只留下了几条我觉得确实有自己的想法、做起来也挺有意思的实现：主要包括 <strong>Workflow 的架构设计</strong>、<strong>MyClaw 的模拟人生设计</strong>。
-                </p>
+            <!-- 亮点 2：全维度测评 -->
+            <div class="project-card" style="padding: 44px 44px; border-left: 4px solid #059669;">
+                <div style="display: flex; gap: 24px; align-items: flex-start;">
+                    <div style="flex-shrink: 0; width: 60px; height: 60px; border-radius: 16px; background: linear-gradient(135deg, #059669, #10b981); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 26px; font-weight: 800; box-shadow: 0 4px 16px rgba(5,150,105,0.25);">02</div>
+                    <div style="flex: 1;">
+                        <div style="font-size: 24px; font-weight: 800; color: #0f172a; margin-bottom: 14px; letter-spacing: -0.3px;">
+                            <span style="display: inline-block; padding: 3px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #ecfdf5; color: #059669; vertical-align: middle; margin-right: 12px;">全维度测评</span>
+                            不靠嘴说，用数据说话
+                        </div>
+                        <p style="font-size: 15px; color: #475569; line-height: 1.8; margin: 0 0 18px 0;">
+                            针对 <strong>Agent 任务执行</strong>、<strong>长期记忆</strong>、<strong>RAG</strong> 三个方向均进行了详细的量化测评。特别地，对 RAG 的检索与生成环节、以及任务编排项目的编排能力，均进行了 <strong>消融实验</strong>，每一步优化的效果清晰可见，让您能完整看到我的优化流程与决策依据。
+                        </p>
+                        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                            <div style="padding: 12px 18px; background: #f1f4f9; border-radius: 10px; font-size: 14px; line-height: 1.6;">
+                                <span style="font-weight: 700; color: #4f46e5;">RAG 检索</span><br>
+                                <span style="color: #64748b; font-size: 13px;">4 轮消融，recall_cap@5 从 68.4% → 81.2%</span>
+                            </div>
+                            <div style="padding: 12px 18px; background: #f1f4f9; border-radius: 10px; font-size: 14px; line-height: 1.6;">
+                                <span style="font-weight: 700; color: #4f46e5;">RAG 生成</span><br>
+                                <span style="color: #64748b; font-size: 13px;">3 轮消融，忠实度 72% → 96%</span>
+                            </div>
+                            <div style="padding: 12px 18px; background: #f1f4f9; border-radius: 10px; font-size: 14px; line-height: 1.6;">
+                                <span style="font-weight: 700; color: #4f46e5;">Agent 任务编排</span><br>
+                                <span style="color: #64748b; font-size: 13px;">DAG 构建正确率 97%，并行效率优化 -23% 耗时</span>
+                            </div>
+                            <div style="padding: 12px 18px; background: #f1f4f9; border-radius: 10px; font-size: 14px; line-height: 1.6;">
+                                <span style="font-weight: 700; color: #4f46e5;">长期记忆</span><br>
+                                <span style="color: #64748b; font-size: 13px;">4 维测评，Hindsight 方案全面领先</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -252,7 +278,7 @@
                 <div style="margin-bottom: 20px;">
                     <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">1. 召回率优化 — 提升召回率</div>
                     <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
-                        为了提升召回率，对整条流水线进行了全链路优化：<strong>上传阶段</strong>采用两级四层分片策略；<strong>检索阶段</strong>采用问题改写 + 双路召回（向量 + 关键词）；<strong>排序阶段</strong>采用 RRF 融合策略 + ReRank 重排。经过这些优化，recall_cap@5 从 <strong>68.4%</strong> 提升至 <strong>81.2%</strong>。
+                        为了提升召回率，对整条流水线进行了全链路优化：<strong>上传阶段</strong>采用两级四层分片策略；<strong>检索阶段</strong>采用问题改写 + 双路召回（稠密向量 + 稀疏向量）；<strong>排序阶段</strong>采用 RRF 融合策略 + ReRank 重排。经过这些优化，recall_cap@5 从 <strong>68.4%</strong> 提升至 <strong>81.2%</strong>。
                     </p>
                 </div>
 

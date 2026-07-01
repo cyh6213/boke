@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>从 Vibe Coding 到 SDD：我的 AI 辅助编程工程化实践 | 程愚瀚</title>
+    <link rel="stylesheet" href="../../资源/css/style.css" />
+    <style>
+        .post { max-width: 800px; margin: 0 auto; padding: 120px 40px 80px; }
+        .post h1 { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.3; margin-bottom: 8px; }
+        .post .post-meta { font-size: 13px; color: #94a3b8; margin-bottom: 40px; }
+        .post h2 {
+            font-size: 22px; font-weight: 700; color: #0f172a;
+            margin-top: 48px; margin-bottom: 16px;
+            padding-bottom: 8px; border-bottom: 2px solid #eef2ff;
+        }
+        .post h3 { font-size: 17px; font-weight: 700; color: #0f172a; margin-top: 28px; margin-bottom: 10px; }
+        .post h4 { font-size: 15px; font-weight: 700; color: #4f46e5; margin-top: 24px; margin-bottom: 8px; }
+        .post p, .post li { font-size: 15px; color: #475569; line-height: 1.9; }
+        .post p { margin-bottom: 14px; }
+        .post ul, .post ol { padding-left: 20px; margin-bottom: 16px; }
+        .post li { margin-bottom: 6px; }
+        .post strong { color: #0f172a; }
+        .post blockquote {
+            border-left: 4px solid #4f46e5; background: #f8f9fc;
+            padding: 14px 20px; margin: 20px 0; border-radius: 0 8px 8px 0;
+            font-size: 14px; color: #475569;
+        }
+        .post pre {
+            background: #1e293b; color: #e2e8f0; padding: 16px 20px;
+            border-radius: 10px; overflow-x: auto; font-size: 13px;
+            line-height: 1.6; margin-bottom: 16px;
+        }
+        .post code { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+        .post :not(pre) > code {
+            background: #f1f4f9; padding: 2px 8px; border-radius: 4px;
+            font-size: 14px; color: #4f46e5;
+        }
+        .post .callout {
+            padding: 16px 20px; border-radius: 10px; margin: 20px 0;
+            font-size: 14px; line-height: 1.8;
+        }
+        .post .callout-tip { background: #ecfdf5; border-left: 4px solid #10b981; }
+        .post .callout-warn { background: #fff7ed; border-left: 4px solid #f59e0b; }
+        .post .callout-danger { background: #fef2f2; border-left: 4px solid #ef4444; }
+        .post table {
+            width: 100%; border-collapse: collapse; font-size: 14px;
+            margin-bottom: 16px;
+        }
+        .post th {
+            background: #f1f4f9; padding: 10px 14px; text-align: left;
+            font-weight: 700; color: #0f172a; border-bottom: 2px solid #e2e8f0;
+        }
+        .post td {
+            padding: 10px 14px; border-bottom: 1px solid #e9edf4; color: #475569;
+        }
+        .post .tag {
+            display: inline-block; padding: 3px 12px; border-radius: 20px;
+            font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;
+            margin-right: 6px; margin-bottom: 6px;
+        }
+        .post .highlight-box {
+            background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+            border: 1px solid #c7d2fe; border-radius: 12px;
+            padding: 20px 24px; margin: 20px 0;
+        }
+        .post .timeline { position: relative; padding-left: 24px; margin: 20px 0; }
+        .post .timeline::before {
+            content: ''; position: absolute; left: 8px; top: 0; bottom: 0;
+            width: 2px; background: #e2e8f0;
+        }
+        .post .timeline-item {
+            position: relative; margin-bottom: 24px; padding-left: 20px;
+        }
+        .post .timeline-item::before {
+            content: ''; position: absolute; left: -20px; top: 8px;
+            width: 12px; height: 12px; border-radius: 50%;
+            background: #4f46e5; border: 2px solid #f8f9fc;
+        }
+        .post .timeline-item .tl-label { font-size: 13px; color: #4f46e5; font-weight: 700; }
+
+        .sidebar-sub { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #64748b; text-decoration: none; transition: all 0.2s; }
+        .sidebar-sub:hover { background: #f1f4f9; color: #0f172a; }
+        .sidebar-sub.active { background: #eef2ff; color: #4f46e5; }
+        .sidebar-sub .dot { width: 4px; height: 4px; border-radius: 50%; background: #cbd5e1; flex-shrink: 0; transition: background 0.2s; }
+        .sidebar-sub:hover .dot { background: #4f46e5; }
+        .sidebar-sub.active .dot { background: #4f46e5; }
+        .sidebar-sub-group { margin: 2px 0 6px 20px; border-left: 2px solid #e2e8f0; padding-left: 6px; }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <a href="../../" class="nav-brand">程愚瀚</a>
+        <div class="nav-links">
+            <a href="../../">首页</a>
+            <a href="../" class="active">文章</a>
+            <a href="../../项目/">项目</a>
+        </div>
+    </nav>
+
+    <aside class="sidebar">
+        <div class="name">程愚瀚</div>
+        <div class="title">Java 后端和 agent 开发</div>
+        <nav>
+            <a href="#sdd-intro" class="active"><span class="dot"></span> 什么是SDD</a>
+            <a href="#section1"><span class="dot"></span> 我的三个阶段</a>
+            <div class="sidebar-sub-group">
+                <a href="#stage0" class="sidebar-sub"><span class="dot"></span> 纯复制粘贴</a>
+                <a href="#stage1" class="sidebar-sub"><span class="dot"></span> 纯Vibe Coding</a>
+                <a href="#stage2" class="sidebar-sub"><span class="dot"></span> 初试SDD</a>
+                <a href="#stage3" class="sidebar-sub"><span class="dot"></span> 系统化SDD</a>
+            </div>
+            <a href="#section2"><span class="dot"></span> 完整工作流</a>
+            <div class="sidebar-sub-group">
+                <a href="#init" class="sidebar-sub"><span class="dot"></span> 项目初始化</a>
+                <a href="#cycle" class="sidebar-sub"><span class="dot"></span> 功能实现循环</a>
+                <a href="#test-section" class="sidebar-sub"><span class="dot"></span> 测试验证</a>
+            </div>
+            <a href="#section3"><span class="dot"></span> Rules文件</a>
+            <div class="sidebar-sub-group">
+                <a href="#layer-table" class="sidebar-sub"><span class="dot"></span> 三层定位</a>
+                <a href="#file-structure" class="sidebar-sub"><span class="dot"></span> 完整结构</a>
+            </div>
+            <a href="#section4"><span class="dot"></span> 审查策略</a>
+            <a href="#section5"><span class="dot"></span> 踩过的坑</a>
+            <div class="sidebar-sub-group">
+                <a href="#pit1" class="sidebar-sub"><span class="dot"></span> 需求不清晰</a>
+                <a href="#pit2" class="sidebar-sub"><span class="dot"></span> 跳过确认</a>
+                <a href="#pit3" class="sidebar-sub"><span class="dot"></span> 没耐心看输出</a>
+                <a href="#pit4" class="sidebar-sub"><span class="dot"></span> AI偷换方案</a>
+                <a href="#pit5" class="sidebar-sub"><span class="dot"></span> 没版本控制</a>
+            </div>
+        </nav>
+    </aside>
+
+    <div class="main">
+        <article class="post">
+
+            <h1>从 Vibe Coding 到 SDD：我的 AI 辅助编程工程化实践</h1>
+            <div class="post-meta">
+                <span>2026 年 6 月 29 日</span>
+                <span style="margin: 0 10px;">·</span>
+                <span class="tag">AI 编程</span>
+                <span class="tag">SDD</span>
+                <span class="tag">Vibe Coding</span>
+            </div>
+
+            <!-- ===== 什么是 SDD ===== -->
+            <h2 id="sdd-intro">什么是 SDD？</h2>
+            <p>规范驱动开发（Spec-Driven Development），也就是先写规格文档——包括需求分析、技术方案、各种 rule——然后再生成代码的开发模式。其实想一下也知道，我们想让人完成一个项目需要什么，那让 agent 完成一个项目也就需要什么。如果像 vibe coding 一样，只告诉它一个很模糊的需求，那就很难得到你想要的结果。</p>
+
+            <hr>
+
+            <!-- ===== 一、从哪里开始 ===== -->
+            <h2 id="section1">一、从哪里开始：我的三个阶段</h2>
+
+            <h3 id="stage0">阶段 0：纯复制粘贴——从豆包起步</h3>
+            <p>最开始甚至不是在编辑器里写代码，而是用豆包生成代码片段，手动复制到项目里。</p>
+
+            <h3 id="stage1">阶段 1：纯 Vibe Coding——开盲盒</h3>
+            <p>最开始我的做法很简单：告诉 AI 要实现什么功能，它就开始跑了。架构没有、文档没有、测试没有。</p>
+            <p>结果就是：</p>
+            <ul>
+                <li>对生成的代码完全没有安全感，出了问题也不知道怎么排查</li>
+                <li>上下文腐烂——聊着聊着 AI 忘了前面说过什么</li>
+                <li>版本管理没做好，有的功能实现了没保存下来</li>
+                <li>改其他功能的时候把原本好的代码也改烂了</li>
+                <li>最后的结局：<strong>重开</strong></li>
+            </ul>
+
+            <h3 id="stage2">阶段 2：初试 SDD——依赖 skill，但走得磕磕绊绊</h3>
+            <p>第二次我开始有意识地往 SDD 方向靠。我找到了 superpowers.skill，觉得它应该能帮我解决所有问题——设计规范、拆分任务、管理流程。我的想法是：我只要依赖这个 skill，它就能告诉我什么时候该做什么。</p>
+            <p>但实际上它做不到。它只能对单个功能做 plan 生成，缺乏全局的需求分析，也不会主动记录 coding 日志。每次完成一个 task 我需要手动要求它记录变更。更本质的问题是：<strong>我对 SDD 整体的理解还不够，不知道一个完整的规范驱动流程应该长什么样，所以也不知道这个 skill 到底缺了什么。</strong></p>
+            <p>经验是：<strong>流程得放在自己脑子里，而不是完全依赖一个 skill</strong>。如果一个工具不能补齐你对整个流程的认知，那就没法用好它。</p>
+
+            <h3 id="stage3">阶段 3：系统化 SDD——流程内化到脑子里</h3>
+            <p>到了第三次，我不再依赖某个具体的 skill 或框架了。那段时间从腾讯、阿里、得物等大厂的公众号学习了大量关于 Spec Coding / SDD 的经验文章，找到了很多模板和资源。结合这些资料和自己的实践，我彻底理清了用 SDD 需要做哪些事情：</p>
+            <ol>
+                <li><strong>定义项目格式</strong>：不仅是代码文件怎么组织，还包括文档文件放在哪——需求文档、修改记录、技术方案等。</li>
+                <li><strong>建立规则体系</strong>：把编码规范、架构约束、开发流程写进 rules 文件。</li>
+                <li><strong>让 AI 按文档执行</strong>：通过 rules 文件要求 AI 在编码前先读取所有相关文档，严格按照文档内容来实现。</li>
+            </ol>
+
+            <hr>
+
+            <!-- ===== 二、我的完整工作流 ===== -->
+            <h2 id="section2">二、我的完整工作流</h2>
+            <p>我把完整流程分为三部分：项目初始化、功能实现+测试验证（循环）。</p>
+
+            <hr>
+
+            <h4 id="init">1. 项目初始化（每个项目只做一次）</h4>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="tl-label">Step 1 — 定义项目文件架构</div>
+                    <p>在编码之前，先规定好文档放在哪里。我的目录：</p>
+                    <pre>
+docs/
+├── requirements/          # 需求分析
+├── architecture/          # 整体技术方案
+├── changes/               # 每一个变更的独立目录
+│   ├── spec.md            # 规范文档
+│   ├── tasks.md           # 任务拆分
+│   └── log.md             # 执行日志
+├── rules/                 # 规则体系（三层）
+└── templates/             # 文档模板</pre>
+                </div>
+                <div class="timeline-item">
+                    <div class="tl-label">Step 2 — 定义三层 Rules</div>
+                    <p>借鉴于得物的规则体系，rule 可以分为三层：</p>
+                    <ul>
+                        <li><strong>基础层</strong>：解决代码本身的质量问题，包括命名规范、注释格式、安全红线、代码复杂度控制等。这一层是底线，所有代码必须遵守。</li>
+                        <li><strong>模块层</strong>：解决代码架构的组织问题，按照前端分层架构（表现层 → 业务逻辑层 → 数据服务层 + 路由层）约束各模块的职责边界。</li>
+                        <li><strong>流程层</strong>：解决业务开发的效率与一致性问题，它把前面两层规则整合起来，为 AI 提供"场景说明书"——比如开发一个 CRUD 页面，需要按什么步骤来、每一步要调用哪些基础规范和模块规范。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="callout callout-tip">
+                <strong>关于哪些东西可以积累复用：</strong> 我把所有不属于代码的文档分为两类。<br><br>
+                <strong>第一类是可以跨项目复用的 rule 和模板</strong>——这部分可以不断迭代浓缩。基础层的命名规范、安全红线，模块层的分层架构约束，流程层的开发流程规则，这些写一次就能在所有项目里通用。做得越久，这套规则就越完善。<br><br>
+                <strong>第二类是每个项目独有的内容</strong>——需求分析、技术方案、变更记录、执行日志。这些是项目的"活档案"，随着项目的开发而记录。
+            </div>
+
+            <hr>
+
+            <h4 id="cycle">2. 功能实现循环（每次做一个功能时反复执行）</h4>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="tl-label">Step 3 — 头脑风暴确定整体需求</div>
+                    <p>用 AI 的脑暴功能，先把整个项目的需求聊清楚。</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="tl-label">Step 4 — 逐个确认设计文档</div>
+                    <p>每一个变更开始前：需求文档 → 技术方案 → 评审方案 → 确认后才开始编码。</p>
+                    <div class="callout callout-tip">
+                        <strong>我的一个额外补充：</strong> 我觉得有一个特别需要注意的地方——设计阶段就要想好验证策略，怎么确认这个变更达到了预期效果？这一点在 Agent 开发中尤其重要，不是每次修改都能达到你想要的效果，有时候你设计的策略 AI 根本没执行，或者执行了但没起作用。所以验证不能只是"跑一下不报错"，而是要确认你预期的策略真的被用上了、真的生效了。
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="tl-label">Step 5 — 分步执行 + 强制记录</div>
+                    <p>每个 task 完成后必须更新 <code>log.md</code>，记录做了什么、改了哪些文件、碰到的坑。</p>
+                    <div class="callout callout-tip">
+                        <strong>我的感受：</strong> 把这些详细的记录落到文件里，会极大地增强对代码的自信心和了解程度。以前 vibe coding 的时候跟开盲盒一样，不清楚哪一个类是干什么的。有了文档和 log，每一行代码都有来处。
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <h4 id="test-section">3. 测试验证（每次实现后进行）</h4>
+            <p>每个功能实现后，必须进行测试。测试通过后才能合并。具体的测试策略和审查标准在后面的章节会详细展开。</p>
+
+            <hr>
+
+            <!-- ===== 三、我的 Rules 文件 ===== -->
+            <h2 id="section3">三、我的 Rules 文件（三层结构详解）</h2>
+            <p>这套结构参考了得物公开的规则体系。</p>
+
+            <h3 id="layer-table">三层规则的定位</h3>
+            <table>
+                <tr><th>层级</th><th>解决什么问题</th><th>包括什么</th></tr>
+                <tr>
+                    <td><strong>基础层</strong></td>
+                    <td>代码本身的质量问题，这一层是底线，所有代码必须遵守</td>
+                    <td>命名规范、注释格式、安全红线、代码复杂度控制</td>
+                </tr>
+                <tr>
+                    <td><strong>模块层</strong></td>
+                    <td>代码架构的组织问题，按分层架构约束各模块的职责边界</td>
+                    <td>表现层（组件/页面）、业务逻辑层（状态管理/工具函数）、数据服务层（API/配置）</td>
+                </tr>
+                <tr>
+                    <td><strong>流程层</strong></td>
+                    <td>业务开发的效率与一致性问题，整合前两层为 AI 提供"场景说明书"</td>
+                    <td>一个完整功能的开发步骤，每一步调用对应的基础和模块规则</td>
+                </tr>
+            </table>
+            <p>关键区别：<strong>流程层调用并整合了基础和模块层的规则</strong>，将它们应用于一个具体的业务场景中，为 AI 提供了一个"场景说明书"，使其能按步骤、高质量地完成复杂的业务功能开发。</p>
+
+            <h3 id="file-structure">完整文件结构</h3>
+            <pre>
+.cursor/rules/
+├── ai.mdc              # AI协作总纲（顶层调度）
+├── basic/              # 基础规范目录
+│   ├── basic.mdc            # 项目基础规范（目录结构、技术栈、开发流程）
+│   ├── code-quality.mdc     # 代码质量控制（复杂度限制、安全性要求）
+│   ├── ts.mdc               # TypeScript规范（类型定义、严格模式）
+│   ├── style.mdc            # 样式规范（CSS/Less编写标准）
+│   ├── comment.mdc          # 注释规范（JSDoc格式、文件头注释）
+│   ├── code-names.mdc       # 命名规范（变量、函数、组件命名约定）
+│   └── lint.mdc             # 代码检查（ESLint、Prettier配置）
+├── modules/            # 模块规范目录
+│   ├── components.mdc       # 表现层：组件规范
+│   ├── pages.mdc            # 表现层：页面规范
+│   ├── hooks.mdc            # 业务逻辑层：状态管理
+│   ├── utils.mdc            # 业务逻辑层：工具函数
+│   ├── service.mdc          # 数据服务层：API接口
+│   ├── constants.mdc        # 数据服务层：配置管理
+│   └── route.mdc            # 路由层：路由配置和导航
+└── workflow/           # 流程规范目录
+    ├── curd-page.mdc        # CRUD页面开发完整流程
+    ├── log.mdc              # 错误监控和日志处理流程
+    └── send-buried.mdc      # 用户行为埋点标准流程</pre>
+
+            <h3>顶层调度：ai.mdc</h3>
+            <p>最上层的是 <code>ai.mdc</code>，它像总纲一样统一调度所有规则：</p>
+            <pre>
+# AI协作执行规则
+## 规则分类
+- basic/下的通用规则: 必须调用，通用基础规范
+- modules/下的模块规则: 按需调用，架构分层规范
+- workflow/下的流程规则: 按需调用，业务场景规范
+
+## 执行流程
+1. 识别场景 → 调用相关规则
+2. 读取示例代码 → 作为生成参考
+3. 执行强制/禁止行为 → 确保代码质量
+
+## 质量保障
+所有规则必须100%执行，重点关注强制行为和禁止行为</pre>
+
+            <p>这三层 rule 写一次就能复用到所有项目，越积累越完善。到你真正需要某个场景的流程规范时，直接去 workflow/ 目录下找一个用就行，不需要每新建一个项目都从零开始写规则。</p>
+
+            <hr>
+
+            <!-- ===== 四、我的代码审查策略 ===== -->
+            <h2 id="section4">四、我的代码审查策略（随着 AI 能力在变）</h2>
+
+            <p>审查的方式其实一直在变。早期用 AI 写代码时，它真的会写出有语法错误、调用不存在 API 的代码，所以那时候审查重点在"代码有没有写对"。但现在的大模型已经不太会犯这种低级错误了，要它写出一个编译报错的代码反而变得困难。</p>
+            <p>所以现在我的审查重点不一样了。</p>
+
+            <h3>以前我检查的（现在基本不需要了）</h3>
+            <ul>
+                <li>代码有没有语法错误 → 大模型基本不会写错了</li>
+                <li>API 调用是否真实存在 → 已经很少编造了</li>
+                <li>安全漏洞 → 基础防护已经做得不错</li>
+                <li>逻辑对不对 → 简单的逻辑基本正确</li>
+            </ul>
+
+            <h3>现在我检查的</h3>
+            <ol>
+                <li><strong>变更真的生效了吗？</strong> 我最常遇到的情况是：跟 AI 说完需求它就开始改，改完之后看起来都对了，但实际上那个修改根本没有运行起来。所以第一件事就是验证——"这个改动，运行了吗？"</li>
+                <li><strong>代码是不是太长了？</strong> AI 特别喜欢把简单事情复杂化——一个两行的判断它能拆成三个函数加一个类。每次看到大段新增代码，我都会问自己：这个真的需要写这么多吗？</li>
+                <li><strong>有没有不必要的抽象？</strong> AI 喜欢提前抽象、过度设计。明明只有一个使用场景，它已经给你准备了接口、工厂、策略模式全套。</li>
+                <li><strong>有没有产生重复代码？</strong> AI 不知道项目里已有的工具函数写了什么，经常会自己重新实现一遍。</li>
+                <li><strong>有没有破坏已有的代码风格？</strong> AI 每次生成代码的写法可能都不一样，同一个项目里会出现多种风格混在一起。</li>
+                <li><strong>改动范围是否合理？</strong> 一个简单的需求，AI 可能会顺手改了十个不相关的文件。需要确认每个改动都是必要且合理的。</li>
+            </ol>
+
+            <hr>
+
+            <!-- ===== 五、踩过的坑 ===== -->
+            <h2 id="section5">五、踩过的坑</h2>
+
+            <h3 id="pit1">坑 1：需求不清晰</h3>
+            <p>最开始跟 AI 描述需求时太模糊，没有写清楚要做什么、做到什么程度。导致 AI 理解偏差，做出来的东西不是我想要的。后来改成在编码前先把需求落到文档里，双方对齐后再动手。</p>
+
+            <h3 id="pit2">坑 2：AI 跳过确认直接执行</h3>
+            <p>agent经常在我还没有确认试下方案时就直接开始执行了。这说明rules时不可靠的，还需要我们自己清楚步骤是什么，人工主导流程。</p>
+
+            <h3 id="pit3">坑 3：没有耐心看 AI 的输出</h3>
+            <p>这是我自己最大的问题。不管是让 AI 出一个方案，还是看它执行完的返回，我经常扫两眼感觉差不多就点确认了，根本没有仔细看完。结果等到它跑完了才发现，原来它那个方案有问题，或者它理解错了我的意思。我的经验是：<strong>每次 AI 输出后，强迫自己从头到尾看完</strong>。不管它输出多长，方案也好、改完代码的反馈也好，别跳过。你省下来的那两分钟，后面可能要花两个小时去 debug。</p>
+
+            <h3 id="pit4">坑 4：AI 偷摸换了方案不告诉你</h3>
+            <p>有时候让它实现一个方案，它写着写着发现那个方案有问题，就自己悄悄换成了另一种方案。但它不会主动告诉你它换了——你如果不仔细看它的执行输出，根本发现不了。所以必须养成习惯：<strong>每次 AI 执行完任务，仔细看它返回的内容</strong>，别跳过。不然你以为它在做 A，实际上它在做 B。</p>
+
+            <h3 id="pit5">坑 5：我没有版本控制意识</h3>
+            <p>前两次尝试时没有养成"修改前先 commit"的习惯，导致 AI 改坏了代码后无法回退。</p>
+
+            <hr>
+
+            <p>如果你对文章中的某个部分感兴趣，或者有更好的实践经验想交流，欢迎联系我。</p>
+
+        </article>
+    </div>
+
+    <footer>
+        &copy; 2026 程愚瀚 · Built with &hearts;
+    </footer>
+
+<script src="../../资源/js/main.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        function updateProjectNav() {
+            var cards = document.querySelectorAll('h2[id], h3[id], h4[id]');
+            var navLinks = document.querySelectorAll('.sidebar nav a, .sidebar-sub');
+            var current = '';
+            cards.forEach(function(c) {
+                var top = c.offsetTop - 130;
+                var bottom = top + c.offsetHeight;
+                if (window.scrollY >= top && window.scrollY < bottom) {
+                    current = c.getAttribute('id');
+                }
+            });
+            navLinks.forEach(function(link) {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        window.addEventListener('scroll', updateProjectNav);
+        window.addEventListener('load', updateProjectNav);
+        updateProjectNav();
+    });
+</script>
+</body>
+</html>

@@ -172,7 +172,7 @@
                             </div>
                             <div style="padding: 6px 14px; background: #f8fafc; border-left: 3px solid #7c3aed; border-radius: 0 8px 8px 0;">
                                 <span style="font-size: 12px; font-weight: 600; color: #7c3aed;">检索阶段</span>
-                                <div style="font-size: 13px; color: #475569; line-height: 1.6;">采用问题改写 + 双路召回（向量 + 关键词）</div>
+                                <div style="font-size: 13px; color: #475569; line-height: 1.6;">采用问题改写 + 双路召回（稠密向量 + 稀疏向量）</div>
                             </div>
                             <div style="padding: 6px 14px; background: #f8fafc; border-left: 3px solid #d97706; border-radius: 0 8px 8px 0;">
                                 <span style="font-size: 12px; font-weight: 600; color: #d97706;">排序阶段</span>
@@ -658,7 +658,7 @@
                 </div>
 
                 <div style="padding: 12px 16px; background: #f8fafc; border-left: 3px solid #7c3aed; border-radius: 0 8px 8px 0; margin-bottom: 10px;">
-                    <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 6px;">向量检索的原理</div>
+                    <div style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">向量检索的原理</div>
                     <div style="font-size: 13px; color: #475569; line-height: 1.7;">
                         <div style="margin-bottom: 4px;">长度代表内容的多少，信息量的大小</div>
                         <div style="margin-bottom: 4px;">角度代表语义</div>
@@ -669,7 +669,7 @@
                 </div>
 
                 <div style="padding: 12px 16px; background: #f8fafc; border-left: 3px solid #7c3aed; border-radius: 0 8px 8px 0; margin-bottom: 10px;">
-                    <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 6px;">BM25原理</div>
+                    <div style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">BM25 原理</div>
                     <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 6px 0;">
                         ES 默认的关键词相关性算法，根据词频、文档长度计算匹配度。会通过两个关键词控制匹配度：
                     </p>
@@ -680,26 +680,25 @@
                 </div>
 
                 <div style="padding: 12px 16px; background: #f8fafc; border-left: 3px solid #7c3aed; border-radius: 0 8px 8px 0; margin-bottom: 10px;">
-                    <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 6px;">稀疏索引、稠密索引与关键词检索的区别</div>
+                    <div style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">稀疏索引、稠密索引与关键词检索的区别</div>
                     <div style="font-size: 13px; color: #475569; line-height: 1.7;">
 
-                        <div style="margin-bottom: 8px;"><strong>● 稠密索引（Dense）：</strong>用 Embedding 模型将文本映射到低维稠密向量（如 768 维、1024 维），每个维度不对应具体词语，而是抽象的语义特征。语义匹配能力强，但需要大量训练数据，且无法精确匹配关键词。</div>
+                        <div style="margin-bottom: 8px;"><strong>● 稠密向量：</strong>是把文本压缩成一个固定维度（如 2048 维）的浮点数向量，每个维度"均匀分摊"了语义信息，你很难说哪一个维度对应哪个词。它的优势是能理解"猫 vs 狗是相似的"这种语义相似度，缺点是精确匹配差——搜"鲁迅"可能把"周树人"拉进来，但搜"红烧肉"不会把和它同在一个文档里的"糖色"关联上。</div>
 
-                        <div style="margin-bottom: 8px;"><strong>● 关键词检索（BM25）：</strong>基于词频统计的精确匹配算法，只计算查询词与文档中相同词的匹配程度。速度快、可解释性强，但无法理解同义词、近义词等语义关系，遇到"苹果"和"iPhone"这种相关的词就匹配不上。</div>
+                        <div style="margin-bottom: 8px;"><strong>● 稀疏向量：</strong>是把文本映射成一个超高维（几万到几十万维）的向量，但大部分维度是 0，只有少数维度有值。每一个维度对应一个具体的词或 token，值表示这个词的重要性（类似 TF-IDF 的权重）。所以它既保留了关键词级别的精确匹配能力（因为 apple 这个词的维度就是 apple，不会跟 fruit 混在一起），又具备向量空间的距离计算能力（可以计算"猫狗"在高维空间的余弦相似度）。比 BM25 强的地方在于它可以用学习到的词权重，而不是纯统计的 IDF。</div>
 
-                        <div style="margin-bottom: 8px;"><strong>● 稀疏索引（Sparse）：</strong>用预训练模型（如 BGE、SPLADE）生成高维稀疏向量，每个维度对应一个词或 Token。既保留了关键词匹配的精确性，又能通过模型训练理解上下文语义。</div>
+                        <div style="margin-bottom: 8px;"><strong>● 关键词检索（BM25）：</strong>基于词频统计的精确匹配算法，只计算查询词与文档中相同词的匹配程度。速度快、可解释性强，但无法理解同义词、近义词等语义关系。</div>
 
-                        <div style="margin-top: 10px; margin-bottom: 6px;"><strong>稀疏索引与关键词检索的区别：</strong></div>
-                        <div style="padding: 8px 0; border-bottom: 1px dashed #e2e8f0; margin-bottom: 6px;"><strong>匹配方式：</strong>BM25 只做字面匹配，词相同才算命中；稀疏向量通过模型判断语义相关性，"苹果"和"水果"即使不是同义词，语义接近也能匹配。</div>
-                        <div style="padding: 8px 0; border-bottom: 1px dashed #e2e8f0; margin-bottom: 6px;"><strong>权重计算：</strong>BM25 的权重仅来自 TF 和 IDF 两个统计量；稀疏向量的每个维度值是模型训练出来的，能捕捉词在特定上下文中的重要程度。</div>
-                        <div style="padding: 8px 0; margin-bottom: 6px;"><strong>灵活性：</strong>BM25 是固定算法、不可调；稀疏向量可以针对领域数据微调，适应特定业务场景。</div>
+                        <div style="margin-top: 10px; margin-bottom: 6px;"><strong>稀疏向量是稠密向量和关键词的一个"中间态"：</strong></div>
+                        <div style="padding: 8px 0; border-bottom: 1px dashed #e2e8f0; margin-bottom: 6px;">下接关键词的精确性（每个维度对应具体词）</div>
+                        <div style="padding: 8px 0; margin-bottom: 6px;">上接稠密向量的语义理解（可做向量空间的距离计算）</div>
 
-                        <div style="margin-top: 10px;"><strong>为什么稀疏索引比关键词检索好？</strong> 核心在于稀疏索引具备语义理解能力。举个例子，用户搜"笔记本电脑"，BM25 只会匹配含"笔记本电脑"这四个字的文档，而稀疏向量能关联到"笔记本"、"laptop"、"便携电脑"等表述。此外，稀疏向量可以和稠密向量做混合检索（如 dense+sparse），实现语义 + 关键词的双路互补，这是 BM25 无法做到的。</div>
+                        <div style="margin-top: 10px;">这也是为什么双路召回用稠密 + 稀疏搭配效果最好：<strong>稠密负责语义泛化，稀疏负责精确命中。</strong></div>
                     </div>
                 </div>
 
                 <div style="padding: 12px 16px; background: #f8fafc; border-left: 3px solid #7c3aed; border-radius: 0 8px 8px 0; margin-bottom: 10px;">
-                    <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 6px;">RRF重排序</div>
+                    <div style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">RRF 重排序</div>
                     <div style="font-size: 13px; color: #475569; line-height: 1.7;">
                         <div style="margin-bottom: 8px;">在多路排序列表中，忽略不同排序方式的分数，只看排名的一种排序方式。</div>
                         <div style="padding: 6px 12px; background: #ecfdf5; border-radius: 6px; margin-bottom: 4px; color: #059669;"><strong>好处：</strong>可以忽略不同排序方式的分数</div>
@@ -714,7 +713,7 @@
                 </div>
 
                 <div style="padding: 12px 16px; background: #f8fafc; border-left: 3px solid #7c3aed; border-radius: 0 8px 8px 0; margin-bottom: 10px;">
-                    <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 6px;">Rerank原理</div>
+                    <div style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">ReRank 原理</div>
                     <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 6px 0;">
                         Embedding 模型用的Bi‑Encoder（双向编码器）：分别计算 Query 和文档的向量，然后对比相似度。好处是快、可以全库搜索。但是只看到了表面的匹配，没有做深度交互。
                     </p>
