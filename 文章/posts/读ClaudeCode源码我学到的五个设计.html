@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>读 Claude Code 源码：我学到的五个设计 | 程愚瀚</title>
+    <link rel="stylesheet" href="../../资源/css/style.css" />
+    <style>
+        .post { max-width: 800px; margin: 0 auto; padding: 120px 40px 80px; }
+        .post h1 { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.3; margin-bottom: 8px; }
+        .post .post-meta { font-size: 13px; color: #94a3b8; margin-bottom: 40px; }
+        .post h2 {
+            font-size: 22px; font-weight: 700; color: #0f172a;
+            margin-top: 48px; margin-bottom: 16px;
+            padding-bottom: 8px; border-bottom: 2px solid #eef2ff;
+        }
+        .post h3 { font-size: 17px; font-weight: 700; color: #0f172a; margin-top: 28px; margin-bottom: 10px; }
+        .post p, .post li { font-size: 15px; color: #475569; line-height: 1.9; }
+        .post p { margin-bottom: 14px; }
+        .post ul, .post ol { padding-left: 20px; margin-bottom: 16px; }
+        .post li { margin-bottom: 6px; }
+        .post strong { color: #0f172a; }
+        .post blockquote {
+            border-left: 4px solid #4f46e5; background: #f8f9fc;
+            padding: 14px 20px; margin: 20px 0; border-radius: 0 8px 8px 0;
+            font-size: 14px; color: #475569;
+        }
+        .post pre {
+            background: #1e293b; color: #e2e8f0; padding: 16px 20px;
+            border-radius: 10px; overflow-x: auto; font-size: 13px;
+            line-height: 1.6; margin-bottom: 16px;
+        }
+        .post code { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+        .post :not(pre) > code {
+            background: #f1f4f9; padding: 2px 8px; border-radius: 4px;
+            font-size: 14px; color: #4f46e5;
+        }
+        .post .callout {
+            padding: 16px 20px; border-radius: 10px; margin: 20px 0;
+            font-size: 14px; line-height: 1.8;
+        }
+        .post .callout-tip { background: #ecfdf5; border-left: 4px solid #10b981; }
+        .post .callout-warn { background: #fff7ed; border-left: 4px solid #f59e0b; }
+        .post .tag {
+            display: inline-block; padding: 3px 12px; border-radius: 20px;
+            font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;
+            margin-right: 6px; margin-bottom: 6px;
+        }
+        .sidebar-sub { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #64748b; text-decoration: none; transition: all 0.2s; }
+        .sidebar-sub:hover { background: #f1f4f9; color: #0f172a; }
+        .sidebar-sub.active { background: #eef2ff; color: #4f46e5; }
+        .sidebar-sub .dot { width: 4px; height: 4px; border-radius: 50%; background: #cbd5e1; flex-shrink: 0; transition: background 0.2s; }
+        .sidebar-sub:hover .dot { background: #4f46e5; }
+        .sidebar-sub.active .dot { background: #4f46e5; }
+        .sidebar-sub-group { margin: 2px 0 6px 20px; border-left: 2px solid #e2e8f0; padding-left: 6px; }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <a href="../../" class="nav-brand">程愚瀚</a>
+        <div class="nav-links">
+            <a href="../../">首页</a>
+            <a href="../" class="active">文章</a>
+            <a href="../../项目/">项目</a>
+        </div>
+    </nav>
+
+    <aside class="sidebar">
+        <div class="name">程愚瀚</div>
+        <div class="title">Java 后端和 agent 开发</div>
+        <nav>
+            <a href="#section1" class="active"><span class="dot"></span> 并行执行</a>
+            <a href="#section2"><span class="dot"></span> 子 Agent</a>
+            <a href="#section3"><span class="dot"></span> 内存压缩</a>
+            <div class="sidebar-sub-group">
+                <a href="#draft" class="sidebar-sub"><span class="dot"></span> 草稿本</a>
+                <a href="#template" class="sidebar-sub"><span class="dot"></span> 九段模板</a>
+            </div>
+            <a href="#section4"><span class="dot"></span> 长期记忆</a>
+            <a href="#section5"><span class="dot"></span> System Prompt</a>
+        </nav>
+    </aside>
+
+    <div class="main">
+        <article class="post">
+
+            <h1>读 Claude Code 源码：我学到的五个设计</h1>
+            <div class="post-meta">
+                <span>2026 年 7 月 1 日</span>
+                <span style="margin: 0 10px;">·</span>
+                <span class="tag">Claude Code</span>
+                <span class="tag">Agent</span>
+                <span class="tag">源码分析</span>
+            </div>
+
+            <p>Claude Code 是目前最成熟的 AI Coding Agent 之一。我不满足于"用"，想搞清楚它到底是怎么设计的——为什么它能在长对话中保持稳定、能准确调用工具、能记住用户的偏好。</p>
+            <p>读完后我收获最大的五个设计点，记录在这里。有些直接借鉴到了我自己的项目里，有些让我重新思考了之前的设计取舍。</p>
+
+            <h2 id="section1">一、并行执行：不做 DAG，做连续块</h2>
+
+            <p>我自己的 Workflow 项目用 KAHN 算法做 DAG 拓扑排序来实现并行调度，每个节点执行后更新下游入度，调度粒度很细。Claude Code 选择了完全不同的思路——<strong>连续块</strong>（Continuous Chunk）。</p>
+
+            <p>它的做法是：按工具调用的原始顺序遍历，判断每个调用是否安全（有没有依赖冲突）。如果安全就并行执行，不安全就等前面的执行完再继续，之后继续找可并行的下一个。</p>
+
+            <p>这个方案比我的 DAG 简单太多了。仔细想也确实有道理——在实际场景中，工具调用的依赖关系大多是线性的（读文件 → 改文件 → 执行命令），很少有复杂的多级汇聚或网状拓扑。连续块分区已经能覆盖绝大部分并发场景，实现成本却低很多。</p>
+
+            <div class="callout callout-tip">
+                <strong>我的思考：</strong> 我之前在 Workflow 里设计完整的 DAG 调度器，是一种"为 10% 的复杂场景做了 90% 的工作"。Claude Code 的选择提醒了我：<strong>不要高估实际场景的复杂度，先跑起来再优化</strong>。如果我要重做 Workflow 的调度层，我会先用连续块方案，然后只在需要的地方引入 DAG。
+            </div>
+
+            <p>另一个启发是并发写文件冲突的处理。Claude Code 对多 Agent 并行修改同一个文件采用了<strong>加锁</strong>策略，这也是最直接的方式。我了解到还有几种思路：</p>
+            <ul>
+                <li><strong>乐观读、悲观写</strong>——读不加锁，写时检查版本号</li>
+                <li><strong>任务分片</strong>——调度层面给每个 Agent 分配不同的文件范围，从源头上避免冲突，但可行性不高</li>
+                <li><strong>Git 合并</strong>——每个 Agent 在独立分支工作，最后合并。比较成熟但需要用户参与</li>
+            </ul>
+
+            <h2 id="section2">二、子 Agent：解决上下文污染的最优雅方式</h2>
+
+            <p>Claude Code 的子代理（Sub-agent）是我觉得设计得最漂亮的一个点。</p>
+
+            <p>长对话的核心问题是<strong>上下文污染</strong>——主 Agent 和工具来回交互产生的消息越来越多，关键信息被淹没，而且工具返回的大量数据会稀释系统指令的权重。</p>
+
+            <p>Claude Code 的解法是：给子任务开一个<strong>独立的消息列表</strong>，跑自己的 Agent 循环，结束后只回摘要给主 Agent。这样主 Agent 的上下文不会被子任务的中间过程污染。</p>
+
+            <p>有两个关键的安全设计值得注意：</p>
+            <ul>
+                <li>子 Agent 没有 task 工具，防止无限递归</li>
+                <li>子 Agent 的工具调用权限更小，不会执行危险操作</li>
+            </ul>
+
+            <div class="callout callout-tip">
+                <strong>和我的对比：</strong> 我的 Workflow 项目也有 Sub Agent 机制，但我把 Sub Agent 看作"执行节点的人"，Claude Code 把 Sub Agent 看作"隔离上下文的容器"。这个视角差异让我意识到，Sub Agent 的真正价值不只是任务分工，更是<strong>上下文边界管理</strong>。
+            </div>
+
+            <h2 id="section3">三、内存压缩策略：四层递进，不到万不得已不调用 LLM</h2>
+
+            <p>这是 Claude Code 能维持长对话稳定性的核心。它的压缩策略分四层，前三层是纯文本操作，不需要花钱调用 LLM：</p>
+
+            <ul>
+                <li><strong>L1 — 裁中间：</strong>把旧的对话历史直接裁剪掉</li>
+                <li><strong>L2 — 旧结果占位：</strong>大工具输出只保留前 2000 字预览，后面用一行提示代替</li>
+                <li><strong>L3 — 大结果落盘：</strong>把大的输出结果先存到磁盘上，防止被后续步骤覆盖</li>
+            </ul>
+
+            <p>前三层跑完如果上下文还是太大，才触发：</p>
+            <ul>
+                <li><strong>L4 — LLM 摘要：</strong>花一次 API 调用让模型生成关键信息的摘要，替换所有旧消息</li>
+            </ul>
+
+            <p>如果 API 还报错，还有应急方案——更激进地从尾部回退裁剪。</p>
+
+            <p>这个设计给我的最大启发是：<strong>能用文本操作解决的问题，不要用 LLM</strong>。LLM 调用又贵又慢，而且摘要本身也要消耗 Token。前三层的文本裁剪和落盘几乎零成本，只有在万不得已时才走 L4。</p>
+
+            <h3 id="draft">草稿本（Draft）——让"思考"和"输出"分开</h3>
+
+            <p>在 L4 摘要生成前，Claude Code 引入了一个我特别喜欢的细节——<strong>草稿本机制</strong>。</p>
+
+            <p>做法是：让模型在输出正式摘要之前，先复盘整个对话，输出一段 <code>&lt;analysis&gt;</code> 分析，然后再输出 <code>&lt;summary&gt;</code>。这个分析在后续处理时会被直接删掉，只保留摘要。</p>
+
+            <p>本质上就是让模型"先想清楚再写"。用一次额外思考来换取更好的压缩质量，成本几乎可以忽略（分析内容不保留），但摘要质量明显更高。</p>
+
+            <h3 id="template">九段模板——把摘要结构固定下来</h3>
+
+            <p>摘要不是自由格式的，而是被固定为九个段落，分三组：</p>
+
+            <ul>
+                <li><strong>要干什么</strong>：目标、背景（讨论过的技术概念）、所有用户消息、待办</li>
+                <li><strong>干过什么</strong>：代码（逐一列举修改的文件和代码段+完整片段）、错误（遇到的所有错误和修复方式，特别是用户让你换方式做的）、已解决的问题</li>
+                <li><strong>还要干什么</strong>：当前状态（压缩发生时正在干什么）、下一步（必须附上最近对话的逐字原文引用）</li>
+            </ul>
+
+            <p>这个模板解决了摘要最怕的问题——<strong>丢失关键信息</strong>。固定的结构让模型知道哪些信息必须保留，不会因为"觉得不重要"就跳过。而且"下一步"要求附上原文引用，确保了恢复后能无缝衔接。</p>
+
+            <div class="callout callout-tip">
+                <strong>我的实践：</strong> 我在 MyClaw 的记忆压缩模块里借鉴了这个九段模板的思路，效果很好。固定结构的摘要比自由格式的摘要保留了更多可操作信息，恢复时也不容易"断片"。
+            </div>
+
+            <h2 id="section4">四、长期记忆：文件系统即数据库，MEMORY.md 做目录</h2>
+
+            <p>Claude Code 的长期记忆设计格外实用。核心是一个 <code>MEMORY.md</code> 文件，充当目录角色。每次对话启动时，默认加载前 200 行到 system prompt，让模型知道"有哪些记忆可以用"。</p>
+
+            <p>四种记忆类型不是用文件夹物理隔离，而是通过文件名里的 type 字段逻辑标记：</p>
+            <ul>
+                <li><strong>user</strong> — 用户偏好</li>
+                <li><strong>feedback</strong> — 规矩（用户纠正过的）</li>
+                <li><strong>project</strong> — 项目背景</li>
+                <li><strong>reference</strong> — 线索</li>
+            </ul>
+
+            <p><strong>写入触发机制</strong>有两条路径：</p>
+            <ul>
+                <li><strong>被动存储</strong>——用户说了"记住""别忘了"等关键词时，模型主动写入</li>
+                <li><strong>主动提取</strong>——对话结束后，后台自动 fork 一个子 Agent，分析整个对话内容，从中识别出可记忆的信息并自动保存，用户不需要显式说"请记住"</li>
+            </ul>
+
+            <p><strong>注入机制</strong>分两层：</p>
+            <ul>
+                <li>第一层：MEMORY.md 的前 200 行在对话启动时注入 system prompt</li>
+                <li>第二层：每轮对话前，把一个轻量模型把 MEMORY.md 连同当前用户查询发过去，让它选出最多 5 个最相关的记忆文件，注入到当前上下文</li>
+            </ul>
+
+            <p>还有一个"<strong>后台整理</strong>"机制，每 24 小时运行一次，模拟人类睡眠时的记忆整合过程——扫描记忆内容，合并相同内容，移除过时内容，确保 MEMORY.md 的精干。</p>
+
+            <div class="callout callout-tip">
+                <strong>和我的对比：</strong> 我的 MyClaw 项目也做长期记忆，但走的是 Hindsight 的向量+图+时间四路召回路线，架构更重。Claude Code 用文件系统 + 轻量检索就实现了够用的长期记忆。这让我重新思考：<strong>Agent 的记忆系统需要多"强"？</strong> 如果你的场景是对话辅助（而非精确的事实检索），文件系统方案的成本和维护复杂度远低于向量数据库方案。
+            </div>
+
+            <h2 id="section5">五、System Prompt 组装：动静分离</h2>
+
+            <p>Claude Code 的 system prompt 不是写死的，而是运行时组装的，分为静态和动态两类。</p>
+
+            <ul>
+                <li><strong>静态段落</strong>：身份定义、语气风格、任务处理原则、工具使用说明——每轮对话都需要的核心指令，内容基本稳定</li>
+                <li><strong>动态段落</strong>：记忆注入、会话指导、MCP 服务器指令、Token 预算控制——根据当前状态决定是否加载</li>
+            </ul>
+
+            <p>组装逻辑是每轮对话前检查上下文真实状态，基于状态决定加载哪些段落，然后拼接成完整 prompt。</p>
+
+            <p>这个设计让我意识到，我之前写 system prompt 都是"写一篇完整的文章放进去"，但 Claude Code 的做法是"搭积木"——需要什么就拼什么。这样每个段落的职责更清晰，也更容易做 A/B 测试和迭代。</p>
+
+            <hr>
+
+            <p>读 Claude Code 源码最大的收获不是某个具体技术，而是一种<strong>工程取舍的思维方式</strong>。它让我看到：</p>
+            <ul>
+                <li>简单方案（连续块）可以覆盖绝大多数场景，DAG 级别的调度不是必须的</li>
+                <li>文本操作（裁剪/落盘）比 LLM 调用（摘要）便宜得多，优先走低成本路径</li>
+                <li>文件系统 + 轻量检索在对话场景中够用，不要被"向量数据库"这个 buzzword 绑架</li>
+                <li>固定结构的模板比自由格式可靠得多</li>
+            </ul>
+            <p>这些取舍背后有一个统一的逻辑：<strong>在能用工程解决的问题上，不要依赖模型</strong>。</p>
+
+        </article>
+    </div>
+
+    <footer>
+        &copy; 2026 程愚瀚 · Built with &hearts;
+    </footer>
+
+    <script src="../../资源/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function updateNav() {
+                var cards = document.querySelectorAll('h2[id], h3[id]');
+                var navLinks = document.querySelectorAll('.sidebar nav a, .sidebar-sub');
+                var current = '';
+                cards.forEach(function(c) {
+                    var top = c.offsetTop - 130;
+                    var bottom = top + c.offsetHeight;
+                    if (window.scrollY >= top && window.scrollY < bottom) {
+                        current = c.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(function(link) {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+            window.addEventListener('scroll', updateNav);
+            window.addEventListener('load', updateNav);
+            updateNav();
+        });
+    </script>
+</body>
+</html>

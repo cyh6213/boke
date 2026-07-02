@@ -110,6 +110,62 @@
                 <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
                     使用 Agent 时发现指令明确但 Agent 不执行（如要求检索后回答却跳过检索），因此思考如何将 Agent 行为确定化。核心思路是通过预定义 Agent 无法修改的 DAG 图，将任务执行流程固定化，保证可见即所得。
                 </p>
+
+                <div style="margin-top: 24px; padding: 20px 22px; background: #f8fafc; border: 1px solid #e9edf4; border-radius: 12px;">
+                    <div style="font-size: 13px; font-weight: 700; color: #d97706; margin-bottom: 14px;">要解决的问题：Agent 不按照需求执行</div>
+
+                    <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 14px 0;">
+                        我们解决的问题不是"同一个任务每次执行策略不一致"——因为 Plan 每次都是动态生成的，策略不同是正常的。真正的问题是：<strong>Agent 会无视你的指令和规划，自己决定怎么做</strong>。
+                    </p>
+
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div style="padding: 12px 16px; background: #fff; border-left: 3px solid #d97706; border-radius: 0 8px 8px 0; font-size: 13px; color: #64748b; line-height: 1.7;">
+                            <strong style="color: #92400e;">❌ 没有 DAG：</strong>"检索竞品资料后生成分析报告" — Agent 直接生成了一份报告，根本没去检索，因为它觉得"自己知道竞品信息"。
+                        </div>
+                        <div style="padding: 12px 16px; background: #fff; border-left: 3px solid #d97706; border-radius: 0 8px 8px 0; font-size: 13px; color: #64748b; line-height: 1.7;">
+                            <strong style="color: #92400e;">❌ 没有 DAG：</strong>"先查天气再安排行程" — Agent 查完天气后直接给出行程，忘了查交通，因为中间没有节点强制它做这件事。
+                        </div>
+                        <div style="padding: 12px 16px; background: #fff; border-left: 3px solid #d97706; border-radius: 0 8px 8px 0; font-size: 13px; color: #64748b; line-height: 1.7;">
+                            <strong style="color: #92400e;">❌ 没有 DAG：</strong>"分析代码质量前先做安全扫描" — Agent 跳过安全扫描直接分析，因为它的内置判断认为"这个项目看起来没什么安全问题"。
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 14px; padding: 10px 14px; background: #f0fdf4; border-left: 3px solid #059669; border-radius: 0 6px 6px 0; font-size: 12px; color: #475569; line-height: 1.7;">
+                        <strong style="color: #059669;">✅ 有 DAG 后：</strong>Plan Agent 根据你的需求动态生成执行计划，执行引擎<strong>强制按计划执行</strong>，Agent 在每个节点只能做该节点的事，不存在"自己决定跳过某一步"的可能。
+                    </div>
+                </div>
+
+                <div style="margin-top: 24px; padding: 20px 22px; background: #f8fafc; border: 1px solid #e9edf4; border-radius: 12px;">
+                    <div style="font-size: 13px; font-weight: 700; color: #7c3aed; margin-bottom: 14px;">两种确定化路径的区别</div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+                        <div style="padding: 16px 18px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px;">
+                            <div style="font-size: 14px; font-weight: 700; color: #059669; margin-bottom: 6px;">DAG — 约束「流程」</div>
+                            <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 10px 0;">
+                                限制 Agent <strong>在整个流程中</strong>必须要做什么。
+                            </p>
+                            <div style="padding: 8px 12px; background: #fff; border-radius: 6px; font-size: 12px; color: #64748b; line-height: 1.7;">
+                                <strong style="color: #0f172a;">举例：</strong>"帮我分析财报并写报告" — DAG 强制流程为 <code>[读取财报 → 分析指标 → 生成报告]</code>，Agent 不能跳过「分析」直接写。
+                            </div>
+                            <div style="margin-top: 6px; font-size: 12px; color: #16a34a;">✅ 保证"该做的事都做了"</div>
+                        </div>
+
+                        <div style="padding: 16px 18px; background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 10px;">
+                            <div style="font-size: 14px; font-weight: 700; color: #7c3aed; margin-bottom: 6px;">Hooks — 约束「操作」</div>
+                            <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 10px 0;">
+                                限制 Agent <strong>在某一步前后</strong>必须要做什么。
+                            </p>
+                            <div style="padding: 8px 12px; background: #fff; border-radius: 6px; font-size: 12px; color: #64748b; line-height: 1.7;">
+                                <strong style="color: #0f172a;">举例：</strong>执行「分析指标」之前 — PreHook 检查文件格式；之后 — PostHook 检查输出是否含敏感数据。
+                            </div>
+                            <div style="margin-top: 6px; font-size: 12px; color: #6d28d9;">✅ 保证"每一步都做得规范"</div>
+                        </div>
+                    </div>
+
+                    <div style="padding: 10px 14px; background: #fff; border-left: 3px solid #64748b; border-radius: 0 6px 6px 0; font-size: 12px; color: #475569; line-height: 1.7;">
+                        DAG 管<strong>「做不做」</strong>（有没有漏步骤、顺序对不对），Hooks 管<strong>「做得好不好」</strong>（参数是否合法、输出是否合规）。DAG 保流程下限，Hooks 保操作上限，两者可以结合。
+                    </div>
+                </div>
             </div>
 
             <!-- 2. 核心亮点 -->
@@ -572,13 +628,16 @@
                             </ul>
                         </div>
 
-                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
-                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">迭代数据闭环优化（长期持续优化）</div>
+                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4; border-left: 3px solid #7c3aed;">
+                            <div style="font-size: 13px; font-weight: 600; color: #7c3aed; margin-bottom: 8px;">迭代数据闭环优化 — 基于 Reflexion 的自改进机制</div>
+                            <div style="font-size: 12px; color: #94a3b8; margin-bottom: 10px; padding: 6px 10px; background: #f5f3ff; border-radius: 6px; display: inline-block;">
+                                参考 Reflexion (NeurIPS 2023)：通过语言反馈替代权重更新的强化学习范式
+                            </div>
                             <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
-                                <li>采集所有校验失败、执行失败的错误 DAG 和用户原始需求</li>
-                                <li>自动归类错误类型：环路、步骤遗漏、顺序颠倒、JSON 格式错误</li>
-                                <li>将高频错误案例自动加入 FewShot 样本库，持续迭代 Plan 能力</li>
-                                <li>基于 LLM-as-Judge 量化 DAG 匹配得分，低分样本自动回流训练提示词</li>
+                                <li><strong>Actor → Evaluator 闭环：</strong>采集所有校验失败、执行失败的错误 DAG 和用户原始需求，作为 Evaluator 的负样本输入</li>
+                                <li><strong>Self-Reflection 错误归因：</strong>自动归类错误类型——环路、步骤遗漏、顺序颠倒、JSON 格式错误，提炼可复现的失败模式</li>
+                                <li><strong>Experience Replay 经验回放：</strong>将高频错误案例自动加入 FewShot 样本库，等价于 Reflexion 中将反思注入长期记忆，持续迭代 Plan 能力</li>
+                                <li><strong>LLM-as-Judge 量化评估：</strong>基于 LLM-as-Judge 量化 DAG 匹配得分，低分样本自动回流至 Prompt 优化流程，形成完整的 Verbal Reinforcement Learning 循环</li>
                             </ul>
                         </div>
                     </div>

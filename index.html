@@ -90,11 +90,20 @@
                     </div>
                 </div>
 
-                <!-- 下层：Agent 三个子项目 -->
+                <!-- 下层：子项目 -->
                 <div style="position: relative; padding: 0 0 0 0; margin-top: -4px;">
                     <div style="display: flex; width: 100%; align-items: flex-start;">
                         <div style="width: 70px; flex-shrink: 0;"></div>
-                        <div style="flex: 1;"></div>
+
+                        <!-- Java 后端下的子项目：社区平台 -->
+                        <div style="flex: 1; display: flex; justify-content: center; position: relative;">
+                            <div style="position: absolute; top: -16px; left: 50%; height: 16px; width: 2px; background: #c4b5fd;"></div>
+                            <div style="display: flex; flex-direction: column; align-items: center; padding-top: 10px;">
+                                <div style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b; border: 2px solid #f8f9fc; box-shadow: 0 0 0 1px #f59e0b;"></div>
+                                <div style="font-size: 12px; color: #d97706; font-weight: 600; margin-top: 6px; text-align: center;">社区平台</div>
+                            </div>
+                        </div>
+
                         <div style="width: 70px; flex-shrink: 0;"></div>
 
                         <div style="flex: 2; display: flex; justify-content: space-between; position: relative;">
@@ -156,7 +165,7 @@
                     <div style="font-weight: 700; color: #4f46e5; margin-bottom: 6px;">在项目的体现</div>
                     <div><strong>Workflow 项目</strong> — 异常治理</div>
                     <div><strong>RAG 项目</strong> — 并发上传、权限控制</div>
-                    <div style="margin-top: 4px; color: #94a3b8;">同时也做过一些后端的项目。</div>
+                    <div style="margin-top: 4px; color: #94a3b8;">同时也做过一些<a href="项目/community.html" style="color: #4f46e5; text-decoration: underline; text-underline-offset: 2px;">后端的项目</a>。</div>
                 </div>
             </div>
 
@@ -176,8 +185,8 @@
                             熟练使用多种 Agent 工具，深入学习了它们的核心策略与实现原理，并应用到了自己的项目当中：
                         </p>
                         <ul style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0; padding-left: 20px;">
-                            <li><strong>OpenClaw</strong> — 学习了记忆的写入与读取机制，应用到 MyClaw 项目的长期记忆系统设计中</li>
-                            <li><strong>Claude Code</strong> — 学习了压缩策略、checkpoint 机制、记忆策略，应用到 Workflow 框架的节点回滚与断点恢复中</li>
+                            <li><strong>OpenClaw</strong> — 在使用 OpenClaw 的过程中，察觉其记忆实现的不足，并决定做一个更加真实的长期对话 Agent，于是就诞生了 MyClaw</li>
+                            <li><strong><a href="文章/posts/读ClaudeCode源码我学到的五个设计.html" style="color: inherit; text-decoration: underline; text-underline-offset: 2px;">Claude Code</a></strong> — 学习了压缩策略、checkpoint 机制、记忆策略，应用到 Workflow 框架的节点回滚与断点恢复中</li>
                             <li><strong>豆包</strong> — 学习了对话主题更新机制，应用到 MyClaw 项目的短期记忆滑动窗口策略中</li>
                             <li><strong>CodeBuddy</strong> — 学习了显示窗口使用量、可控的问题改写策略，应用到 RAG 项目的智能路由与问题改写中</li>
                         </ul>
@@ -185,7 +194,7 @@
                     <div style="background: #ffffff; border: 1px solid #e9edf4; border-radius: 12px; padding: 20px 24px;">
                         <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 6px;">3. 底层原理</div>
                         <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
-                            对 Transformer（Top-p、KV Cache）、MCP、Function Calling、Skill、Harness、ReAct、PAE 等都有了解。
+                            对 <a href="文章/posts/Transformer原理.html" style="color: inherit; text-decoration: underline; text-underline-offset: 2px;">Transformer</a>（Top-p、KV Cache）、<a href="文章/posts/MCP-FunctionCalling-Skill.html" style="color: inherit; text-decoration: underline; text-underline-offset: 2px;">MCP、Function Calling、Skill</a>、Harness、ReAct、PAE 等都有了解。
                         </p>
                     </div>
                 </div>
@@ -278,7 +287,7 @@
                 <div style="margin-bottom: 20px;">
                     <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">1. 召回率优化 — 提升召回率</div>
                     <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
-                        为了提升召回率，对整条流水线进行了全链路优化：<strong>上传阶段</strong>采用两级四层分片策略；<strong>检索阶段</strong>采用问题改写 + 双路召回（稠密向量 + 稀疏向量）；<strong>排序阶段</strong>采用 RRF 融合策略 + ReRank 重排。经过这些优化，recall_cap@5 从 <strong>68.4%</strong> 提升至 <strong>81.2%</strong>。
+                        为了提升召回率，对整条流水线进行了全链路优化：<strong>检索阶段</strong>采用问题改写 + BGE 双向量（dense + sparse）混合检索；<strong>排序阶段</strong>采用 RRF 融合策略 + ReRank 重排。经过这些优化，recall_cap@5 从 <strong>68.4%</strong> 提升至 <strong>81.2%</strong>。
                     </p>
                 </div>
 
@@ -457,7 +466,7 @@
                 <div style="margin-bottom: 20px; padding: 16px 20px; background: #f8f9fc; border-radius: 10px;">
                     <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">坏处</div>
                     <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
-                        相比 PAE 框架可根据前一步结果动态改变下一步计划，本方案是固定化的。但针对节点执行失败的情况，支持三种异常处理机制确保流程完整执行。
+                        相比 PAE 框架可根据前一步结果动态改变下一步计划，本方案是固定化的。但针对节点执行失败的情况，支持三种异常处理机制确保流程完整执行。同时实现了条件边分支，可以根据节点输出来选择对应分支。
                     </p>
                 </div>
 

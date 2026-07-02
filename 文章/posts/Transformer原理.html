@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>大模型完整知识体系 | 程愚瀚</title>
+    <link rel="stylesheet" href="../../资源/css/style.css?v=2" />
+    <style>
+        .post { max-width: 800px; margin: 0 auto; padding: 120px 40px 80px; }
+        .post h1 { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.3; margin-bottom: 8px; }
+        .post .post-meta { font-size: 13px; color: #94a3b8; margin-bottom: 40px; }
+        .post h2 {
+            font-size: 22px; font-weight: 700; color: #0f172a;
+            margin-top: 48px; margin-bottom: 16px;
+            padding-bottom: 8px; border-bottom: 2px solid #eef2ff;
+        }
+        .post h3 { font-size: 20px; font-weight: 700; color: #4f46e5; margin-top: 40px; margin-bottom: 14px; padding-left: 14px; border-left: 4px solid #4f46e5; }
+        .post h4 { font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 22px; margin-bottom: 8px; }
+        .post h4[id] { font-size: 15px; font-weight: 600; color: #7c3aed; margin-top: 22px; margin-bottom: 8px; }
+        .post p, .post li { font-size: 15px; color: #475569; line-height: 1.9; }
+        .post p { margin-bottom: 14px; }
+        .post ul, .post ol { padding-left: 20px; margin-bottom: 16px; }
+        .post li { margin-bottom: 6px; }
+        .post strong { color: #0f172a; }
+        .post pre {
+            background: #1e293b; color: #e2e8f0; padding: 16px 20px;
+            border-radius: 10px; overflow-x: auto; font-size: 13px; line-height: 1.6; margin-bottom: 16px;
+        }
+        .post code { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+        .post :not(pre) > code { background: #f1f4f9; padding: 2px 8px; border-radius: 4px; font-size: 14px; color: #4f46e5; }
+        .post .callout { padding: 16px 20px; border-radius: 10px; margin: 20px 0; font-size: 14px; line-height: 1.8; }
+        .post .callout-tip { background: #ecfdf5; border-left: 4px solid #10b981; }
+        .post .callout-info { background: #eef2ff; border-left: 4px solid #4f46e5; }
+        .post .callout-warn { background: #fff7ed; border-left: 4px solid #f59e0b; }
+        .tag { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5; margin-right: 6px; margin-bottom: 6px; }
+        .sidebar-sub { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #64748b; text-decoration: none; transition: all 0.2s; }
+        .sidebar-sub:hover { background: #f1f4f9; color: #0f172a; }
+        .sidebar-sub.active { background: #eef2ff; color: #4f46e5; }
+        .sidebar-sub .dot { width: 4px; height: 4px; border-radius: 50%; background: #cbd5e1; flex-shrink: 0; transition: background 0.2s; }
+        .sidebar-sub:hover .dot { background: #4f46e5; }
+        .sidebar-sub.active .dot { background: #4f46e5; }
+        .sidebar-sub-group { margin: 2px 0 6px 20px; border-left: 2px solid #e2e8f0; padding-left: 6px; }
+        .sidebar-section-label { font-size: 12px; font-weight: 700; color: #4f46e5; padding: 8px 14px 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .sidebar-section-label + .sidebar-section-label { margin-top: 8px; }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../" class="nav-brand">程愚瀚</a>
+        <div class="nav-links">
+            <a href="../../">首页</a>
+            <a href="../" class="active">文章</a>
+            <a href="../../项目/">项目</a>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="name">程愚瀚</div>
+        <div class="title">Java 后端和 agent 开发</div>
+        <nav>
+            <div class="sidebar-section-label">第一篇：概念层级</div>
+            <a href="#s1q1" class="active"><span class="dot"></span> 问题1 AI到AIGC层级</a>
+            <div class="sidebar-sub-group">
+                <a href="#s1q11" class="sidebar-sub"><span class="dot"></span> 问题1.1 大的体现</a>
+            </div>
+            <a href="#s1q2"><span class="dot"></span> 问题2 技术演进五阶段</a>
+            <div class="sidebar-sub-group">
+                <a href="#s1q21" class="sidebar-sub"><span class="dot"></span> 问题2.1 涌现</a>
+                <a href="#s1q22" class="sidebar-sub"><span class="dot"></span> 问题2.2 大和涌现的关系</a>
+            </div>
+
+            <div class="sidebar-section-label">第二篇：Transformer 架构</div>
+            <a href="#s2q0"><span class="dot"></span> 问题0 Token 是什么</a>
+            <div class="sidebar-sub-group">
+                <a href="#s2q01" class="sidebar-sub"><span class="dot"></span> 问题0.1 BPE 分词</a>
+                <a href="#s2q02" class="sidebar-sub"><span class="dot"></span> 问题0.2 中文 Token 更贵</a>
+                <a href="#s2q03" class="sidebar-sub"><span class="dot"></span> 问题0.3 Token 转向量</a>
+            </div>
+            <a href="#s2q1"><span class="dot"></span> 问题1 RNN 的致命缺陷</a>
+            <div class="sidebar-sub-group">
+                <a href="#s2q11" class="sidebar-sub"><span class="dot"></span> 问题1.1 Transformer 如何解决</a>
+            </div>
+            <a href="#s2q2"><span class="dot"></span> 问题2 完整流程</a>
+            <a href="#s2q3"><span class="dot"></span> 问题3 Encoder 和 Decoder</a>
+            <div class="sidebar-sub-group">
+                <a href="#s2q31" class="sidebar-sub"><span class="dot"></span> 问题3.1 为什么都是 Decoder-only</a>
+            </div>
+            <a href="#s2q4"><span class="dot"></span> 问题4 Q、K、V</a>
+            <a href="#s2q5"><span class="dot"></span> 问题5 注意力机制</a>
+            <div class="sidebar-sub-group">
+                <a href="#s2q51" class="sidebar-sub"><span class="dot"></span> 问题5.1 自注意力</a>
+                <a href="#s2q52" class="sidebar-sub"><span class="dot"></span> 问题5.2 交叉注意力</a>
+                <a href="#s2q53" class="sidebar-sub"><span class="dot"></span> 问题5.3 掩码自注意力</a>
+            </div>
+            <a href="#s2q6"><span class="dot"></span> 问题6 多头注意力</a>
+            <a href="#s2q7"><span class="dot"></span> 问题7 残差连接</a>
+            <div class="sidebar-sub-group">
+                <a href="#s2q71" class="sidebar-sub"><span class="dot"></span> 问题7.1 什么是"层"</a>
+            </div>
+            <a href="#s2q8"><span class="dot"></span> 问题8 层归一化</a>
+            <a href="#s2q9"><span class="dot"></span> 问题9 前馈网络</a>
+            <a href="#s2q10"><span class="dot"></span> 问题10 Transformer 的问题</a>
+            <div class="sidebar-sub-group">
+                <a href="#s2q101" class="sidebar-sub"><span class="dot"></span> 问题10.1 上下文窗口限制</a>
+                <a href="#s2q102" class="sidebar-sub"><span class="dot"></span> 问题10.2 大模型幻觉</a>
+                <a href="#s2q103" class="sidebar-sub"><span class="dot"></span> 问题10.3 KV Cache</a>
+            </div>
+
+            <div class="sidebar-section-label">第三篇：训练全流程</div>
+            <a href="#s3q1"><span class="dot"></span> 问题1 什么叫大语言模型</a>
+            <div class="sidebar-sub-group">
+                <a href="#s3q11" class="sidebar-sub"><span class="dot"></span> 问题1.1 什么叫训练</a>
+                <a href="#s3q12" class="sidebar-sub"><span class="dot"></span> 问题1.2 训练调哪些参数</a>
+            </div>
+            <a href="#s3q2"><span class="dot"></span> 问题2 为什么是 Transformer</a>
+            <a href="#s3q3"><span class="dot"></span> 问题3 大模型怎么训练的</a>
+            <div class="sidebar-sub-group">
+                <a href="#s3q31" class="sidebar-sub"><span class="dot"></span> 问题3.1 为什么分阶段</a>
+                <a href="#s3q32" class="sidebar-sub"><span class="dot"></span> 问题3.2 预测下一个 Token</a>
+                <a href="#s3q321" class="sidebar-sub"><span class="dot"></span> Temperature/Top-P/Top-K</a>
+                <a href="#s3q33" class="sidebar-sub"><span class="dot"></span> 问题3.3 Dense 与 MoE</a>
+                <a href="#s3q34" class="sidebar-sub"><span class="dot"></span> 问题3.4 LoRA 与 QLoRA</a>
+                <a href="#s3q35" class="sidebar-sub"><span class="dot"></span> 问题3.5 PPO 算法</a>
+                <a href="#s3q36" class="sidebar-sub"><span class="dot"></span> 问题3.6 DPO</a>
+            </div>
+            <a href="#s3q4"><span class="dot"></span> 问题4 如何评估模型好坏</a>
+
+            <div class="sidebar-section-label">第四篇：推理与工程应用</div>
+            <a href="#s4q1"><span class="dot"></span> 问题1 Embedding 模型</a>
+            <a href="#s4q2"><span class="dot"></span> 问题2 ReRank</a>
+        </nav>
+    </aside>
+    <div class="main">
+        <article class="post" id="top">
+            <h1>大模型完整知识体系</h1>
+            <div class="post-meta">
+                <span>2026 年 7 月 2 日</span>
+                <span style="margin: 0 10px;">·</span>
+                <span class="tag">LLM</span>
+                <span class="tag">Transformer</span>
+                <span class="tag">深度学习</span>
+                <span class="tag">训练</span>
+            </div>
+
+            <blockquote style="border-left: 4px solid #94a3b8; background: #f8f9fc; padding: 14px 20px; margin: 20px 0; border-radius: 0 8px 8px 0; font-size: 14px; color: #64748b;">
+                合并自：AI到AIGC层级详解 + Transformer架构拆解 + 大模型训练技术栈
+            </blockquote>
+
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 32px 0;" />
+
+            <!-- ============================================================ -->
+            <!-- 第一篇：概念层级（AI到AIGC） -->
+            <!-- ============================================================ -->
+
+            <h2 id="s1">第一篇：概念层级（AI到AIGC）</h2>
+
+            <h3 id="s1q1">问题1：AI、ML、DL、LLM、AIGC 各层级的含义是什么，它们之间是什么关系？</h3>
+
+            <p>最外面是人工智能（AI），里面是机器学习（ML），再里面是深度学习（DL），更里面是大语言模型（LLM），而最核心的那个就是我们常说的 AIGC，一层套一层像俄罗斯套娃。</p>
+
+            <h4>人工智能（AI）</h4>
+
+            <p>人工智能是让机器拥有智能，也就是让机器能够像人一样做一些事情。AI 的实现路径不止一条，包括编写规则和机器学习。</p>
+
+            <p><strong>关键点：</strong> 机器学习只是实现 AI 的主要路径之一，但现在是绝对主流。</p>
+
+            <h4>机器学习（ML）</h4>
+
+            <p>机器学习是让机器从数据中学习规律，而不是靠人工编写规则。它包括三种学习范式，三者没有绝对优劣，可以结合使用。</p>
+
+            <ul>
+                <li>监督学习：给机器"题目+答案"，让它学会做新题。比如给几千张标注好"猫"和"狗"的图片，它就能学会识别新的猫狗图片。</li>
+                <li>无监督学习：只给题目不给答案，让机器自己找规律。比如把超市消费记录丢给它，它能自动把顾客分成"囤货型""尝鲜型""刚需型"等群体。</li>
+                <li>强化学习：不给答案，只给"做对了奖励、做错了惩罚"，让机器在尝试中摸索。AlphaGo 就是这样学会下围棋的——它和自己下了无数盘棋，每赢一次就知道这条路径是对的。</li>
+            </ul>
+
+            <h4>深度学习（DL）</h4>
+
+            <p>深度学习是用多层神经网络自动提取特征的学习方法。</p>
+
+            <p><strong>关键点：</strong> 按模型架构维度分，机器学习包括传统机器学习和深度学习两类，它们跟监督/无监督/强化是不同维度的划分，不是包含关系，而是可以交叉组合的。</p>
+
+            <p>传统机器学习需要人告诉它该看什么，比如识别猫你得先告诉机器"你要关注耳朵形状、眼睛大小、胡须长度"，这个"告诉机器该关注什么"的过程叫特征工程。</p>
+
+            <p>深度学习则直接把图片丢给模型，它自己就能学会：第一层关注边缘，第二层关注形状，第三层关注五官，第四层关注猫的整体概念。这就是"深度"的含义——多层神经网络层层递进，自动提取从低阶到高阶的特征。</p>
+
+            <p><strong>关键点：</strong> 深度学习的核心突破是自动特征提取，不再需要人工做特征工程。</p>
+
+            <h4>大语言模型（LLM）</h4>
+
+            <p>大语言模型是在海量文本上训练出来的、拥有超大规模参数的深度学习模型。它的"大"体现在三点：</p>
+
+            <ul>
+                <li>数据大：训练时用了互联网上几乎所有能抓取的公开文本，包括书籍、论文、网页、代码。</li>
+                <li>参数大：模型内部有数千亿个"旋钮"，通过调整这些旋钮模型能记住海量语言规律和知识。</li>
+                <li>算力大：训练一次的成本高达数千万甚至上亿美元。</li>
+            </ul>
+
+            <h4>AIGC</h4>
+
+            <p>AIGC 是指利用 AI 生成文本、图像、音频、视频等内容的技术与应用，包括文本生成、图像生成、视频生成、音频生成等多个模态。</p>
+
+            <p><strong>关键点：</strong> 大语言模型主要处理文字，而 AIGC 涵盖的范围更广，LLM 是能力底座，AIGC 是应用产品。</p>
+
+            <h4 id="s1q11">问题1.1：大语言模型的"大"体现在哪里</h4>
+
+            <p>大语言模型的"大"集中在三个维度。</p>
+
+            <ul>
+                <li>数据大：训练时用了互联网上几乎所有能抓取的公开文本，包括书籍、论文、网页、代码，把整个人类公开知识灌进去。</li>
+                <li>参数大：模型内部有数千亿个可调节的"旋钮"（参数），通过调整这些旋钮模型能记住海量的语言规律和世界知识。</li>
+                <li>算力大：训练一次的成本高达数千万甚至上亿美元，需要成千上万张 GPU 集群持续运行数周甚至数月。</li>
+            </ul>
+
+            <p><strong>关键点：</strong> 三个"大"缺一不可，数据决定学什么，参数决定能记住多少，算力决定能不能学完。</p>
+
+            <h3 id="s1q2">问题2：从AI到AIGC技术演进的五个阶段</h3>
+
+            <h4>阶段一：规则驱动（传统AI）</h4>
+
+            <p>早期 AI 靠人写规则："如果看到尖耳朵，那就是猫"。</p>
+
+            <p><strong>关键点：</strong> 规则写不完，现实世界太复杂，用规则穷举所有情况不现实。</p>
+
+            <h4>阶段二：数据驱动（机器学习）</h4>
+
+            <p>从"写规则"转向"给例子"，让机器自己从数据中学。</p>
+
+            <p><strong>关键点：</strong> 核心突破是不再需要人工穷举所有规则，机器的学习方式发生了根本变化。</p>
+
+            <h4>阶段三：特征自动化（深度学习）</h4>
+
+            <p>传统 ML 还需要人告诉机器"该关注什么特征"，深度学习让机器自己学会"该关注什么"。</p>
+
+            <p><strong>关键点：</strong> 从"教机器学"到"让机器自己学会学"，特征工程被自动化取代。</p>
+
+            <h4>阶段四：规模法则（大语言模型）</h4>
+
+            <p>深度学习早已存在，为什么最近才爆发？关键发现是规模法则——模型规模越大、数据越多、算力越强，能力会涌现，即突然出现小模型没有的能力。</p>
+
+            <p><strong>关键点：</strong> 从"专用模型"到"通用底座"，一个模型能做多种任务而不需要为每个任务单独训练。</p>
+
+            <h4>阶段五：能力输出（AIGC）</h4>
+
+            <p>大模型是"能力"，AIGC 是"产品"。</p>
+
+            <p><strong>关键点：</strong> AI 从实验室走向普通人的日常生活，变成人人可用的产品形态。</p>
+
+            <h4 id="s1q21">问题2.1：什么叫涌现</h4>
+
+            <p>涌现是指当模型参数规模、训练数据和算力突破某个阈值后，模型会突然表现出小模型完全不具备的能力，而这些能力并没有被显式地教给模型。</p>
+
+            <p>大语言模型就是涌现的典型产物——它在预训练阶段从未专门学过推理、编程或翻译，但当参数达到一定量级后，这些能力"自己冒了出来"。这也是为什么 2018 年的 BERT 还不能流畅对话，而 2023 年的 GPT-4 已经能通过律师资格考试——不是因为架构有本质变化，而是规模跨越了涌现的临界点。</p>
+
+            <h4 id="s1q22">问题2.2：大和涌现是什么关系</h4>
+
+            <p>首先，大语言模型的"大"指三个维度：参数规模、训练数据、计算资源（算力），三者缺一不可。参数决定能记住多少，数据决定学什么，算力决定能不能学完。</p>
+
+            <p>这三个"大"推到某个临界点后，涌现就发生了。大是原因，涌现是结果。大本身不稀奇，深度学习模型一直有，早期的 BERT 就 3 亿参数。但为什么 GPT-3 之前的模型不会推理、不会写代码？因为没跨过那个临界点。</p>
+
+            <p>涌现指的是当参数规模突破千亿级时，模型突然表现出小模型完全没有的能力——指令遵循、上下文学习、思维链推理，这些都不是训练目标，是自己冒出来的。就像水分子聚集到一定数量才会出现"湿润"这种感觉，单个水分子没有"湿"的属性，大语言模型的智能也是这样从量变到质变蹦出来的。所以核心记住一句话：扩大规模不是目的，是触发涌现的手段。</p>
+
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 32px 0;" />
+
+            <!-- ============================================================ -->
+            <!-- 第二篇：Transformer 架构 -->
+            <!-- ============================================================ -->
+
+            <h2 id="s2">第二篇：Transformer 架构</h2>
+
+            <h3 id="s2q0">问题0：Token 是什么</h3>
+
+            <p>Token 是 AI 模型阅读、理解和生成文本时的最小基本单位。不是单词、也不是汉字、更不是一个字符。1 个 Token 约等于 1.5-2 个汉字、4 个英文字母或 0.75 个英文单词。</p>
+
+            <p>模型训练时，统计哪些汉字经常挨在一起出现，把高频固定组合直接收录进 Token 词表，然后就分在一起。</p>
+
+            <h4 id="s2q01">问题0.1：BPE 分词算法</h4>
+
+            <p>BPE（Byte Pair Encoding，字节对编码）是目前主流大模型分词器的核心算法。</p>
+
+            <p>训练过程分四步：</p>
+
+            <ul>
+                <li>初始状态：词表只含基础字符（英文就是 26 个字母加标点，中文就是常用单字）</li>
+                <li>统计整个语料库中所有相邻符号对的共现频率</li>
+                <li>合并频率最高的字符对，生成新 Token（比如 t + h → th，再 th + e → the）</li>
+                <li>重复合并，直到词表达到预设大小（如 5 万）</li>
+            </ul>
+
+            <p>训练结果：高频词变成大积木（"the"、"apple" 各为一个 Token），低频词拆成子词拼装（unfortunately → ["un", "fortunate", "ly"]），生词也可以组合推断（unfriendly → ["un", "friend", "ly"]）。</p>
+
+            <h4 id="s2q02">问题0.2：为什么中文 Token 更贵</h4>
+
+            <p>中文更"贵"的核心原因是 BPE 分词算法对中文天然不友好，导致同样语义下中文被切成更多 Token。</p>
+
+            <p>具体来说：</p>
+
+            <ul>
+                <li>英文是表音文字，词根词缀固定（如 un-、-ing、-ly），BPE 训练时能高频合并出大量稳定的大积木块，比如 "the"、"apple"、"intelligence" 各自就是一个 Token。</li>
+                <li>中文是表意文字，起始字符池就几千个汉字，且词语组合规律不像英文词根那样机械稳定。比如"人工智能"，BPE 可能切成 ["人"、"工"、"智能"] 或 ["人工"、"智能"]，合并更保守。</li>
+            </ul>
+
+            <p>补充：GPT-4o 及最新的国产大模型已经在优化中文词表，中英文成本差距正在缩小，但底层原理决定了中文不可能完全追平英文的 Token 效率。</p>
+
+            <h4 id="s2q03">问题0.3：Token 是如何转化为向量的</h4>
+
+            <p>具体来说，就是有一个表，每一个 token 对应一个编号，编号再对应上向量。</p>
+
+            <p>而得出这个向量的核心思想是"一个词的意义由其上下文决定"——过程类似猜词游戏：随机遮住句子中的一个词，让模型根据上下文去猜，猜错了就调整相关词的向量，让正确词和上下文越来越近。经过无数次迭代后，语义相近的词向量被拉近，无关的被推远。</p>
+
+            <p>这也解释了为什么 Embedding 能做语义搜索——"便宜"和"价格低"虽然字面不同，但向量很近。甚至可以做向量算术，比如"国王 - 男人 + 女人 ≈ 王后"，这种语义关系完全是模型自动学到的。</p>
+
+            <h3 id="s2q1">问题1：RNN 的致命缺陷是什么</h3>
+
+            <p>RNN 有两个致命缺陷，直接导致了 Transformer 的出现。</p>
+
+            <p>首先是长距离依赖丢失。RNN 处理文本是一个词一个词顺序读的，靠一个叫"隐状态"的向量把前面读过的信息传给下一个词。问题在于这个传递是有衰减的——读第 50 个词的时候，第一个词的信息已经被反复压缩得面目全非了，这就是著名的梯度消失问题。好比传话游戏，传了 50 个人之后，第一句话早就变味了。</p>
+
+            <p>第二个问题是无法并行计算。因为 RNN 必须读完第 i 个词才能读第 i+1 个，整个序列只能串行处理。这意味着 GPU 虽然有几千个计算核心同时闲着，也只能一个接一个排队算，训练效率极低。对于需要处理几百万篇文章的大模型来说，这根本不可接受。</p>
+
+            <p>所以 Transformer 核心就是通过 自注意力机制 让每个词能同时看到句子里所有词，既没有长距离信息衰减，又能一次性并行计算整个序列。</p>
+
+            <h4 id="s2q11">问题1.1：Transformer 如何解决 RNN 的两个致命缺陷</h4>
+
+            <p>RNN 像一个记忆力只有 7 秒的速记员，每次只能记住上一个词说了什么，然后把这个摘要连同新词一起递给下一个词。传到第 50 个词的时候，第一个词剩下来的已经没多少了。</p>
+
+            <p>Transformer 核心就是通过 自注意力机制 让每个词能同时看到句子里所有词，既没有长距离信息衰减，又能一次性并行计算整个序列。</p>
+
+            <p>自注意力机制的简要流程：每个词可以同时生成三个向量——Q 是"我在找谁"，K 是"我是谁"，V 是"我要说什么"。每个词拿自己的 Q 和所有人的 K 做点积打分，Softmax 归一化成权重，再按权重把所有人的 V 加权求和，最终每个词都变成了融合全场上下文的向量。</p>
+
+            <ul>
+                <li>长距离依赖方面，第 1 个词和第 500 个词之间是直接计算的，没有层层传递的衰减，打分高低只看语义关系不看距离远近。</li>
+                <li>并行计算方面，所有词的 Q、K、V 可以一次性算出来，矩阵乘法一把梭，GPU 的几千个核心终于不用排队了。</li>
+            </ul>
+
+            <p>代价就是，注意力矩阵是 N×N 的，序列长度翻倍计算量翻四倍，这就是上下文窗口不能无限大的根源。</p>
+
+            <h3 id="s2q2">问题2：Transformer 完整流程</h3>
+
+            <p>句子进来，每个词转成嵌入向量，加上位置编码。</p>
+
+            <p>Encoder（N 层叠起来，每层三件事）。自注意力让每个词通过 Q/K/V 融合全场上下文。加残差保信息、归一化控数值。前馈网络让每个词独立深加工。N 层跑完，把最终输出投影成 K 和 V 作为会议纪要交给 Decoder。</p>
+
+            <p>Decoder（N 层，多一步交叉注意力）。每一轮输入已生成序列加位置编码，先过掩码自注意力戴眼罩看左边，搞清楚自己说过什么。加残差归一化。再交叉注意力拿自己的 Q 查 Encoder 的 K/V，融合原文信息。加残差归一化。前馈网络自己消化。最后线性层投影到词表大小，Softmax 选概率最高的词输出，拼回序列进入下一轮，直到结束符。</p>
+
+            <h3 id="s2q3">问题3：Transformer 的 Encoder 和 Decoder 各自干什么</h3>
+
+            <p>Transformer 的架构分为两半：Encoder 负责理解输入，Decoder 负责生成输出。</p>
+
+            <p>Encoder 是抄写员，把所有词消化理解之后整理成一份会议纪要。主要就是通过自注意力机制，将原始向量变成附带上下文信息的向量。之后他会利用附带上下文信息的向量重新生成 K、V，并将 K、V 传递给 Decoder（这个 K、V 就是所说的会议纪要）。</p>
+
+            <p>Decoder 是演说家，拿着这份纪要逐词往外说。Decoder 每一轮都会先通过自注意力机制以及 Q、K、V，将原始向量变成附带自己回答的上下文信息的向量。然后再拿这个向量重新生成 Q，和 Encoder 生成的 K、V，通过交叉注意力机制计算出相关度分数，得出新的融合向量。然后判断这个向量成为不同词语的分数、概率，最后输出词语。之后再开一轮，输出下一个词语。</p>
+
+            <h4 id="s2q31">问题3.1：为什么现在的 LLM 都是 Decoder-only</h4>
+
+            <p>Transformer 有三种架构流派，它们走着不同的演化路径：</p>
+
+            <ul>
+                <li><strong>Encoder-only</strong>（BERT 为代表）：只有 Encoder 部分，使用双向注意力，每个词能看到序列中的所有其他词。擅长理解任务（文本分类、命名实体识别），但不擅长生成。预训练任务是掩码语言模型——随机遮住 15% 的词让模型去猜。</li>
+                <li><strong>Encoder-Decoder</strong>（T5、原始 Transformer 为代表）：Encoder 做理解，Decoder 做生成，中间通过交叉注意力连接。适合序列到序列的任务（翻译、摘要）。结构最完整，但也最复杂。</li>
+                <li><strong>Decoder-only</strong>（GPT、LLaMA、Qwen 为代表）：只有 Decoder 部分，使用带因果掩码的单向注意力，每个词只能看自己和自己左边的词。预训练任务就是最简单的"预测下一个 Token"。</li>
+            </ul>
+
+            <p>现在的 GPT、LLaMA、Qwen、DeepSeek 全部选择了 Decoder-only，原因可以从三个维度来看。</p>
+
+            <p><strong>第一个维度：理论优势</strong></p>
+
+            <ul>
+                <li><strong>任务范式的终极统一</strong>：Decoder-only 把所有 NLP 任务都建模为"序列生成"。写诗是生成，翻译是生成，做数学题也是生成。这种"万物皆可生成"的理念，比 BERT 那种"预训练 + 给每个任务单独接一个输出头"的范式简洁得多。</li>
+                <li><strong>上下文学习（ICL）的天然契合</strong>：因果注意力的"只看左边"机制，和上下文学习的逻辑高度一致——模型通过前面的示例理解任务，然后直接生成答案。BERT 的"填空"任务很难通过几个示例学会新任务。</li>
+                <li><strong>更高的学习上限</strong>：只看左边、不看右边，预测下一个词比预测被遮住的词更难。这种"闭卷考试"迫使模型真正理解因果逻辑和语言规律，而不是靠双向信息的统计捷径。当模型规模足够大时，这种深度理解的优势会远超初期的拟合速度优势。</li>
+                <li><strong>注意力矩阵不会退化</strong>：因果注意力生成的是下三角满秩矩阵，而双向注意力矩阵容易退化为低秩状态。满秩意味着更强的信息建模能力。</li>
+            </ul>
+
+            <p><strong>第二个维度：训练效率</strong></p>
+
+            <ul>
+                <li><strong>不浪费任何一个 Token</strong>：Decoder-only 的因果语言模型中，序列里的每一个 Token 都是一个训练样本——给定前文，预测后文。一篇 1024 Token 的文本能产生 1024 次有效训练。而 BERT 只随机遮住约 15% 的 Token 来预测，同样长度的文本只有约 153 个 Token 参与损失计算。当训练数据达到万亿级别时，这个效率差距被急剧放大。</li>
+                <li><strong>架构更简洁</strong>：没有 Encoder，就不需要设计复杂的交叉注意力机制，训练流程更直接、更容易大规模并行化。</li>
+                <li><strong>Scaling Law 表现最突出</strong>：Decoder-only 架构在扩展参数、数据和算力时，Loss 下降曲线平滑可预测，能用简单的幂律函数精确拟合。这为大规模训练的资源规划提供了坚实依据。</li>
+            </ul>
+
+            <p><strong>第三个维度：工程实现</strong></p>
+
+            <ul>
+                <li><strong>KV Cache 天然友好</strong>：因为每个 Token 只依赖前面已经生成的 Token，推理时可以把已经算好的 K、V 缓存起来，生成新 Token 时只需算新 Token 的 Q 即可。这使推理复杂度从 O(N³) 降到 O(N)。Encoder-Decoder 和纯 Encoder 架构很难做到这一点。</li>
+                <li><strong>训练和推理行为一致</strong>：Decoder-only 的训练（预测下一个词）和推理（逐词生成）完全一致，不存在 BERT 那种"训练时有 [MASK] 标记、推理时没有"的分布不匹配问题。</li>
+                <li><strong>统一的生成接口</strong>：所有任务共用同一个 generate 接口，部署和服务化流程极其简单。</li>
+            </ul>
+
+            <p><strong>关键点：</strong> 三种架构没有绝对优劣，各有适合的场景。但 Decoder-only 在大规模参数下展现出了最佳的"性能-效率"平衡——它用一个极简的架构，统一了理解和生成，兼顾了训练效率和推理优化，最终成为通往通用人工智能最务实的工程路径。所以今天你看到的 GPT、LLaMA、Qwen、DeepSeek，全是用 Decoder-only。</p>
+
+            <h3 id="s2q4">问题4：Q、K、V 分别是什么，怎么生成的</h3>
+
+            <p>Q、K、V 是由同一个词的原始向量，分别乘以三个不同的权重矩阵（W_Q、W_K、W_V）得到。</p>
+
+            <ul>
+                <li>Q（查询向量）：代表这个词"现在想查什么"。</li>
+                <li>K（键向量）：代表这个词"能提供什么标签让别人找到"。</li>
+                <li>V（值向量）：代表这个词"夹带的干货"，这个词语的实质语义。</li>
+            </ul>
+
+            <p><strong>关键点：</strong> 整个 Transformer 里真正被训练的就是这些权重矩阵。输入词向量是死的，W_Q、W_K、W_V 是活的——它们决定了每个词看什么、被谁看见、被看见后贡献什么。</p>
+
+            <h3 id="s2q5">问题5：注意力机制</h3>
+
+            <h4 id="s2q51">问题5.1：什么是自注意力</h4>
+
+            <p>现在把镜头聚焦到 Encoder 内部的关键动作——这也是 Transformer 的灵魂：自注意力。回到那个会议室，句子里坐着四个参会者："那只""猫""饿""了"。作为"饿"字，你想搞清楚自己的确切含义，最聪明的办法分五步走。</p>
+
+            <ul>
+                <li>第一步：发起提问（生成 Q）。"饿"心里有个小算盘——想知道在场谁最可能和"需要吃东西"这件事有关，把这个疑问转化成一个数学向量叫 Q。这就是它想找的东西。</li>
+                <li>第二步：亮出身份（生成 K）。与此同时，会议室里每个词都给自己贴了一张身份标签叫 K，概括自己的"身份"和可能包含的信息类型。"猫"的标签上写着"我是一个生物，会饿"，"那只"的标签上写着"我是一个指示代词，没啥营养"。</li>
+                <li>第三步：计算匹配度（Q 与 K 的眼神交汇）。"饿"把自己的 Q 依次和全场所有人的 K 做点积运算——就是眼神交汇时的默契度打分。"饿"看"猫"默契度 98 分，非常相关；看"那只"默契度 5 分，不怎么相关；看"了"默契度 20 分，有点关系表示状态。</li>
+                <li>第四步：分配注意力权重（Softmax 投票）。把刚才那堆分数放进 Softmax 归一化，变成总和为 100% 的权重百分比。"猫"获得 85% 的注意力，"了"获得 10%，"那只"只剩 2%。</li>
+                <li>第五步：听取发言（加权 V 向量）。每个词除了标签 K，还有实实在在的干货叫 V。"猫"的 V 里藏着关于猫的各种属性。最后"饿"按刚才的权重，把所有人的 V 加权求和——因为 85% 都来自"猫"的 V，"饿"更新后的含义就被注入了猫的饥饿感，不再是一个抽象的汉字，而是变成了一只肚子咕咕叫的猫的状态。</li>
+            </ul>
+
+            <p><strong>关键点：</strong> Q 决定你要找谁，K 决定你是谁让别人找，V 决定你被找到后贡献什么。三个向量各司其职，五步走完，一个词就从孤立变成了带着全场上下文信息的完整表达。</p>
+
+            <h4 id="s2q52">问题5.2：什么是交叉注意力</h4>
+
+            <p>交叉注意力是 Decoder 问、Encoder 答的那一步。Decoder 在自注意力里搞清楚了自己说到哪了，然后拿着这个状态生成 Q，去翻 Encoder 留下的会议纪要（K 和 V）。Q 是"我现在该知道什么"，K 让 Decoder 在纪要里找到最相关的段落，V 把那段落的实质信息灌回来，这样 Decoder 就知道自己下一个词该说什么语义了。</p>
+
+            <p>和自注意力的区别就一句话：自注意力是同一群人在屋里互相看，Q、K、V 全是一家人；交叉注意力是 Decoder 这个演说家拿着自己的问题去找抄写员的笔记，Q 是演说的，K 和 V 是笔记的，跨了团队。</p>
+
+            <h4 id="s2q53">问题5.3：什么是掩码自注意力</h4>
+
+            <p>掩码自注意力就是戴眼罩的自注意力，和普通自注意力唯一区别是多一道屏蔽。</p>
+
+            <p>问题是如果不加掩码，训练时 Decoder 能偷看整句话直接抄答案，学不会预测；推理时未来词根本还没生成，看也看不到。原理很简单——算完 Q·K 分数后、Softmax 之前，把未来位置的分数全设成负无穷，过 Softmax 后权重变成零，等于自动屏蔽。好处是训练和推理行为一致，都只依赖历史信息逐词生成。</p>
+
+            <h3 id="s2q6">问题6：为什么要有八个评委——多头注意力（Multi-Head Attention）</h3>
+
+            <p>上面的五步流程其实不是只跑一条线，而是同时开八条线并行，这就是多头注意力。</p>
+
+            <p><strong>关键点：</strong> 每条线有自己的 W_Q、W_K、W_V，同一个词在八个评委眼里投射成八组不同的 Q、K、V，各自独立算注意力。</p>
+
+            <p>为什么一个评委不够。因为一个评委只能捕捉一种关系。比如"那只猫饿了"，如果只有一个头，"饿"可能只看到"猫"，发现是猫在饿，但它发现不了"了"在表达完成时态、也发现不了"那只"在指代这只特定的猫。八个头各看各的，有人盯主谓关系，有人盯时态，有人盯指代，有人盯情感色彩，模型对这句话的理解就比单一视角立体得多。</p>
+
+            <p>八个头算完之后，各自的输出向量拼成一个大向量，过一个线性层压缩回原始维度。所以输出形状跟单头一样，但信息密度高了几倍——一个词看别人时，带了八种视角的洞察。这也是为什么 GPT-3 有 96 个头，GPT-4 更多，头数越大、每个词能从更多角度理解上下文。</p>
+
+            <h3 id="s2q7">问题7：残差连接是什么，为什么需要它</h3>
+
+            <p>残差连接就是给每一层开一条"高速公路"。每层自注意力算完之后，输出不直接往下传，而是把这一层的原始输入也加上去：最终输出 = 自注意力的结果 + 进入这一层之前的原始输入。这样万一自注意力算错或算丢了信息，原始信息还能原封不动传到下一层，就像每个人讨论完回来，带上别人说的话，也带上自己原本的笔记。</p>
+
+            <p><strong>关键点：</strong> 残差连接解决的核心问题是信息衰减。没有它，信息每过一层就被加工压缩一次，传到后面原始含义面目全非。有了它，原始输入永远有一条保底通道贯穿所有层。</p>
+
+            <h4 id="s2q71">问题7.1：什么是"层"</h4>
+
+            <p>笔记里说的 Encoder 流程——自注意力把词变成带上下文的向量——这只是一层干的事。真实的 Transformer 是把这一层复制 N 份叠起来，第一层输出喂第二层，第二层喂第三层，每层有自己的 W_Q、W_K、W_V 互不共享。GPT-3 有 96 层，每一层重做一次自注意力，越上层理解越抽象。</p>
+
+            <p>为什么需要这么多层。一层只够让"饿"看到"猫"。堆够几十层后，高层的词向量里逐渐浮现整句话的逻辑关系、时态、意图，这些都是单层搞不定的。</p>
+
+            <h3 id="s2q8">问题8：层归一化是什么，为什么需要它</h3>
+
+            <p>层数一多，每层自注意力的输出叠加上残差的原始输入，向量的数值会越滚越大，滚到后面变成天文数字，模型直接崩。归一化做的就是每一层输出之后，强行把这个向量的数值拉回合理范围——均值拉成 0、方差拉成 1，像纪律委员一样让每层输出都规规矩矩。然后两个可学习的参数（缩放因子和偏移量）在标准化基础上微调，保留该有的信息差异。</p>
+
+            <p><strong>关键点：</strong> 残差连接保信息不丢，归一化保数值不炸。两者配合，层才能放心堆到几十上百。</p>
+
+            <h3 id="s2q9">问题9：前馈网络是什么，为什么需要它</h3>
+
+            <blockquote style="border-left: 4px solid #f59e0b; background: #fff7ed; padding: 14px 20px; margin: 20px 0; border-radius: 0 8px 8px 0; font-size: 14px; color: #475569;">
+                ⚠️ 待解决：非线性激活（ReLU 砍负数）为什么能让模型做条件判断，尚未完全理解。
+            </blockquote>
+
+            <p>问题是自注意力只做线性组合。它把别人的 V 加权加到自己身上，但加法组合不出"如果 A 且 B 则强调 C"这种条件判断。模型光会看谁跟谁相关，不会做深层推理。</p>
+
+            <p>步骤两步，每个词独立做。第一步，把自注意力出来的向量用一个矩阵扩宽，空间大了才能把隐含细节展开，然后过 ReLU——负数全砍零，只留正数信号。第二步，用另一个矩阵压回原始维度。扩开再压回，本质是让向量经过一次非线性变换。每个词独立处理，互不干扰。</p>
+
+            <p>好处就是补了自注意力的短板。自注意力管横向——谁和谁相关；前馈网络管纵向——这些相关意味着什么。两者拼起来，模型既能看全局关系，又能对每个词做独立深加工。</p>
+
+            <h3 id="s2q10">问题10：Transformer 有什么问题</h3>
+
+            <h4 id="s2q101">问题10.1：上下文窗口限制的原因</h4>
+
+            <p>注意力矩阵是 N×N 的，所有人看所有人，句子长度翻倍计算量翻四倍。这就是上下文窗口不能无限大的根源——不是记性差，是算不动。</p>
+
+            <h4 id="s2q102">问题10.2：大模型幻觉的原因</h4>
+
+            <p>Decoder 逐词生成，一旦某一步注意力权重偏了，后续全在这个错误上堆叠。更致命的是 Encoder 的会议纪要里没有"我不知道"这个状态，遇到知识盲区模型不会沉默，而是用最流畅的语法硬编一个错答案——它被训练的目标是预测下一个词，不是表达不确定性。</p>
+
+            <h4 id="s2q103">问题10.3：什么是 KV Cache</h4>
+
+            <p>现在的 LLM 架构基本都是 Decoder-only（包括训练和推理阶段），所以使用的是单向注意力机制——每个 Token 只能看到左边的 Token。</p>
+
+            <p>推理时 Decoder 是逐 token 生成的：每生成一个新 token，都需要对所有已生成的 token 重新计算一遍注意力。但问题在于，前面 token 的 K 和 V 其实是不变的——每次生成新 token，前面 token 的 K、V 都是一样的，重复算纯属浪费。</p>
+
+            <p>KV Cache 就是把这些已经算好的 K、V 缓存起来，新 token 进来时只需要算它自己的 Q，然后用缓存里的 K、V 做注意力计算。这样每轮推理的计算量就从"重新算全部"降成了"只算新来的一个"。</p>
+
+            <p>实际应用分为两步：</p>
+
+            <ul>
+                <li><strong>Prefill 阶段（预填充）</strong>：输入整个 Prompt，一次性算出所有初始 token 的 K、V 并缓存起来。这里可以进一步做 Prompt Cache——如果两个请求的 Prompt 前缀相同（比如系统指令一样），前缀部分的 K、V 可以直接复用，不需要重新算。</li>
+                <li><strong>Decode 阶段（逐词生成）</strong>：每生成一个 token，只算这个新 token 的 K、V，追加到缓存里，然后用完整的 KV Cache 算注意力，输出下一个 token。</li>
+            </ul>
+
+            <p><strong>关键点：</strong> KV Cache 的核心思想是以空间换时间——多占一点显存（存 K、V），换来推理速度指数级提升。不缓存的话，生成 1000 个 token 的计算量大约是缓存的 1000 倍。</p>
+
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 32px 0;" />
+
+            <!-- ============================================================ -->
+            <!-- 第三篇：训练全流程 -->
+            <!-- ============================================================ -->
+
+            <h2 id="s3">第三篇：训练全流程</h2>
+
+            <h3 id="s3q1">问题1：什么叫大语言模型</h3>
+
+            <p>大语言模型本质上就是一个极其复杂的数学函数 f(x) = y。</p>
+
+            <ul>
+                <li>x 是你的输入，比如你向 ChatGPT 提的问题。</li>
+                <li>f 是一个由数十亿甚至上万亿个参数构成的巨大神经网络。</li>
+                <li>y 是模型生成的回答。</li>
+            </ul>
+
+            <p><strong>关键点：</strong> 大语言模型的"大"，指的就是参数数量巨大——GPT-4 据传有约 1.8 万亿个参数。这些参数就像大脑中无数个神经元之间的连接强度，有些强（常识），有些弱（生僻知识）。</p>
+
+            <h4 id="s3q11">问题1.1：什么叫训练大语言模型</h4>
+
+            <p>训练就是调试参数的过程。通过反复"猜下一个词→对比正确答案→调整参数"，模型的回答越来越符合人类的预期。</p>
+
+            <h4 id="s3q12">问题1.2：训练具体调哪些参数</h4>
+
+            <p>三个阶段的训练，调的参数不同。</p>
+
+            <ul>
+                <li>预训练——从头开始，所有参数都调。包括 W_Q/W_K/W_V（注意力矩阵）、前馈网络的 W1/W2、输出层投影矩阵、嵌入层矩阵、归一化参数。一开始全随机，通过万亿次"猜词→对比→反向传播"全部调到位。</li>
+                <li>SFT——在预训练好的模型上继续调。全参数微调的话还是上面一整套都调，但起点已有预训练知识，几百到几万条数据就够。如果用 LoRA，不碰原始权重，只在旁边加小矩阵，只调这几个小矩阵，成本几十美元甚至更少。</li>
+                <li>RLHF——调策略模型（SFT 后的模型）让它越来越符合人类偏好，同时单独训练一个奖励模型来打分。两个模型各自有自己的一套参数。</li>
+            </ul>
+
+            <h3 id="s3q2">问题2：为什么是 Transformer</h3>
+
+            <p>传统 RNN 有两个致命问题。</p>
+
+            <ul>
+                <li>长距离依赖丢失：一个字一个字顺序读，读到第 50 个词时第 1 个词的信息已经衰减到几乎没了。比如"我把苹果给吃了，因为它很甜"——"它"指代"苹果"，但 RNN 读到"它"时可能已经忘了"苹果"。</li>
+                <li>无法并行计算：必须读完前一个词才能读下一个，GPU 几千个核心干等着排队。</li>
+            </ul>
+
+            <p>Transformer 用自注意力一次解决两个问题。</p>
+
+            <ul>
+                <li>关联度方面：每个词同时看全句所有词，直接计算关联分数——"它"和"苹果"0.8，"它"和"我"0.1，一眼搞定指代，多长都不衰减。</li>
+                <li>并行计算方面：所有词一把矩阵乘法同时算完，GPU 终于不用闲着，训练效率飞升。</li>
+            </ul>
+
+            <p><strong>关键点：</strong> 长文本理解和训练速度两方面同时碾压上一代 RNN，没有 Transformer 就没有今天的大模型时代。</p>
+
+            <h3 id="s3q3">问题3：大模型是怎么训练的</h3>
+
+            <p>大语言模型的训练分为三个阶段，类比培养一个博士生：先海量阅读、再名师指导、最后价值观教育。每个阶段解决前一个阶段留下的问题。</p>
+
+            <h4>阶段一：预训练——"海量阅读"</h4>
+
+            <p>做法是把互联网上几乎所有公开文本（书籍、论文、网页、代码）丢给模型，让它反复做一件事——预测下一个词。这属于自监督学习，不需要人工标注，语料本身就是标签。</p>
+
+            <p>做完预训练后，模型掌握了语法、常识、推理模式，知识量远超任何人。但它只会"往下接话"，你跟它说"帮我写周报"，它可能接着生成一段关于周报的百科介绍，而不是真的帮你写。因为它没学过"指令"这件事。</p>
+
+            <p><strong>关键点：</strong> 预训练让模型知识渊博但不听话，它只会文本接龙，不懂你让它做什么。</p>
+
+            <h4>阶段二：监督微调——"名师指导"</h4>
+
+            <p>为解决"不听话"的问题，人类标注员制作大量高质量"问题-答案"对，覆盖日常问答、写作、翻译、代码等场景，然后用这些数据继续训练模型。模型学会了指令遵循和对话格式，知道"当用户这样说时，我应该那样答"。</p>
+
+            <p>做完 SFT 后，模型会听话了，但学来的东西好坏都吸收。标注员可能带入偏见，模型也可能学会迎合而非求真。而且 SFT 只能教"答什么"，教不了"什么不该答"。</p>
+
+            <p><strong>关键点：</strong> SFT 让文本接龙器变成指令遵循器，但只教了"做什么"，没教"不做什么"。</p>
+
+            <h4>阶段三：RLHF 对齐——"价值观教育"</h4>
+
+            <p>为解决"好坏不分"的问题，引入基于人类反馈的强化学习。具体分三步：首先对同一个问题让模型生成多个答案，人类标注员给这些答案排序（不是打分，因为排序比打分更一致）；然后用这些排序数据训练一个奖励模型，让它学会判断"人类更喜欢哪种回答"；最后用奖励模型配合 PPO 算法去微调 LLM，让模型生成更符合人类偏好的输出。</p>
+
+            <p>做完 RLHF 后，模型学会了三个核心原则——有用、诚实、无害。它能判断什么该答、什么该拒绝、什么该承认不知道。</p>
+
+            <p><strong>关键点：</strong> RLHF 解决了预训练和 SFT 都解决不了的问题——价值判断。让模型从"能做"进化为"做得对"。</p>
+
+            <h4 id="s3q31">问题3.1：为什么必须分阶段训练</h4>
+
+            <p>不合并成一步，有三个原因。</p>
+
+            <ul>
+                <li>成本：预训练极昂贵。如果在预训练阶段就使用昂贵的人工标注数据，成本将是天文数字。把"学知识"和"学规矩"分开，最大化利用免费互联网数据，只在最后关键步骤用人工。</li>
+                <li>稳定性：三个目标有时冲突。让一个还没学会基本语言规律的模型同时去学复杂的"人类偏好"，学习过程会极不稳定，最终可能什么都没学好。</li>
+                <li>灵活性：一次昂贵预训练得到一个强大基座模型，然后针对不同场景（写代码、写小说、做客服）用不同微调和 RLHF 派生出各种专业模型。一次筑基，多次复用。</li>
+            </ul>
+
+            <h4 id="s3q32">问题3.2：预测下一个 Token</h4>
+
+            <p>预训练的核心任务极其简单：给模型看一段文本的前半部分，让它猜下一个 Token 是什么。这属于自监督学习，不需要人工标注，语料本身就是标签。</p>
+
+            <p>比如输入"床前明月"，模型根据当前知识猜可能是"光"（60%）、可能是"亮"（20%）、可能是"照"（10%）。正确答案是"光"——猜对了加强神经通路，猜错了调整参数。这个过程重复数万亿次。</p>
+
+            <p>表面是在玩接龙游戏，副产品却是真正的理解。模型通过万亿次猜词，自己学会了语法（"我吃苹果"对、"我苹果吃"错）、常识（太阳从东方升起）、推理（1+1=2）。一个极其简单的任务，撬动了语言理解能力的涌现。</p>
+
+            <h4 id="s3q321">问题3.2.1：Temperature、Top-P、Top-K 如何控制输出随机性</h4>
+
+            <p>模型输出分为三步：先给词表中所有词生成分数（Logits），通过 Softmax 函数将分数转换为概率，最后按概率加权采样选词输出。</p>
+
+            <p>如果不加任何控制，模型每次都选概率最高的词，输出就完全固定、没有多样性。所以需要这几个参数来调节"随机性程度"。</p>
+
+            <ul>
+                <li><strong>Temperature</strong>：作用于 Softmax 函数内部的指数运算，通过缩放 Logits 的幅度来改变概率分布的"陡峭程度"。数值越低（趋近 0），高分词概率越集中，输出越稳定确定；数值越高（如 1.5），词汇概率差异被抹平，输出越随机多样。当 Temperature 设为 0 时，退化为纯贪婪解码——每次都选概率最高的词。</li>
+                <li><strong>Top-p</strong>：全称"最高累加概率"（Nucleus Sampling），是概率阈值参数。从概率最高的词开始，逐个累加概率值，直到累加和超过 Top-p 阈值，然后只保留这些词，其余低概率长尾词全部砍掉。这样既能避免输出跑题到生僻词，又保留了合理范围内的不确定性。数值越低（如 0.1），保留的词越少、输出越严谨；数值越高（如 0.9），保留的词越多、输出越发散。</li>
+                <li><strong>Top-k</strong>：与 Top-p 思路类似但做法不同——直接按概率排名取前 k 个词，其余全砍掉。比如 Top-k=50 时，永远只看概率最高的 50 个词，其余无视。</li>
+            </ul>
+
+            <p><strong>参数使用建议</strong>：Temperature 调整的是概率分布的"陡峭程度"，Top-p 截断的是"长尾低概率词"。二者值越大越适合创意发散场景（写诗、故事），值越小越适合严谨场景（代码、数学推理）。OpenAI 建议一般情况下只调整其中一个即可，不需要同时调两个。</p>
+
+            <h4 id="s3q33">问题3.3：Dense 与 MoE 架构的区别</h4>
+
+            <p>位置在前馈网络。正常 Transformer 一层只有一个前馈网络，所有 Token 走同一个——这叫 Dense，每次推理激活全部参数。</p>
+
+            <p>MoE 在这个位置放多个前馈网络（专家），由路由器根据每个 Token 的内容挑其中 2 个激活，其余闲置。所以总参数量可以很大，但每次推理只激活一小部分。DeepSeek-V3 总参数 6710 亿，每个 Token 只激活 370 亿。好处是效果强但推理成本低；代价是训练更难，专家负载可能不均衡。</p>
+
+            <p>与多头注意力的区别：多头在自注意力层、全部头都激活；MoE 在前馈网络层、只激活部分专家。</p>
+
+            <h4 id="s3q34">问题3.4：LoRA 与 QLoRA 怎么省成本</h4>
+
+            <p>全参数微调要更新整个模型所有矩阵，百亿参数起步，普通显卡根本跑不动。</p>
+
+            <p>LoRA 不碰原始权重 W，只在旁边挂两个小矩阵 A 和 B。计算时输出 = W·x + B·A·x，训练只调 A 和 B，W 冻结不动。因为 A、B 是低秩矩阵，参数量只有原来的千分之一。</p>
+
+            <p>QLoRA 更进一步，先把模型量化到 4 位精度（参数存储从 16 位浮点数压到 4 位整数，显存直接砍到四分之一）再挂 LoRA 旁路。个人用消费级显卡就能微调 7B 模型，成本几十美元。</p>
+
+            <h4 id="s3q35">问题3.5：PPO 算法与四个模型角色</h4>
+
+            <p>PPO（近端策略优化）是 RLHF 第三步用的训练算法，需要四个模型协作。</p>
+
+            <ul>
+                <li>Actor：策略模型，负责生成回答。你问问题，它出答案。</li>
+                <li>Reward Model：奖励模型，负责打分。判断 Actor 的回答好不好。</li>
+                <li>Critic：价值模型，预估未来收益。不只看当前这一步，还预测"按这个路子走下去能拿多少分"，让 Actor 更新步子不跨太大，训练更稳。</li>
+                <li>Reference Model：参考模型，Actor 训练前的快照，冻结不动。每次更新时和 Reference 对比，偏离太远就拉回来，防止为了追高分忘掉常识和语法。</li>
+            </ul>
+
+            <p>没有 Critic 训练会震荡不稳，没有 Reference 会忘本。四个协作，才能既进步又不跑偏。</p>
+
+            <h4 id="s3q36">问题3.6：DPO 是什么</h4>
+
+            <p><strong>问题</strong>：RLHF 流程繁琐，需要单独训练奖励模型，还要四个模型跑 PPO，资源消耗大、调参困难。</p>
+
+            <p><strong>原理</strong>：DPO 直接砍掉奖励模型。把人类偏好数据（A 比 B 好）直接当训练信号，让模型从偏好对里自己学到"什么更好"。本质从"先训练裁判再优化选手"变成"直接告诉选手哪个答案更好"，三步简化到一步。</p>
+
+            <p><strong>好处</strong>：不需要奖励模型和四个模型协作，算力大幅降低。代价是对偏好数据质量更敏感，数据不好就直接学歪。</p>
+
+            <h3 id="s3q4">问题4：如何评估模型好坏</h3>
+
+            <p>三种方式，从冷到热。</p>
+
+            <ul>
+                <li>自动化基准测试：MMLU 考百科知识，HumanEval 考代码能力。跑得快但测不出对话感。</li>
+                <li>人类盲测：两个匿名模型的回答放一起让人投票谁更好，Chatbot Arena 就是这种，测综合体验。</li>
+                <li>红队测试：故意用危险问题攻击模型，看它会不会被诱导说出不该说的，测安全边界。</li>
+            </ul>
+
+            <p>自动化测知识、盲测验体感、红队卡底线，三者结合才是完整评估体系。</p>
+
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 32px 0;" />
+
+            <!-- ============================================================ -->
+            <!-- 第四篇：推理与工程应用 -->
+            <!-- ============================================================ -->
+
+            <h2 id="s4">第四篇：推理与工程应用</h2>
+
+            <h3 id="s4q1">问题1：什么是 Embedding 模型</h3>
+
+            <p>Embedding 模型的作用是把一段文本（句子、段落或文档）转换成一个固定长度的向量，这个向量能够捕捉文本的语义信息。</p>
+
+            <p>工作原理：文本先被切分为 Token，每个 Token 通过查找表转成初始向量，然后经过多层 Encoder 的自注意力处理，每个 Token 的向量融合了上下文信息。最后将这些 Token 的向量合并（通常是取平均或取 [CLS] token）变成一条固定长度的向量。</p>
+
+            <p>在检索时，通过计算向量之间的余弦相似度来匹配语义相近的文本。比如搜索"便宜的手机"，Embedding 会把"便宜"和"价格低"映射到相近的向量空间位置，即使字面不同也能匹配上。</p>
+
+            <p><strong>关键点：</strong> Embedding 模型处理长文本时，大量语义信息会被压缩到固定长度的向量中，精度有限，只适合粗筛。精细匹配需要后续的 ReRank 来做。</p>
+
+            <h3 id="s4q2">问题2：什么是 ReRank（重排序）</h3>
+
+            <p>ReRank 是 RAG（检索增强生成）中用于提升检索精度的重排序步骤。Embedding 粗筛出候选文档后，ReRank 对这些候选进行更精细的相关性排序。</p>
+
+            <p>ReRank 使用的是 Encoder-only 架构（如 BERT），它不生成向量，而是直接给"问题-文档"对打分。</p>
+
+            <p>工作原理：</p>
+
+            <ul>
+                <li>将问题和检索出的文档拼在一起，格式为 `[CLS] 问题 [SEP] 文档 [SEP]`，[SEP] 是分隔符。</li>
+                <li>送入多层的 Encoder，让模型对问题中的每个词和文档中的每个词做双向交叉注意力，从而理解二者之间的深层语义关系。</li>
+            </ul>
+
+            <p>如何打分：</p>
+
+            <ul>
+                <li>`[CLS]` 是放在序列最开头的特殊 Token。经过多层 Encoder 处理后，[CLS] 的向量会融合整个序列（问题+文档）的语义信息。</li>
+                <li>然后通过一个训练好的权重矩阵对这个向量进行线性变换，最后用 Sigmoid 将分数压缩到 0 到 1 之间，代表"问题与文档相关"的概率。</li>
+            </ul>
+
+            <p><strong>关键点：</strong> Embedding 是粗筛（速度快但精度低，适合从海量文档中快速召回候选），ReRank 是精排（速度慢但精度高，适合对少量候选做最终排序）。两者配合使用，才是完整的 RAG 检索管线。</p>
+
+        </article>
+    </div>
+    <footer>&copy; 2026 程愚瀚 · Built with &hearts;</footer>
+    <script src="../../资源/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function updateProjectNav() {
+                var cards = document.querySelectorAll('h2[id], h3[id], h4[id]');
+                var subTargets = document.querySelectorAll('[id="s1q11"],[id="s1q21"],[id="s1q22"],[id="s2q01"],[id="s2q02"],[id="s2q03"],[id="s2q11"],[id="s2q31"],[id="s2q51"],[id="s2q52"],[id="s2q53"],[id="s2q71"],[id="s2q101"],[id="s2q102"],[id="s2q103"],[id="s3q11"],[id="s3q12"],[id="s3q31"],[id="s3q32"],[id="s3q321"],[id="s3q33"],[id="s3q34"],[id="s3q35"],[id="s3q36"]');
+                var navLinks = document.querySelectorAll('.sidebar nav a, .sidebar-sub');
+                var current = '';
+                cards.forEach(function(c) {
+                    var top = c.offsetTop - 130;
+                    var bottom = top + c.offsetHeight;
+                    if (window.scrollY >= top && window.scrollY < bottom) {
+                        current = c.getAttribute('id');
+                    }
+                });
+                subTargets.forEach(function(s) {
+                    var top = s.offsetTop - 130;
+                    var bottom = top + s.offsetHeight;
+                    if (window.scrollY >= top && window.scrollY < bottom) {
+                        current = s.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(function(link) {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+            window.addEventListener('scroll', updateProjectNav);
+            window.addEventListener('load', updateProjectNav);
+            updateProjectNav();
+        });
+    </script>
+</body>
+</html>

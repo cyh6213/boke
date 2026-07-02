@@ -59,7 +59,7 @@ body {
     position: fixed;
     top: 56px;
     left: 0;
-    width: 220px;
+    width: 320px;
     height: calc(100vh - 56px);
     background: #ffffff;
     border-right: 1px solid #e9edf4;
@@ -90,7 +90,7 @@ body {
 
 /* ===== Main ===== */
 .main {
-    margin-left: 220px;
+    margin-left: 320px;
     margin-top: 56px;
     min-height: calc(100vh - 56px);
     transition: margin-right 0.3s ease;
@@ -200,7 +200,7 @@ section { padding: 80px 60px; max-width: 960px; }
 
 /* ===== Footer ===== */
 footer {
-    margin-left: 220px;
+    margin-left: 320px;
     margin-top: 0;
     padding: 24px 60px;
     font-size: 13px;

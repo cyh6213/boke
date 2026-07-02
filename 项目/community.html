@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>开发者技术社区平台 | 程愚瀚</title>
+    <link rel="stylesheet" href="../资源/css/style.css" />
+    <style>
+        .project-list { max-width: 960px; padding: 120px 60px 80px; }
+        .sidebar-sub { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #64748b; text-decoration: none; transition: all 0.2s; }
+        .sidebar-sub:hover { background: #f1f4f9; color: #0f172a; }
+        .sidebar-sub.active { background: #eef2ff; color: #4f46e5; }
+        .sidebar-sub .dot { width: 4px; height: 4px; border-radius: 50%; background: #cbd5e1; flex-shrink: 0; transition: background 0.2s; }
+        .sidebar-sub:hover .dot { background: #4f46e5; }
+        .sidebar-sub.active .dot { background: #4f46e5; }
+        .sidebar-sub-group { margin: 2px 0 6px 20px; border-left: 2px solid #e2e8f0; padding-left: 6px; }
+        [id] { scroll-margin-top: 120px; }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <a href="../" class="nav-brand">程愚瀚</a>
+        <div class="nav-links">
+            <a href="../">首页</a>
+            <a href="../文章/">文章</a>
+            <a href="./" class="active">项目</a>
+        </div>
+    </nav>
+
+    <!-- ===== Sidebar ===== -->
+    <aside class="sidebar">
+        <div class="name">程愚瀚</div>
+        <div class="title">Java 后端和 agent 开发</div>
+        <nav>
+            <a href="#origin" class="active"><span class="dot"></span> 项目来源</a>
+            <a href="#memory"><span class="dot"></span> 记忆</a>
+            <div class="sidebar-sub-group">
+                <a href="#whitelist" class="sidebar-sub"><span class="dot"></span> 白名单</a>
+                <a href="#rank" class="sidebar-sub"><span class="dot"></span> 活跃度排行</a>
+                <a href="#count" class="sidebar-sub"><span class="dot"></span> 计数统计</a>
+                <a href="#cache" class="sidebar-sub"><span class="dot"></span> 缓存一致性</a>
+            </div>
+            <a href="#log"><span class="dot"></span> 日志</a>
+            <a href="#perf"><span class="dot"></span> 性能优化</a>
+            <div class="sidebar-sub-group">
+                <a href="#pipeline" class="sidebar-sub"><span class="dot"></span> 批处理</a>
+                <a href="#async" class="sidebar-sub"><span class="dot"></span> 异步执行</a>
+                <a href="#parallel" class="sidebar-sub"><span class="dot"></span> 并行访问</a>
+            </div>
+            <a href="#monitor"><span class="dot"></span> 监控</a>
+        </nav>
+    </aside>
+
+    <div class="main">
+        <div class="project-list">
+            <div class="section-label">Project 04</div>
+            <h2 class="section-title">开发者技术社区平台</h2>
+
+            <!-- 1. 项目来源 -->
+            <div class="project-card" id="origin">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;">项目来源</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">为什么做这个项目</span>
+                </div>
+                <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 16px 0;">
+                    面向互联网开发者的内容分享平台，用于帮助开发者成长。项目为前后端分离架构。
+                </p>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px;">
+                    <span style="padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;">Spring Boot</span>
+                    <span style="padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; background: #ecfdf5; color: #059669;">MyBatis-Plus</span>
+                    <span style="padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; background: #fef2f2; color: #dc2626;">MySQL</span>
+                    <span style="padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; background: #f0fdf4; color: #16a34a;">Redis</span>
+                    <span style="padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; background: #fff7ed; color: #d97706;">Caffeine</span>
+                    <span style="padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; background: #f5f3ff; color: #7c3aed;">RocketMQ</span>
+                    <span style="padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; background: #ecfeff; color: #0891b2;">Docker</span>
+                </div>
+                <div style="font-size: 14px; color: #475569; line-height: 1.8;">
+                    <div style="font-weight: 700; color: #0f172a; margin-bottom: 8px;">主要职责</div>
+                    <ul style="margin: 0; padding-left: 20px;">
+                        <li>使用 RocketMQ 异步处理点赞、评论、收藏、消息推送，实现核心业务与统计、通知模块解耦。</li>
+                        <li>基于 Redis 实现白名单控制、用户活跃度排行、计数统计，提升接口响应与体验。</li>
+                        <li>设计 Caffeine+Redis 多级缓存，解决首页、专栏等热门数据吞吐量瓶颈，同时保证缓存一致性。</li>
+                        <li>基于 AOP + 自定义注解 + MDC + TraceID 实现日志全链路追踪，支持动态业务码（bizCode）注入、方法耗时统计与性能监控；基于 Logback 自定义追加器实现异常邮件告警。</li>
+                        <li>通过 Redis Pipeline 批处理、@Async 异步执行、并行访问优化等手段，降低网络开销，解决高并发下计数统计、消息通知等场景的性能瓶颈，减少 60% 页面初始化时间。</li>
+                        <li>编写 Docker Compose 编排脚本，实现"一键拉起"开发环境，缩短本地环境搭建时间。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 2. 记忆 -->
+            <div class="project-card" id="memory">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f1f4f9; color: #64748b;">记忆</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">基于 Redis 实现数据控制与统计</span>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 24px;">
+
+                    <!-- 白名单 -->
+                    <div id="whitelist">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                            <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;">白名单</span>
+                            <span style="font-size: 15px; font-weight: 700; color: #0f172a;">基于 Set 的白名单控制</span>
+                        </div>
+                        <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 12px 0;">
+                            基于 Redis 的 Set 实现白名单控制。如果在白名单里，文章就直接发布上线；如果不在，就进入审核队列，等人工审核通过再上线。
+                        </p>
+                        <div style="padding: 12px 16px; background: #f8fafc; border-left: 3px solid #4f46e5; border-radius: 0 8px 8px 0; margin-bottom: 10px;">
+                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">底层原理</div>
+                            <div style="font-size: 13px; color: #475569; line-height: 1.7;">Set 的底层是 dict，查询的时间复杂度是 O(1)，能极快地判断元素是否存在，而且天然去重，不用担心重复添加。</div>
+                        </div>
+                        <div style="padding: 10px 14px; background: #f0fdf4; border-radius: 8px; font-size: 13px; color: #475569; line-height: 1.7;">
+                            <strong>延伸：</strong>这种机制也可以反过来用，改成黑名单来实现禁言或封禁。除此之外，Set 还能用于防止点赞或收藏重复操作，找共同好友等。
+                        </div>
+                    </div>
+
+                    <!-- 活跃度排行 -->
+                    <div id="rank">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                            <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;">活跃度排行</span>
+                            <span style="font-size: 15px; font-weight: 700; color: #0f172a;">基于 ZSet 的活跃度排行</span>
+                        </div>
+                        <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 12px 0;">
+                            基于 Redis 的 ZSet 实现活跃度排行，支持按照分数进行排序。
+                        </p>
+                        <div style="padding: 12px 16px; background: #f8fafc; border-left: 3px solid #4f46e5; border-radius: 0 8px 8px 0; margin-bottom: 10px;">
+                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">积分规则</div>
+                            <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+                                按行为权重设计：访问页面加 1 分，点赞收藏加 2 分且取消时收回，评论加 3 分，发布审核通过的文章加 10 分。
+                            </div>
+                        </div>
+                        <div style="padding: 12px 16px; background: #f8fafc; border-left: 3px solid #d97706; border-radius: 0 8px 8px 0; margin-bottom: 10px;">
+                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">幂等策略</div>
+                            <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+                                用 Redis Hash 存储用户当天的行为记录，加分前先检查，不存在才执行。针对原子性问题（幂等判断加更新不是原子操作），用 Lua 脚本把整个逻辑封装起来，确保整条逻辑的原子性。
+                            </div>
+                        </div>
+                        <div style="padding: 12px 16px; background: #f8fafc; border-left: 3px solid #10b981; border-radius: 0 8px 8px 0; margin-bottom: 10px;">
+                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">过期策略</div>
+                            <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+                                幂等记录设置 1 天过期，日榜设 31 天，月榜设 1 年。不存数据库是因为排行榜读写频率极高，属于运营辅助数据，不是核心业务，对持久性要求不高。
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 计数统计 -->
+                    <div id="count">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                            <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;">计数统计</span>
+                            <span style="font-size: 15px; font-weight: 700; color: #0f172a;">基于 Hash 的计数统计</span>
+                        </div>
+                        <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 12px 0;">
+                            选择用 Redis 而不是数据库，主要是因为数据库在高并发下做 count 或者实时更新字段，性能差且 IO 开销大。而 Redis 基于内存，INCR 这类原子命令天然适合频繁的计数场景，同时也能有效减轻数据库的压力。
+                        </p>
+                        <div style="padding: 12px 16px; background: #f8fafc; border-left: 3px solid #4f46e5; border-radius: 0 8px 8px 0;">
+                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">为什么用 Hash 结构</div>
+                            <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+                                对于一个用户或一篇文章，往往有多个统计字段，比如点赞数、评论数、收藏数。用 Hash 可以把它们放在同一个 Key 下，节省 Key 数量，还便于统一管理。
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 缓存一致性 -->
+                    <div id="cache">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                            <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;">缓存一致性</span>
+                            <span style="font-size: 15px; font-weight: 700; color: #0f172a;">Caffeine + Redis 多级缓存</span>
+                        </div>
+                        <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 12px 0;">
+                            项目整体是本地缓存 Caffeine（一级）+ 分布式缓存 Redis（二级）+ 数据库 MySQL 的三级架构。
+                        </p>
+                        <div style="padding: 12px 16px; background: #f8fafc; border-left: 3px solid #4f46e5; border-radius: 0 8px 8px 0; margin-bottom: 10px;">
+                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">两级缓存分工</div>
+                            <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+                                <strong>Caffeine（一级）</strong> — 存高访问、低变更的数据，比如首页文章列表、专栏教程等。<br>
+                                <strong>Redis（二级）</strong> — 存需要共享、更新频率高、一致性要求高的数据，比如排行榜、热点文章，计数类操作，配合 Pipeline 做批量优化。
+                            </div>
+                        </div>
+                        <div style="padding: 12px 16px; background: #f8fafc; border-left: 3px solid #d97706; border-radius: 0 8px 8px 0; margin-bottom: 10px;">
+                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">数据一致性策略</div>
+                            <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+                                采用 <strong>先更新数据库再删缓存 + 过期时间</strong> 策略：<br>
+                                ① 更新数据时先更新数据库<br>
+                                ② 删除 Redis 缓存<br>
+                                ③ 删除 Caffeine 本地缓存<br>
+                                ④ 同时给缓存设置合理过期时间，作为兜底保证最终一致
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 20px; padding: 16px 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e9edf4;">
+                            <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">几种缓存策略对比</div>
+
+                            <div style="padding: 12px 16px; background: #fff; border-left: 3px solid #10b981; border-radius: 0 8px 8px 0; margin-bottom: 10px;">
+                                <div style="font-size: 13px; font-weight: 600; color: #10b981; margin-bottom: 4px;">✅ 先更新数据库，再删缓存（项目选型）</div>
+                                <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+                                    可能的问题场景：缓存刚好过期 → 请求 A 查库读旧值 → 请求 B 更新数据库并删缓存 → 请求 A 将旧值写回缓存。但概率极低，要求三个条件同时满足：缓存刚好过期、有并发读写、写操作在读操作的"查库"和"写缓存"之间完成。即使出现，下次缓存过期后自动修复。
+                                </div>
+                            </div>
+
+                            <div style="padding: 12px 16px; background: #fff; border-left: 3px solid #4f46e5; border-radius: 0 8px 8px 0; margin-bottom: 10px;">
+                                <div style="font-size: 13px; font-weight: 600; color: #4f46e5; margin-bottom: 4px;">🔄 异步更新（Canal + binlog）</div>
+                                <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+                                    先写 MySQL，利用 Canal 监听 binlog，异步删除 Redis 缓存。追求最终一致性，好处是业务代码不用关心缓存，解耦，稳定性更高。
+                                </div>
+                            </div>
+
+                            <div style="padding: 12px 16px; background: #fff; border-left: 3px solid #f59e0b; border-radius: 0 8px 8px 0; margin-bottom: 10px;">
+                                <div style="font-size: 13px; font-weight: 600; color: #d97706; margin-bottom: 4px;">🔒 强一致性方案</div>
+                                <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+                                    加锁保证同一时间只有一个人能操作数据，代价是性能下降明显。关键数据直接查库，不走缓存。
+                                </div>
+                            </div>
+
+                            <div style="padding: 12px 16px; background: #fff; border-left: 3px solid #ef4444; border-radius: 0 8px 8px 0;">
+                                <div style="font-size: 13px; font-weight: 600; color: #dc2626; margin-bottom: 4px;">❌ 三种有问题的策略</div>
+                                <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+                                    <strong>先更新缓存，再更新数据库</strong> — 并发 + 网络延迟导致顺序错乱，且更新完缓存后数据库操作可能失败。<br>
+                                    <strong>先更新数据库，再更新缓存</strong> — 同样并发 + 网络延迟导致顺序错乱。<br>
+                                    <strong>先删缓存，再更新数据库</strong> — 在读多写少场景下，删缓存后另一个请求读到旧值并回写，导致脏数据。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 3. 日志 -->
+            <div class="project-card" id="log">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #fff7ed; color: #d97706;">日志</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">全链路日志追踪与异常报警</span>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">增强日志（MDC + TraceID + bizCode）</div>
+                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 12px 0;">
+                        基于 AOP + 自定义注解 + MDC + TraceID 实现日志全链路追踪，支持动态业务码（bizCode）注入、方法耗时统计与性能监控。
+                    </p>
+                    <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px; margin-bottom: 10px;">
+                        <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 6px;">执行流程</div>
+                        <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+                            ① 请求进来后，Filter 生成 TraceId 存入 MDC（SLF4J 提供的 ThreadLocal 容器）<br>
+                            ② 方法上标注 @MdcDot 注解时，AOP 切面拦截，解析注解里的 bizCode（如文章 ID），也存入 MDC<br>
+                            ③ 打印日志时统一输出 TraceId 和 bizCode<br>
+                            ④ 请求结束后清理 MDC 防止内存泄漏
+                        </div>
+                    </div>
+                    <div style="padding: 12px 16px; background: #f8fafc; border-left: 3px solid #4f46e5; border-radius: 0 8px 8px 0; margin-bottom: 10px;">
+                        <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">TraceId vs bizCode</div>
+                        <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+                            <strong>TraceId</strong> — 一次请求的唯一标识，用来串联整个调用链的所有日志。生成规则：机器 ID + 线程 ID + 时间戳 + 自增序列号，保证全局唯一。<br>
+                            <strong>bizCode</strong> — 业务唯一标识，比如文章 ID 或用户 ID，方便按业务检索日志。
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">异常报警</div>
+                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 12px 0;">
+                        基于 Logback 自定义 Appender 实现异常邮件告警。
+                    </p>
+                    <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                        <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 6px;">实现原理</div>
+                        <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+                            自定义类继承 AppenderBase，重写 append 方法。Logback 每输出一条日志就会调用这个方法。方法内做频率控制：用静态变量 lastSendTime 记录上次发送时间，每次判断当前时间减去上次发送时间是否大于 10 分钟，满足条件才发送告警邮件并更新时间，否则忽略。这样就实现了 10 分钟内只发一次邮件的频率限制。<br><br>
+                            邮件发送利用 Spring 封装的 JavaMailSender：在 append 方法里从 ILoggingEvent 对象获取日志级别、消息内容、时间、类名等信息，拼接成邮件标题和正文后发送。
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. 性能优化 -->
+            <div class="project-card" id="perf">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #ecfdf5; color: #059669;">性能优化</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">解决高并发性能瓶颈</span>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+
+                    <!-- 批处理 -->
+                    <div id="pipeline">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;">批处理</span>
+                            <span style="font-size: 15px; font-weight: 700; color: #0f172a;">Redis Pipeline 批量操作</span>
+                        </div>
+                        <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 12px 0;">
+                            Redis Pipeline 把多条 Redis 命令打包在一起，通过一次网络请求发送给服务端，减少网络往返耗时。主要用在文章阅读量累加、点赞收藏、活跃度统计这类计数场景。
+                        </p>
+                        <div style="padding: 12px 16px; background: #f8fafc; border-left: 3px solid #d97706; border-radius: 0 8px 8px 0;">
+                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">注意事项</div>
+                            <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+                                Pipeline 不具备原子性，不能当成事务来用；一次性打包的命令不能过多，否则会占用服务端缓冲区；同时不支持实时返回执行结果。
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 异步执行 -->
+                    <div id="async">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;">异步执行</span>
+                            <span style="font-size: 15px; font-weight: 700; color: #0f172a;">@Async + Listener</span>
+                        </div>
+                        <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 12px 0;">
+                            @Async 注解搭配 Listener 使用。NotifyMsgListener 负责监听评论、点赞等业务事件，异步生成通知消息并推送给用户。没有选择 MQ 是因为 Listener 非常轻量简单，用在评论点赞等对一致性要求不高的场景十分合适。
+                        </p>
+                        <div style="padding: 12px 16px; background: #f8fafc; border-left: 3px solid #4f46e5; border-radius: 0 8px 8px 0;">
+                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">线程池配置</div>
+                            <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+                                @Async 默认创建新线程，高并发会导致 OOM。因此自定义了一个配置类，专门建了一个线程池（IO 密集），任务队列有限长度，拒绝策略改成不处理，避免占用太多资源。
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 并行访问 -->
+                    <div id="parallel">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;">并行访问</span>
+                            <span style="font-size: 15px; font-weight: 700; color: #0f172a;">CompletableFuture 并行优化</span>
+                        </div>
+                        <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                            页面加载慢时，除了加机器和加缓存，把串行改成并行也很有效。将获取页面不同数据封装为 CompletableFuture 任务，使用 allOf 方法组合并发执行，通过 join 阻塞等待。所有数据收集完成后再返回给前端，大约减少了 <strong>60%</strong> 的页面初始化时间。
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 5. 监控 -->
+            <div class="project-card" id="monitor">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f5f3ff; color: #7c3aed;">监控</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">Actuator + Prometheus + Grafana</span>
+                </div>
+                <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 16px 0;">
+                    搭建 Actuator + Prometheus + Grafana 监控体系，支持异常告警，并使用 JMeter 完成性能压测与容量评估。
+                </p>
+                <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                    <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">工作流程</div>
+                    <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+                        <strong>Actuator</strong> — Spring Boot 提供，负责暴露应用的内存、线程等内部数据。<br>
+                        <strong>Prometheus</strong> — 定期从 Actuator 拉取指标数据并存储。<br>
+                        <strong>Grafana</strong> — 可视化，连接 Prometheus 作为数据源，将指标以图表、仪表盘形式展示。<br>
+                        <strong>JMeter</strong> — 独立压测工具，模拟高并发请求，测试系统在压力下的表现。<br><br>
+                        先用 JMeter 对应用施压，同时 Actuator 不断暴露运行指标，Prometheus 定时抓取并存储，Grafana 实时展示成仪表盘。通过观察压测过程中的 CPU、内存、QPS、响应时间等指标变化，判断系统瓶颈。
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 程愚瀚 · Built with &hearts;
+    </footer>
+
+    <script src="../资源/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function updateProjectNav() {
+                var cards = document.querySelectorAll('.project-card[id], section[id]');
+                var subTargets = document.querySelectorAll('[id="whitelist"],[id="rank"],[id="count"],[id="cache"],[id="pipeline"],[id="async"],[id="parallel"]');
+                var navLinks = document.querySelectorAll('.sidebar nav a, .sidebar-sub');
+                var current = '';
+                cards.forEach(function(c) {
+                    var top = c.offsetTop - 130;
+                    var bottom = top + c.offsetHeight;
+                    if (window.scrollY >= top && window.scrollY < bottom) {
+                        current = c.getAttribute('id');
+                    }
+                });
+                subTargets.forEach(function(s) {
+                    var top = s.offsetTop - 130;
+                    var bottom = top + s.offsetHeight;
+                    if (window.scrollY >= top && window.scrollY < bottom) {
+                        current = s.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(function(link) {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+            window.addEventListener('scroll', updateProjectNav);
+            window.addEventListener('load', updateProjectNav);
+            updateProjectNav();
+        });
+    </script>
+</body>
+</html>

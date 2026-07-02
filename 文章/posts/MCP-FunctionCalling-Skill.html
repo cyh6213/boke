@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MCP、Function Calling 与 Skill | 程愚瀚</title>
+    <link rel="stylesheet" href="../../资源/css/style.css?v=2" />
+    <style>
+        .post { max-width: 800px; margin: 0 auto; padding: 120px 40px 80px; }
+        .post h1 { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.3; margin-bottom: 8px; }
+        .post .post-meta { font-size: 13px; color: #94a3b8; margin-bottom: 40px; }
+        .post h2 {
+            font-size: 22px; font-weight: 700; color: #0f172a;
+            margin-top: 48px; margin-bottom: 16px;
+            padding-bottom: 8px; border-bottom: 2px solid #eef2ff;
+        }
+        .post h3 { font-size: 20px; font-weight: 700; color: #4f46e5; margin-top: 40px; margin-bottom: 14px; padding-left: 14px; border-left: 4px solid #4f46e5; }
+        .post h4 { font-size: 15px; font-weight: 700; color: #0f172a; margin-top: 22px; margin-bottom: 8px; }
+        .post h4[id] { font-size: 15px; font-weight: 600; color: #7c3aed; margin-top: 22px; margin-bottom: 8px; }
+        .post p, .post li { font-size: 15px; color: #475569; line-height: 1.9; }
+        .post p { margin-bottom: 14px; }
+        .post ul, .post ol { padding-left: 20px; margin-bottom: 16px; }
+        .post li { margin-bottom: 6px; }
+        .post strong { color: #0f172a; }
+        .post pre {
+            background: #1e293b; color: #e2e8f0; padding: 16px 20px;
+            border-radius: 10px; overflow-x: auto; font-size: 13px; line-height: 1.6; margin-bottom: 16px;
+        }
+        .post code { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+        .post :not(pre) > code { background: #f1f4f9; padding: 2px 8px; border-radius: 4px; font-size: 14px; color: #4f46e5; }
+        .tag { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5; margin-right: 6px; margin-bottom: 6px; }
+        .sidebar-sub { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #64748b; text-decoration: none; transition: all 0.2s; }
+        .sidebar-sub:hover { background: #f1f4f9; color: #0f172a; }
+        .sidebar-sub.active { background: #eef2ff; color: #4f46e5; }
+        .sidebar-sub .dot { width: 4px; height: 4px; border-radius: 50%; background: #cbd5e1; flex-shrink: 0; transition: background 0.2s; }
+        .sidebar-sub:hover .dot { background: #4f46e5; }
+        .sidebar-sub.active .dot { background: #4f46e5; }
+        .sidebar-sub-group { margin: 2px 0 6px 20px; border-left: 2px solid #e2e8f0; padding-left: 6px; }
+        .sidebar-section-label { font-size: 12px; font-weight: 700; color: #4f46e5; padding: 8px 14px 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../../" class="nav-brand">程愚瀚</a>
+        <div class="nav-links">
+            <a href="../../">首页</a>
+            <a href="../" class="active">文章</a>
+            <a href="../../项目/">项目</a>
+        </div>
+    </nav>
+    <aside class="sidebar">
+        <div class="name">程愚瀚</div>
+        <div class="title">Java 后端和 agent 开发</div>
+        <nav>
+            <div class="sidebar-section-label">Agent 工具调用体系</div>
+            <a href="#q1" class="active"><span class="dot"></span> MCP 是什么</a>
+            <a href="#q2"><span class="dot"></span> Function Calling</a>
+            <div class="sidebar-sub-group">
+                <a href="#q21" class="sidebar-sub"><span class="dot"></span> 如何格式化输出</a>
+                <a href="#q22" class="sidebar-sub"><span class="dot"></span> Spring AI Alibaba</a>
+            </div>
+            <a href="#q3"><span class="dot"></span> A2A 是什么</a>
+            <a href="#q4"><span class="dot"></span> Skill 是什么</a>
+            <div class="sidebar-sub-group">
+                <a href="#q41" class="sidebar-sub"><span class="dot"></span> 渐进式披露的其他场景</a>
+            </div>
+            <a href="#q5"><span class="dot"></span> CLI 和 MCP、Skill</a>
+            <div class="sidebar-sub-group">
+                <a href="#q51" class="sidebar-sub"><span class="dot"></span> 三种调用方式</a>
+                <a href="#q52" class="sidebar-sub"><span class="dot"></span> CLI vs MCP</a>
+                <a href="#q53" class="sidebar-sub"><span class="dot"></span> CLI 会取代 MCP？</a>
+                <a href="#q54" class="sidebar-sub"><span class="dot"></span> 未来融合</a>
+            </div>
+        </nav>
+    </aside>
+    <div class="main">
+        <article class="post">
+            <h1>MCP、Function Calling 与 Skill</h1>
+            <div class="post-meta">
+                <span>2026 年 7 月 2 日</span>
+                <span style="margin: 0 10px;">·</span>
+                <span class="tag">MCP</span>
+                <span class="tag">Function Calling</span>
+                <span class="tag">Skill</span>
+                <span class="tag">Agent</span>
+            </div>
+
+            <h3 id="q1">MCP是什么？有哪几个部分？怎么使用？</h3>
+
+            <p>MCP 的核心是规范agent与外部工具（插件、数据源）之间的注册、发现、调用，避免每一个agent对接每接一个新工具都要单独写适配代码。</p>
+
+            <p>底层基于 JSON-RPC 2.0 实现有状态双向通信，支持本地 stdio、HTTP-SSE、流式 HTTP 多种传输方式。</p>
+
+            <p>有三部分，Host、Client、Server。Host就是支持MCP协议的应用程序，也就是我们配置大模型了的地方。Client在 Host 内部运行，负责与 MCP Server 建立连接。Server可以理解为一个软件，我们将他提供的原子性的能力称之为Tool，一个Server可以提供多个Tool。</p>
+
+            <p>当我们配置并启动我们需要的 Server 后，会获取其包含的 Tool 列表，用户提问后，Host 将问题与 Tool 列表一同传给模型；模型判断需调用的 Tool 及参数，反馈给 Clinet；Clinet 转发调用请求至 MCP Server，Server 执行 Tool 后返回结果；Cline 将结果回传给模型，模型整理后给出最终答案并反馈给用户。</p>
+
+            <h3 id="q2">FunctionCalling是什么？（和MCP的关系是啥）</h3>
+
+            <p>包括大模型主动识别需求（让模型知道什么时候改输出普通文本，什么时候该输出工具调用JSON）、生成结构化参数、调用外部工具（解析返回的函数名和参数，调用真实接口 / 本地函数）、拿到结果再整合回答这四部分。 让Agent有了调用外部工具的能力。</p>
+
+            <h4 id="q21">如何让大模型格式化输出？</h4>
+
+            <ul>
+                <li>在原始阶段，就是通过prompt，比如写清楚json skema的例子，但是prompt的约束不稳定</li>
+                <li>指令微调SFT：在 SFT 阶段喂了大量"问题-答案"对，让模型学会（识别什么时候需要调用工具、按固定格式输出函数名 + 参数、不乱说废话，直接吐结构化数据）</li>
+                <li>在输出时的强约束机制：模型是根据概率生成字符，通过微调任然可能输出不符合规范的内容，这时候就可以通过 JSON Schema、正则（ 用来「匹配字符串格式」的专用语法  ）、状态机 过滤，将不符合规范的字符概率设置为0.</li>
+            </ul>
+
+            <p>具体在SprinAlibaba提供了两种方式</p>
+
+            <ul>
+                <li>直接定义我们需要他返回的类，然后在outputtype里面输入这个类，然后他就会自动将这个类转化为JSON Schema</li>
+                <li>第二种就是我们自己将这个类转化为json，然后放进outputtype</li>
+            </ul>
+
+            <h3 id="q3">A2A是啥？</h3>
+
+            <p>A2A是分布式环境下 Agent 与 Agent 之间远程通信的标准，用于多智能体协同场景。</p>
+
+            <p>和MCP的tool以及skill的介绍一样，A2A 为了让调用者知道agent的能力是什么，也需要定义自我介绍，这里叫Agent Card。</p>
+
+            <p>和MCP的区别就是一个是agent之间的交互，一个是agent和tool的交互。</p>
+
+            <h3 id="q4">Skill是啥？（和MCP的关系是啥）</h3>
+
+            <p>Skill 可以理解为解决特定任务的固定规则，避免每次重复输入指令。</p>
+
+            <p>它可以是一个资源文件，一些rules，一个解决什么任务的流程，甚至有的时候比较常用的prompt我也会将其封装为一个skill，在解决特定任务时调用。</p>
+
+            <p>整体采用渐进式披露机制，第一层元数据始终加载，包括名称和描述，让模型决定使用哪一个skill；第二层流程层，描述怎么做（流程、规则、约束条件，以及使用哪一个tool，加载哪一个材料）；第三层资源层，是进一步的按需加载，包括资源、示例、脚本、甚至其他的skill等。比如我在些一个skill的时候，为了避免这个skill包含不同任务的内容，我就会在这个skill中写明，当他遇到什么问题的时候，去访问某一个子skill。</p>
+
+            <p>MCP 负责提供模型调用外部工具的能力，Skill 给了模型处理一个问题的标准答案，除了提供参考文本之外，还可以提供可直接执行的脚本，这也就是二者功能重叠的部分，Skill 适合轻量脚本，MCP 安全性与稳定性更强，实际场景可结合使用。</p>
+
+            <h4 id="q41">渐进式披露的其他使用场景？</h4>
+
+            <p>根本：不一次性全部给出，而是分类、再选择性的加载</p>
+
+            <ul>
+                <li>mcp的tool加载</li>
+                <li>ClaudeCode 索引文件的加载</li>
+                <li>不使用向量查询的话，文件的加载</li>
+            </ul>
+
+            <h3 id="q5">CLI是啥？和MCP、Skill的关系？（有没有听过mcp会被CLI取代？）</h3>
+
+            <p>CLI是纯文本的通过命令行来操作工具的一种方式。</p>
+
+            <h4 id="q51">Agent 调用外部工具的三种方式</h4>
+
+            <p>我觉得现在想要让agent利用外部工具一共有三种方式，第一种是GUI（图形化界面），一种是插件接口调用，一种是CLI。其中通过GUI和CLI是针对网页，软件的，而通过接口是针对插件的。</p>
+
+            <p>先说GUI，也就是通过图形界面操作，如果agent是通过这种方式方式来操作软件，他首先需要识别界面，再更具理解来点击，操作。问题就是页面是会变化的，agent也需要理解这个页面的内容，导致他不能稳定的实现调用，没有办法总结这个操作的流程实现复用。而Ai最擅长的是处理文本，而接口和CLI本质都是输出一段文字内容来实现调用。</p>
+
+            <h4 id="q52">CLI 和插件调用（MCP）的区别</h4>
+
+            <p>而CLI和通过插件调用的区别是：CLI相当于是一种持续的调用，比如他要做一件事情，可能是先输出一个命令到达一个状态，然后再输出一个命令去完成任务。而mcp是类似于接口，我发给他一个请求，他返回给我一个响应。</p>
+
+            <p>再说通过插件接口调用，MCP是通过这种方式来实现远程插件调用的，但是我要强调的是，<strong>MCP的本质是定义了agent和插件之间的通信方式以及对tool进行管理，他的核心不是通过接口调用。</strong>所以MCP和CLI首先就不在一个层级，MCP现在使用http接口，只是因为他想要调用插件，如果想要调用软件，它也可以支持CLI来实现软件的调用。而本质上CLI同样需要一个东西来帮助他管理有那些命令，以及将CLI命令发送到服务端，所以我觉得MCP是可以复用的。</p>
+
+            <h4 id="q53">CLI 会取代 MCP 吗？</h4>
+
+            <p>其次是有很多人说CLI会取代MCP，还有一个原因是通过MCP调用tool，需要加载大量的tool描述和JsonSchema，所以Token消耗量会很大。而CLI和Skill的机制差不多，都是渐进式披露或者说按需提供，只有当真正需要调用哪一个命令的时候，才去加载所需要的资源。所以说通过MCP调用插件是可以优化的，他也完全可以用渐进式披露这一套来减少使用MCP的token消耗。</p>
+
+            <h4 id="q54">未来：MCP、CLI、Skill 融合</h4>
+
+            <p>未来MCP、CLI、Skill一定是会结合的，App的CLI需要Skill来帮他告诉agent怎末调用CLI，也需要MCP（或者什么其他协议）来帮他建立连接和传输命令。</p>
+
+        </article>
+    </div>
+    <footer>&copy; 2026 程愚瀚 · Built with &hearts;</footer>
+    <script src="../../资源/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function updateProjectNav() {
+                var cards = document.querySelectorAll('h3[id], h4[id]');
+                var subTargets = document.querySelectorAll('[id="q21"],[id="q22"],[id="q41"],[id="q51"],[id="q52"],[id="q53"],[id="q54"]');
+                var navLinks = document.querySelectorAll('.sidebar nav a, .sidebar-sub');
+                var current = '';
+                cards.forEach(function(c) {
+                    var top = c.offsetTop - 130;
+                    var bottom = top + c.offsetHeight;
+                    if (window.scrollY >= top && window.scrollY < bottom) {
+                        current = c.getAttribute('id');
+                    }
+                });
+                subTargets.forEach(function(s) {
+                    var top = s.offsetTop - 130;
+                    var bottom = top + s.offsetHeight;
+                    if (window.scrollY >= top && window.scrollY < bottom) {
+                        current = s.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(function(link) {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+            window.addEventListener('scroll', updateProjectNav);
+            window.addEventListener('load', updateProjectNav);
+            updateProjectNav();
+        });
+    </script>
+</body>
+</html>
