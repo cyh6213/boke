@@ -331,7 +331,40 @@
                                 </div>
                                 <div style="padding: 10px 14px; background: #fff; border-left: 3px solid #4f46e5; border-radius: 0 8px 8px 0; margin-bottom: 6px;">
                                     <div style="font-weight: 700; color: #0f172a;">第二层 · 语义分类器</div>
-                                    <div style="margin-top: 2px;">用 Spring AI Alibaba 的 QuestionClassifierNode 做查询分类，我在里面定义了五种维度包括是否需要检索、单跳还是多跳、问题类型是技术操作还是对比分析。</div>
+                                    <div style="margin-top: 2px;">用 Spring AI Alibaba 的 QuestionClassifierNode 做查询分类，从 4 个正交维度独立判定，自然支持类型共存（如对比查询+时序查询可同时标记）：</div>
+                                    <div style="margin-top: 8px; overflow-x: auto;">
+                                        <table style="width: 100%; border-collapse: collapse; font-size: 13px; color: #475569; background: #fff; border-radius: 8px;">
+                                            <thead>
+                                                <tr style="background: #eef2ff;">
+                                                    <th style="padding: 8px 12px; text-align: left; font-weight: 700; color: #4f46e5; border-bottom: 1px solid #c7d2fe;">维度</th>
+                                                    <th style="padding: 8px 12px; text-align: left; font-weight: 700; color: #4f46e5; border-bottom: 1px solid #c7d2fe;">取值</th>
+                                                    <th style="padding: 8px 12px; text-align: left; font-weight: 700; color: #4f46e5; border-bottom: 1px solid #c7d2fe;">说明</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr style="border-bottom: 1px solid #f1f4f9;">
+                                                    <td style="padding: 8px 12px; font-weight: 600;">检索模式</td>
+                                                    <td style="padding: 8px 12px;">无需检索 / 单次检索 / 双池独立 / 多轮补充 / 多跳ReAct链</td>
+                                                    <td style="padding: 8px 12px;">决定检索次数和执行方式</td>
+                                                </tr>
+                                                <tr style="border-bottom: 1px solid #f1f4f9;">
+                                                    <td style="padding: 8px 12px; font-weight: 600;">时间要求</td>
+                                                    <td style="padding: 8px 12px;">无 / 指定时间或最新</td>
+                                                    <td style="padding: 8px 12px;">决定是否做时间过滤与排序</td>
+                                                </tr>
+                                                <tr style="border-bottom: 1px solid #f1f4f9;">
+                                                    <td style="padding: 8px 12px; font-weight: 600;">生成格式</td>
+                                                    <td style="padding: 8px 12px;">事实陈述 / 分步骤 / 对比表格 / 列表汇总 / 推理链 / 声明比对</td>
+                                                    <td style="padding: 8px 12px;">决定输出模板</td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding: 8px 12px; font-weight: 600;">验证标记</td>
+                                                    <td style="padding: 8px 12px;">否 / 是</td>
+                                                    <td style="padding: 8px 12px;">是否需要验证用户提供的声明</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                                 <div style="padding: 10px 14px; background: #fff; border-left: 3px solid #4f46e5; border-radius: 0 8px 8px 0;">
                                     <div style="font-weight: 700; color: #0f172a;">第三层 · 实体关系检测</div>
@@ -340,20 +373,25 @@
                             </div>
                         </div>
                         <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
-                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 6px;">处理策略举例</div>
+                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 6px;">处理策略举例（8 种查询类型）</div>
                             <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 8px 0;">
                                 不同类型查询的处理差异体现在检索策略、改写深度、上下文组装方式和生成策略四个维度。
                             </p>
                             <div style="font-size: 13px; color: #475569; line-height: 1.7;">
-                                <div style="margin-bottom: 8px;"><strong>● 单跳事实查询</strong><br>用高阈值精确召回1到3个片段。除了口语化处理之外，聚焦关键词提取和指代消除。生成时严格限定在召回内容内，必须标注来源，禁止引入外部知识。</div>
-                                <div style="margin-bottom: 8px;"><strong>● 多跳推理查询（ReAct）（程愚瀚和鲁迅的关系是什么）</strong><br>需要执行多次向量检索，要分解为子查询链，每步基于前序结论动态构建新查询。程愚瀚是电子科大的学生，然后电子科大又有什么人才，然后就可以和鲁迅联系上了。检索时用较低阈值（0.6）做宽召回。生成是要求标注推理步骤。</div>
-                                <div style="margin-bottom: 8px;"><strong>● 技术操作查询</strong><br>重点在生成策略，要求他使用分步骤模版。</div>
-                                <div><strong>● 对比查询</strong><br>要执行两次独立检索分别放入A池和B池。单边缺失标注信息不足，禁止用模型知识填补空白。</div>
+                                <div style="margin-bottom: 6px;"><strong>● 无需检索</strong><br>规则引擎第一层直接拦截闲聊、计算、已拦截类问题，跳过向量检索，不走查询管线，直接返回模型回答或预设回复。</div>
+                                <div style="margin-bottom: 6px;"><strong>● 单跳事实查询</strong><br>用高阈值（0.75）精确召回1到3个片段。除了口语化处理之外，聚焦关键词提取和指代消除。生成时严格限定在召回内容内，必须标注来源，禁止引入外部知识。</div>
+                                <div style="margin-bottom: 6px;"><strong>● 对比查询</strong><br>要执行两次独立检索分别放入 A 池和 B 池。单边缺失标注信息不足，禁止用模型知识填补空白。输出按维度对比表格。</div>
+                                <div style="margin-bottom: 6px;"><strong>● 技术操作查询</strong><br>重点在检索策略和生成策略——提取操作关键词改写查询，优先命中有步骤编号/代码块的文档，生成时使用分步骤模板。</div>
+                                <div style="margin-bottom: 6px;"><strong>● 时序与时效性查询</strong><br>检索时注入时间参数：指定时间范围（time_range）按范围过滤，要最新（freshness）按时间倒序排序。生成时每个数据点标注时间戳，趋势类问题输出时间线。</div>
+                                <div style="margin-bottom: 6px;"><strong>● 验证查证查询</strong><br>先做声明抽取（从用户问题中提取待验证的事实），再转成确定性查询去检索，最后做声明 vs 事实比对，差异高亮。</div>
+                                <div style="margin-bottom: 6px;"><strong>● 列举聚合查询</strong><br>低阈值（0.6）宽召回，候选集 top-50。结果不够时用关键词补充检索，去重合并后列表输出，标注"共找到 X 条结果"。</div>
+                                <div><strong>● 多跳推理查询（ReAct）（程愚瀚和鲁迅的关系是什么）</strong><br>需要执行多次向量检索，要分解为子查询链，每步基于前序结论动态构建新查询。程愚瀚是电子科大的学生，然后电子科大又有什么人才，然后就可以和鲁迅联系上了。检索时用较低阈值（0.6）做宽召回。生成是要求标注推理步骤。</div>
                             </div>
                         </div>
                     </div>
                     <div style="margin-top: 12px;">
                         <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">⚡ 速度 & 成本</div>
+                        <div style="font-size: 12px; color: #94a3b8; margin-bottom: 12px; line-height: 1.6;">含路由+检索+生成的完整链路延迟。纯检索管线端到端为 360ms，见下方 RAG 测评。</div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                             <div style="background: #f8f9fc; border-radius: 10px; padding: 16px;">
                                 <div style="font-size: 12px; color: #64748b; margin-bottom: 4px;">P50 检索延迟</div>
@@ -395,6 +433,9 @@
                                 <div style="padding-left: 20px;">② 再查电子科大的人才 → 关联到鲁迅</div>
                                 <div style="padding-left: 20px; margin-top: 6px; color: #7c3aed; font-weight: 600;">→ 最终：程愚瀚 → 电子科大 → 鲁迅</div>
                             </div>
+                        </div>
+                        <div style="margin-top: 12px; font-size: 12px; color: #94a3b8; text-align: right;">
+                            <a href="../../文章/posts/RAG智能路由：八种查询类型的检索策略与优化.html" style="color: #4f46e5; text-decoration: none;">→ 完整的多跳推理优化过程 →</a>
                         </div>
                     </div>
 
