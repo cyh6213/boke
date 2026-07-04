@@ -55,20 +55,11 @@
         <div class="title">Java 后端和 agent 开发</div>
         <nav>
             <a href="#workflow-v1" class="active"><span class="dot"></span> Workflow 1.0（前身）</a>
-            <a href="#origin"><span class="dot"></span> 项目来源</a>
-            <a href="#core"><span class="dot"></span> 核心亮点</a>
-            <div class="sidebar-sub-group">
-                <a href="#kahn" class="sidebar-sub"><span class="dot"></span> KAHN 算法</a>
-                <a href="#rollback" class="sidebar-sub"><span class="dot"></span> 节点级回滚</a>
-                <a href="#visual" class="sidebar-sub"><span class="dot"></span> 执行轨迹 Trace</a>
-            </div>
-            <a href="#other"><span class="dot"></span> 其他亮点</a>
-            <div class="sidebar-sub-group">
-                <a href="#sub-agent" class="sidebar-sub"><span class="dot"></span> Sub Agent 执行</a>
-                <a href="#exception" class="sidebar-sub"><span class="dot"></span> 三级异常处理</a>
-                <a href="#sse" class="sidebar-sub"><span class="dot"></span> SSE 实时推送</a>
-                <a href="#branch" class="sidebar-sub"><span class="dot"></span> 条件边分支</a>
-            </div>
+            <a href="#origin"><span class="dot"></span> 从问题到方案</a>
+            <a href="#parallel"><span class="dot"></span> 双层并行执行引擎</a>
+            <a href="#rollback"><span class="dot"></span> 节点级断点恢复</a>
+            <a href="#sub-agent"><span class="dot"></span> Sub Agent 与 Token 优化</a>
+            <a href="#exception"><span class="dot"></span> 三级异常治理与条件分支</a>
             <a href="#plan-opt"><span class="dot"></span> Plan 优化</a>
             <a href="#eval"><span class="dot"></span> 测评结果</a>
         </nav>
@@ -105,17 +96,13 @@
             <div class="project-card" id="origin">
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
                     <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;">项目来源</span>
-                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">为什么做这个项目</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">从问题到方案</span>
                 </div>
-                <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
-                    使用 Agent 时发现指令明确但 Agent 不执行（如要求检索后回答却跳过检索），因此思考如何将 Agent 行为确定化。核心思路是通过预定义 Agent 无法修改的 DAG 图，将任务执行流程固定化，保证可见即所得。
-                </p>
-
-                <div style="margin-top: 24px; padding: 20px 22px; background: #f8fafc; border: 1px solid #e9edf4; border-radius: 12px;">
+                <div style="padding: 20px 22px; background: #f8fafc; border: 1px solid #e9edf4; border-radius: 12px;">
                     <div style="font-size: 13px; font-weight: 700; color: #d97706; margin-bottom: 14px;">要解决的问题：Agent 不按照需求执行</div>
 
                     <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 14px 0;">
-                        我们解决的问题不是"同一个任务每次执行策略不一致"——因为 Plan 每次都是动态生成的，策略不同是正常的。真正的问题是：<strong>Agent 会无视你的指令和规划，自己决定怎么做</strong>。
+                        使用 Agent 时发现指令明确但 Agent 不执行。比如要求"检索后回答"结果跳过检索直接生成答案。这不是"同一个任务每次执行策略不一致"的问题——真正的问题是：<strong>Agent 会无视你的指令和规划，自己决定怎么做</strong>。
                     </p>
 
                     <div style="display: flex; flex-direction: column; gap: 10px;">
@@ -135,8 +122,12 @@
                     </div>
                 </div>
 
+                <!-- 两种确定化路径 -->
                 <div style="margin-top: 24px; padding: 20px 22px; background: #f8fafc; border: 1px solid #e9edf4; border-radius: 12px;">
-                    <div style="font-size: 13px; font-weight: 700; color: #7c3aed; margin-bottom: 14px;">两种确定化路径的区别</div>
+                    <div style="font-size: 13px; font-weight: 700; color: #7c3aed; margin-bottom: 14px;">两种确定化路径</div>
+                    <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 14px 0;">
+                        针对 Agent 执行不可控的问题，我考虑了两种不同的确定化路径：
+                    </p>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
                         <div style="padding: 16px 18px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px;">
@@ -163,116 +154,96 @@
                     </div>
 
                     <div style="padding: 10px 14px; background: #fff; border-left: 3px solid #64748b; border-radius: 0 6px 6px 0; font-size: 12px; color: #475569; line-height: 1.7;">
-                        DAG 管<strong>「做不做」</strong>（有没有漏步骤、顺序对不对），Hooks 管<strong>「做得好不好」</strong>（参数是否合法、输出是否合规）。DAG 保流程下限，Hooks 保操作上限，两者可以结合。
+                        我选择了 DAG 路径，因为流程层面的约束对"Agent 不按需求执行"这个问题更直接。同时 Hooks 的思路可以后续补充，两者不冲突，可以结合。
+                    </div>
+                </div>
+
+                <!-- 解决方案 -->
+                <div style="margin-top: 24px; padding: 20px 22px; background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 12px;">
+                    <div style="font-size: 13px; font-weight: 700; color: #7c3aed; margin-bottom: 12px;">我的解决方案</div>
+
+                    <div style="margin-bottom: 16px; padding: 12px 16px; background: #fff; border-left: 3px solid #7c3aed; border-radius: 0 8px 8px 0; font-size: 13px; color: #6d28d9; line-height: 1.7;">
+                        💡 有了 Workflow 1.0 的铺垫，自然而然地想到了将 DAG 图构建的步骤<strong>交给大模型来完成</strong>，与 PAE 架构联系起来。
+                    </div>
+
+                    <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 14px 0;">
+                        摒弃 Master 集中调度。<strong>Plan Agent</strong> 只负责根据用户任务逻辑，输出一份完整、结构化的 DAG 数据（节点列表 + 边关系 JSON），不再参与后续调度；<strong>执行引擎</strong> 读取这份独立 DAG 数据，自主完成全流程调度、节点分发、并行运算。总结一下就是把"人去定义执行计划"的过程交给了 Plan 节点。
+                    </p>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div style="padding: 12px 16px; background: #f0fdf4; border-radius: 8px; font-size: 12px; color: #475569; line-height: 1.7;">
+                            <strong style="color: #059669;">好处</strong><br>
+                            将 Agent 执行任务的流程固定化，DAG 图可视化后可以清楚判断任务执行逻辑是否是我们想要的，保证可见即所得，不会出现"明面一套背地一套"的情况。
+                        </div>
+                        <div style="padding: 12px 16px; background: #fff7ed; border-radius: 8px; font-size: 12px; color: #475569; line-height: 1.7;">
+                            <strong style="color: #d97706;">坏处</strong><br>
+                            相比 PAE 框架可根据前一步结果动态改变下一步计划，本方案是固定化的。但针对节点执行失败的情况，支持三种异常处理机制确保流程完整执行。
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. 核心亮点 -->
-            <div class="project-card" id="core">
+            <!-- 2. 双层并行执行引擎 -->
+            <div class="project-card" id="parallel">
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
-                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #ecfdf5; color: #059669;">核心亮点</span>
-                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">规划与执行彻底解耦</span>
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #ecfdf5; color: #059669;">双层并行</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">双层并行执行引擎</span>
                 </div>
+                <p style="font-size: 13px; color: #475569; line-height: 1.7; margin-bottom: 16px;">
+                    基于 KAHN 拓扑排序实现 DAG 节点的批次拆分与并行调度，入度为 0 的节点自动并发执行。同时针对单节点的工具调用层面，实现细粒度并行，形成<strong>"节点级 + 工具级"双层并行机制</strong>。经 200 项任务评估集测试，相比串行基线，并行执行时间缩短 23%。
+                </p>
 
-                <div style="margin-bottom: 20px; padding: 12px 16px; background: #f5f3ff; border-left: 3px solid #7c3aed; border-radius: 0 8px 8px 0; font-size: 13px; color: #6d28d9; line-height: 1.7;">
-                    💡 有了 Workflow 1.0 的铺垫，自然而然地想到了将 DAG 图构建的步骤<strong>交给大模型来完成</strong>，与 PAE 架构联系起来。
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
-                        摒弃 Master 集中调度。<strong>Plan Agent</strong> 只负责根据用户任务逻辑，输出一份完整、结构化的 DAG 数据（节点列表 + 边关系 JSON），不再参与后续调度；<strong>执行引擎</strong> 读取这份独立 DAG 数据，自主完成全流程调度、节点分发、并行运算。总结一下就是把"人去定义执行计划"的过程交给了 Plan 节点。
-                    </p>
-                </div>
-
-                <div style="margin-bottom: 20px; padding: 16px 20px; background: #f8f9fc; border-radius: 10px;">
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">好处</div>
-                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
-                        将 Agent 执行任务的流程固定化，DAG 图可视化后可以清楚判断任务执行逻辑是否是我们想要的，保证可见即所得，不会出现"明面一套背地一套"的情况。
-                    </p>
-                </div>
-
-                <div style="margin-bottom: 20px; padding: 16px 20px; background: #f8f9fc; border-radius: 10px;">
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">坏处</div>
-                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
-                        相比 PAE 框架可根据前一步结果动态改变下一步计划，本方案是固定化的。但针对节点执行失败的情况，支持三种异常处理机制确保流程完整执行。
-                    </p>
-                </div>
-
-                <div style="margin-top: 24px; padding: 24px; background: #f8fafc; border-radius: 14px; border: 1px solid #e9edf4;">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
-                        <span style="padding: 2px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; background: #eef2ff; color: #4f46e5;">子优势</span>
-                        <span style="font-size: 14px; font-weight: 700; color: #0f172a;">由此带来的三个子优势</span>
+                <!-- 第一层：节点级并行 -->
+                <div style="padding: 16px 20px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; margin-bottom: 16px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #059669; margin-bottom: 8px;">第一层 · 节点级并行 — KAHN 拓扑排序</div>
+                    <div style="font-size: 14px; color: #475569; line-height: 1.8; margin-bottom: 12px;">
+                        Kahn 算法，核心思路是基于<strong>入度的拓扑排序</strong>。入度（In-Degree）指一个节点被多少条边指向，入度为 0 表示该节点没有任何前置依赖，可以直接执行。
                     </div>
-
-                    <div style="display: flex; flex-direction: column; gap: 12px;">
-                    <div style="display: flex; gap: 12px; align-items: flex-start;" id="kahn">
-                        <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #f59e0b; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">1</div>
-                        <div>
-                            <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">KAHN 算法 — 更大程度并行</div>
-
-                            <div style="display: flex; flex-direction: column; gap: 14px;">
-
-                                <!-- 1. KAHN 算法是什么（基础铺垫） -->
-                                <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
-                                    <div style="font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px;">KAHN 算法是什么</div>
-                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
-                                        Kahn 算法，核心思路是基于<strong>入度的拓扑排序</strong>。入度（In-Degree）指一个节点被多少条边指向，入度为 0 表示该节点没有任何前置依赖，可以直接执行。通过不断移除入度为 0 的节点并更新下游入度，最终得到一个拓扑有序的执行序列。
-                                    </p>
-                                </div>
-
-                                <!-- 2. 更彻底的并行策略（重点突出） -->
-                                <div style="padding: 20px 22px; background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 12px; box-shadow: 0 2px 8px rgba(79,70,229,0.06);">
-                                    <div style="font-size: 15px; font-weight: 700; color: #4f46e5; margin-bottom: 10px;">更彻底的并行策略 ← 核心</div>
-                                    <p style="font-size: 14px; color: #1e293b; line-height: 1.9; margin: 0 0 12px 0;">
-                                        拥有全局任务执行逻辑后可以做出更大程度的优化。并行执行逻辑基于 KAHN 算法：入度为 0 的节点可以直接执行，每执行一个节点就将其指向的节点的入度减一，于是就会有新的可执行节点出现。将节点分为一批一批执行，实现更大程度的并行。
-                                    </p>
-                                    <div style="text-align: center;">
-                                        <img src="../资源/images/kahn.png" alt="KAHN 算法示意图" style="max-width: 100%; border-radius: 10px; border: 1px solid #c7d2fe;" />
-                                    </div>
-                                </div>
-
-                                <!-- 3. 环路检测 -->
-                                <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
-                                    <div style="font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px;">环路检测</div>
-                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
-                                        首先是一个链表记录每一个节点的入度（指向该节点的节点的数量），再是一个队列记录入度为0的节点。
-                                    </p>
-                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
-                                        然后对入度为0的节点，对他指向的节点的入度减一，如果入度减为0，就加入队列，直到队列为空。如果最后还有入度不为0的节点，就有环。
-                                    </p>
-                                </div>
-
-                                <!-- 4. 并行 / 双重并行 -->
-                                <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
-                                    <div style="font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px;">双重并行</div>
-                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
-                                        除了节点任务层级的并行外，还有颗粒度为单个工具调用，比如读文件的并行等级。
-                                    </p>
-                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
-                                        也就是说我们现在有<strong>双重的并行策略</strong>。
-                                    </p>
-                                </div>
-
-                                <!-- 5. 输出隔离 -->
-                                <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
-                                    <div style="font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px;">输出隔离</div>
-                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
-                                        多线程并行场景下如果直接往 System.out 打印，由于线程调度抢占，不同任务的日志会交错混杂，可读性很差。
-                                    </p>
-                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
-                                        我们的做法是做输出隔离，给每个执行步骤单独分配独立的 ByteArrayOutputStream 内存缓冲区，每个任务执行时不直接写标准输出，全部写入自己专属的本地缓冲，从根源上避免多线程输出互相干扰。
-                                    </p>
-                                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
-                                        等所有并行任务全部执行完毕后，再按照业务定义的步骤原始顺序，依次把每个缓冲区的内容批量刷新到标准输出。这样既保留了多线程并行执行的性能优势，又能保证最终日志按固定顺序完整输出，每条任务的日志整块连贯，不会出现穿插乱序的情况。
-                                    </p>
-                                </div>
-
-                            </div>
-                        </div>
+                    <div style="font-size: 14px; color: #475569; line-height: 1.8; margin-bottom: 12px;">
+                        并行执行逻辑：入度为 0 的节点可以直接执行，每执行一个节点就将其指向的节点的入度减一，于是就会有新的可执行节点出现。将节点分为一批一批执行，实现更大程度的并行。
                     </div>
-                    <div style="display: flex; gap: 12px; align-items: flex-start;" id="rollback">
-                        <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #f59e0b; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">2</div>
+                    <div style="text-align: center; margin-bottom: 12px;">
+                        <img src="../资源/images/kahn.png" alt="KAHN 算法示意图" style="max-width: 100%; border-radius: 10px; border: 1px solid #c7d2fe;" />
+                    </div>
+                    <div style="font-size: 14px; color: #475569; line-height: 1.8;">
+                        <strong>环路检测：</strong>记录每个节点的入度，不断移除入度为 0 的节点并更新下游入度。如果执行完毕后仍有节点入度不为 0，说明存在环路。
+                    </div>
+                </div>
+
+                <!-- 第二层：工具级并行 -->
+                <div style="padding: 16px 20px; background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 12px; margin-bottom: 16px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #7c3aed; margin-bottom: 8px;">第二层 · 工具级并行</div>
+                    <div style="font-size: 14px; color: #475569; line-height: 1.8;">
+                        除了节点任务层级的并行外，还有颗粒度为单个工具调用层面的并行，比如同时读多个文件。两者结合形成<strong>双重的并行策略</strong>。
+                    </div>
+                </div>
+
+                <!-- 输出隔离 -->
+                <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                    <div style="font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px;">并行输出隔离</div>
+                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
+                        多线程并行场景下如果直接往 System.out 打印，由于线程调度抢占，不同任务的日志会交错混杂，可读性很差。
+                    </p>
+                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
+                        我们的做法是做输出隔离，给每个执行步骤单独分配独立的 ByteArrayOutputStream 内存缓冲区，每个任务执行时不直接写标准输出，全部写入自己专属的本地缓冲，从根源上避免多线程输出互相干扰。
+                    </p>
+                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                        等所有并行任务全部执行完毕后，再按照业务定义的步骤原始顺序，依次把每个缓冲区的内容批量刷新到标准输出。这样既保留了多线程并行执行的性能优势，又能保证最终日志按固定顺序完整输出，每条任务的日志整块连贯，不会出现穿插乱序的情况。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 3. 节点级断点恢复 -->
+            <div class="project-card" id="rollback">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f1f4f9; color: #64748b;">断点恢复</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">节点级断点恢复</span>
+                </div>
+                <p style="font-size: 13px; color: #475569; line-height: 1.7; margin-bottom: 16px;">
+                    摒弃 LangGraph 整体状态快照，为每个节点独立持久化输入输出及状态至 MySQL。运行时数据走内存传递，仅断点恢复时从快照重建上下文，可按请求指定首个失败或未完成节点精准恢复，同时支持恢复前手动修正节点变量。
+                </p>
+
+                    <div style="display: flex; gap: 12px; align-items: flex-start;">
                         <div>
                             <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">节点级回滚与断点恢复</div>
 
@@ -436,115 +407,106 @@
 
                             </div>
                         </div>
-                    </div>
-                    <div style="display: flex; gap: 12px; align-items: flex-start;" id="visual">
-                        <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #f59e0b; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">3</div>
-                        <div>
-                            <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">天然保留执行轨迹（Trace）</div>
-                            <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 10px 0;">
-                                节点分开存储意味着每个节点的输入、输出、状态都被完整保留下来，相当于自动为每一次执行保存了一份完整的 <strong>Trace</strong>。
-                            </p>
-                            <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 10px 0;">
-                                这份 Trace 记录了每一步做了什么、用了什么工具、花了多少 Token、耗时多久、有没有出错。所有数据都在，不需要额外打点或插桩。
-                            </p>
-                            <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
-                                做测评时，我们可以直接用这份 Trace 来评估流程的执行质量——比如任务完成度、工具调用正确率、异常恢复情况，给整个流程打分。LangGraph 的整体快照方式虽然也能记录状态，但难以精确追溯到单一步骤的执行细节。
-                            </p>
-                        </div>
-                    </div>
-                    </div>
                 </div>
             </div>
 
-            <!-- 3. 其他亮点 -->
-            <div class="project-card" id="other">
+            <!-- 4. Sub Agent 分发执行 -->
+            <div class="project-card" id="sub-agent">
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
-                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #fff7ed; color: #d97706;">其他亮点</span>
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f5f3ff; color: #7c3aed;">Sub Agent</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">Sub Agent 分发执行与 Token 优化</span>
                 </div>
 
-                <div style="display: flex; flex-direction: column; gap: 24px;">
-                    <!-- 1. Sub Agent -->
-                    <div style="display: flex; gap: 14px; align-items: flex-start;" id="sub-agent">
-                        <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #f59e0b; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">1</div>
-                        <div>
-                            <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">Sub Agent 执行机制</div>
-                            <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
-                                Plan Agent 输出 DAG 后，执行引擎将每个节点分发给专门的 Sub Agent 执行。Sub Agent 只关注自身节点的任务，无需感知全局流程。不同任务可以交给不同角色的 Sub Agent 处理（如调研、代码审查、安全检查等），实现<strong>上下文隔离</strong>与<strong>任务拆分</strong>。
-                            </p>
+                <!-- 介绍 -->
+                <div style="margin-bottom: 20px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">Sub Agent 分类与职责</div>
+                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 12px 0;">
+                        Plan Agent 生成 DAG 后，执行引擎按节点职责将任务分发给不同角色的 Sub Agent。目前系统设计了三种 Sub Agent，各司其职：
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <div style="padding: 10px 14px; background: #f8fafc; border-left: 3px solid #4f46e5; border-radius: 0 8px 8px 0; font-size: 13px; color: #475569; line-height: 1.7;">
+                            <strong style="color: #0f172a;">调研 Agent</strong> — 负责搜索与信息收集，绑定搜索类工具（WebSearch、文件读取）。不参与执行和决策。
                         </div>
-                    </div>
-
-                    <!-- 2. 异常处理 -->
-                    <div style="display: flex; gap: 14px; align-items: flex-start;" id="exception">
-                        <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #f59e0b; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">2</div>
-                        <div>
-                            <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">三级异常处理机制</div>
-                            <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
-                                基于模板方法模式，分三层实现超时控制、重试和异常处理，确保 DAG 流程稳定执行。
-                            </p>
-                            <div style="padding: 12px 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 8px;">
-                                <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">顶层 · execute（重试）</div>
-                                <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
-                                    总入口。需要重试时通过循环调用 doExecuteWithTimeout，无需重试则直接执行。重试间隔支持<strong>固定、线性、指数退避</strong>三种策略，根据配置计算等待时间后 sleep 再执行。
-                                </p>
-                            </div>
-                            <div style="padding: 12px 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 8px;">
-                                <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">中层 · doExecuteWithTimeout（超时）</div>
-                                <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
-                                    通过 AsyncUtil 工具类将节点执行放入限时任务中，到达设定时间直接抛出超时异常。
-                                </p>
-                            </div>
-                            <div style="padding: 12px 16px; background: #f8fafc; border-radius: 8px;">
-                                <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 6px;">底层 · doExecute（异常处理）</div>
-                                <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 6px 0;">
-                                    执行节点逻辑，捕获所有异常后统一包装，按配置分三种处理方式：
-                                </p>
-                                <div style="padding-left: 14px; border-left: 2px solid #e2e8f0; font-size: 13px; color: #475569; line-height: 1.7;">
-                                    <div style="margin-bottom: 6px;">
-                                        <strong style="color: #dc2626;">① 直接中断</strong> — 关键节点失败后整体进入失败状态。适用于支付、扣款、核心写操作等。
-                                    </div>
-                                    <div style="margin-bottom: 6px;">
-                                        <strong style="color: #d97706;">② 错误码策略</strong> — 按预配置的错误码或默认值继续执行。适用于辅助查询、非核心推荐等，保证主流程不被阻断。
-                                    </div>
-                                    <div>
-                                        <strong style="color: #4f46e5;">③ 失败条件分支策略</strong> — 引导到异常处理分支，用于告警、补偿、回滚或特定兜底逻辑。
-                                    </div>
-                                </div>
-                            </div>
-                            <p style="font-size: 13px; color: #64748b; line-height: 1.7; margin: 8px 0 0 0;">
-                                所有异常记录日志，通过回调同步状态，保证流程稳定可控。
-                            </p>
+                        <div style="padding: 10px 14px; background: #f8fafc; border-left: 3px solid #059669; border-radius: 0 8px 8px 0; font-size: 13px; color: #475569; line-height: 1.7;">
+                            <strong style="color: #0f172a;">审查 Agent</strong> — 负责代码审查与安全扫描，绑定代码检查类工具、安全漏洞扫描规则。不参与代码生成。
                         </div>
-                    </div>
-
-                    <!-- 3. SSE -->
-                    <div style="display: flex; gap: 14px; align-items: flex-start;" id="sse">
-                        <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #f59e0b; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">3</div>
-                        <div>
-                            <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">SSE 实时推送节点进度</div>
-                            <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
-                                在 Controller 层创建 SseEmitter，包装成 SseStreamCallback 传给工作流引擎，再包装成 WorkflowMsgCallback。采用<strong>装饰器模式</strong>增强推送能力，放入 streamQueue 队列缓冲，异步执行避免阻塞引擎。
-                            </p>
-                            <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
-                                节点执行时触发事件，WorkflowMsgCallback 封装为标准格式（节点开始、结束、流式输出、异常等）放入队列，后台线程消费并调用 send() 推送到前端，实现进度实时展示。
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- 4. 条件边分支 -->
-                    <div style="display: flex; gap: 14px; align-items: flex-start;" id="branch">
-                        <div style="flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: #f59e0b; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">4</div>
-                        <div>
-                            <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">条件边分支策略（设计）</div>
-                            <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
-                                Plan Agent 可生成多个分支备选 DAG，执行时根据节点输出选择对应分支。实现方式是在每条边上加 <strong>condition</strong> 字段——节点执行完成后，只有匹配条件的边被"激活"，仅减少激活路径上节点的入度。
-                            </p>
-                            <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
-                                未选中分支的节点永远不会入度为 0，自然不会被调度执行。通过这种 <strong>级联裁剪</strong> 策略，可以在不修改 KAHN 调度器的情况下原生支持分支与选择。
-                            </p>
+                        <div style="padding: 10px 14px; background: #f8fafc; border-left: 3px solid #d97706; border-radius: 0 8px 8px 0; font-size: 13px; color: #475569; line-height: 1.7;">
+                            <strong style="color: #0f172a;">执行 Agent</strong> — 负责执行命令、写文件、生成报告等实际操作，绑定执行命令和文件写入类工具。不参与规划和审查。
                         </div>
                     </div>
                 </div>
+
+                <!-- Token 消耗对比 -->
+                <div>
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">Token 消耗对比</div>
+                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 12px 0;">
+                        Sub Agent 只加载自己角色需要的 System Prompt 和工具描述，不加载全局规则和其他角色的工具。跟一个 Agent 用 ReAct 执行所有任务的方案对比：
+                    </p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                        <div style="padding: 12px 16px; background: #fef2f2; border-radius: 8px; font-size: 13px; color: #475569; line-height: 1.7;">
+                            <strong style="color: #dc2626;">单 Agent ReAct</strong><br>
+                            System Prompt: ~9K（含全部工具、策略、记忆）<br>
+                            历史不断累积，轮次越多越重
+                        </div>
+                        <div style="padding: 12px 16px; background: #f0fdf4; border-radius: 8px; font-size: 13px; color: #475569; line-height: 1.7;">
+                            <strong style="color: #059669;">Sub Agent 方案</strong><br>
+                            System Prompt: ~3K（只含当前角色规则和工具）<br>
+                            节点结束后重置，历史不跨节点累积
+                        </div>
+                    </div>
+                    <p style="font-size: 13px; color: #475569; line-height: 1.7;">
+                        <strong>单次调用：</strong>3K vs 9K，降低约 <strong>67%</strong><br>
+                        <strong>完整任务（3 步）：</strong>41K vs 69K（Sub Agent 内部也有循环，但节点间上下文重置阻止了历史持续膨胀），降低约 <strong>41%</strong><br>
+                        详细数据可参考文章《<a href="../文章/posts/Token优化实践.html" style="color: #4f46e5;">Agent Token 优化实践</a>》。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 6. 三级异常治理与条件分支路由 -->
+            <div class="project-card" id="exception">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #fff7ed; color: #d97706;">异常治理</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">三级异常治理与条件分支路由</span>
+                </div>
+                <p style="font-size: 13px; color: #475569; line-height: 1.7; margin-bottom: 16px;">
+                    本方案采用固定 DAG 执行，相比 PAE 架构可根据前一步结果动态修改下一步计划的方式，丧失了执行中调整流程的能力。三级异常治理和条件分支路由就是为了弥补这一限制而设计的——异常治理处理"节点执行失败怎么办"，条件分支处理"执行结果不同如何选择路径"。
+                </p>
+
+                <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">三级异常治理</div>
+                <p style="font-size: 13px; color: #475569; line-height: 1.7; margin-bottom: 12px;">
+                    基于模板方法抽象通用执行基类，自上而下封装重试策略、超时控制与异常处理。
+                </p>
+                <div style="padding: 12px 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 8px;">
+                    <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">顶层 · execute（重试）</div>
+                    <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
+                        总入口。需要重试时通过循环调用 doExecuteWithTimeout，无需重试则直接执行。重试间隔支持<strong>固定、线性、指数退避</strong>三种策略。
+                    </p>
+                </div>
+                <div style="padding: 12px 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 8px;">
+                    <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 4px;">中层 · doExecuteWithTimeout（超时）</div>
+                    <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
+                        通过 AsyncUtil 工具类将节点执行放入限时任务中，到达设定时间直接抛出超时异常。
+                    </p>
+                </div>
+                <div style="padding: 12px 16px; background: #f8fafc; border-radius: 8px; margin-bottom: 16px;">
+                    <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 6px;">底层 · doExecute（异常处理）</div>
+                    <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 6px 0;">
+                        执行节点逻辑，捕获所有异常后统一包装，按配置分三种处理方式：
+                    </p>
+                    <div style="padding-left: 14px; border-left: 2px solid #e2e8f0; font-size: 13px; color: #475569; line-height: 1.7;">
+                        <div style="margin-bottom: 6px;"><strong style="color: #dc2626;">① 直接中断</strong> — 关键节点失败后整体进入失败状态。适用于支付、扣款、核心写操作等。</div>
+                        <div style="margin-bottom: 6px;"><strong style="color: #d97706;">② 错误码策略</strong> — 按预配置的错误码或默认值继续执行。适用于辅助查询、非核心推荐等。</div>
+                        <div><strong style="color: #4f46e5;">③ 失败条件分支策略</strong> — 引导到异常处理分支，用于告警、补偿、回滚或特定兜底逻辑。</div>
+                    </div>
+                </div>
+
+                <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">条件分支路由</div>
+                <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
+                    Plan Agent 可生成多个分支备选 DAG，执行时根据节点输出选择对应分支。实现方式是在每条边上加 <strong>condition</strong> 字段——节点执行完成后，只有匹配条件的边被"激活"，仅减少激活路径上节点的入度。
+                </p>
+                <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                    未选中分支的节点永远不会入度为 0，自然不会被调度执行。通过这种 <strong>级联裁剪</strong> 策略，可以在不修改 KAHN 调度器的情况下原生支持分支与选择。
+                </p>
             </div>
 
             <!-- 5. Plan 优化 -->
@@ -671,6 +633,14 @@
                             <span><strong>故障场景流程完整执行率</strong></span>
                         </div>
                     </div>
+                </div>
+
+                <!-- Trace -->
+                <div style="margin-top: 24px; padding: 16px 20px; background: #f8fafc; border-radius: 10px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">执行轨迹 Trace</div>
+                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                        节点分开存储天然保留了每一次执行的完整 Trace（输入、输出、工具调用、耗时、Token），可直接用于 Plan 质量的评估。结合 Reflexion 闭环中的 LLM-as-Judge，Trace 数据为低分样本回流提供了基础。
+                    </p>
                 </div>
             </div>
 
