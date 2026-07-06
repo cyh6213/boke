@@ -772,6 +772,9 @@
                         current = s.getAttribute('id');
                     }
                 });
+                if (!current && sections.length > 0) {
+                    current = sections[sections.length - 1].getAttribute('id');
+                }
                 navLinks.forEach(function(link) {
                     link.classList.remove('active');
                     if (link.getAttribute('href') === '#' + current) {

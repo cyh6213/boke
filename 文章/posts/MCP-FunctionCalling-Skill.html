@@ -107,7 +107,7 @@
                 <li>在输出时的强约束机制：模型是根据概率生成字符，通过微调任然可能输出不符合规范的内容，这时候就可以通过 JSON Schema、正则（ 用来「匹配字符串格式」的专用语法  ）、状态机 过滤，将不符合规范的字符概率设置为0.</li>
             </ul>
 
-            <p>具体在SprinAlibaba提供了两种方式</p>
+            <p id="q22">具体在SprinAlibaba提供了两种方式</p>
 
             <ul>
                 <li>直接定义我们需要他返回的类，然后在outputtype里面输入这个类，然后他就会自动将这个类转化为JSON Schema</li>
@@ -191,6 +191,9 @@
                         current = s.getAttribute('id');
                     }
                 });
+                if (!current && cards.length > 0) {
+                    current = cards[cards.length - 1].getAttribute('id');
+                }
                 navLinks.forEach(function(link) {
                     link.classList.remove('active');
                     if (link.getAttribute('href') === '#' + current) {

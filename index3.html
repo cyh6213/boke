@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>程愚瀚 | 面试自我介绍</title>
+    <link rel="stylesheet" href="资源/css/style.css" />
+    <style>
+        /* ===== 双栏布局 ===== */
+        .section-dual {
+            position: relative;
+            max-width: none !important;
+        }
+        .section-dual .content-left {
+            max-width: 840px;
+        }
+        .section-dual .speech-right {
+            position: absolute;
+            left: calc(60px + 840px + 40px);
+            top: 80px;
+            width: 320px;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        #hero.section-dual .speech-right {
+            top: 120px;
+        }
+        .main { overflow-x: visible; }
+
+        /* ===== speech-bubble ===== */
+        .speech-bubble {
+            background: #eef2ff;
+            border-left: 4px solid #7c3aed;
+            border-radius: 12px;
+            padding: 20px 24px;
+            font-size: 14px;
+            color: #334155;
+            line-height: 1.8;
+            position: sticky;
+            top: 80px;
+        }
+        .speech-bubble .speech-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #7c3aed;
+            margin-bottom: 10px;
+        }
+        .speech-bubble .speech-action {
+            display: block;
+            margin-top: 12px;
+            font-size: 13px;
+            color: #7c3aed;
+            font-weight: 500;
+            border-top: 1px dashed #c7d2fe;
+            padding-top: 10px;
+        }
+
+        /* ===== 问题反例 ===== */
+        .counter-example {
+            border-left: 3px solid #dc2626;
+            padding: 10px 16px;
+            margin-bottom: 8px;
+            background: #fef2f2;
+            border-radius: 0 8px 8px 0;
+            font-size: 14px;
+            color: #991b1b;
+            line-height: 1.6;
+        }
+        .counter-example:last-child { margin-bottom: 0; }
+
+        /* ===== 方案对比 ===== */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .compare-grid .compare-item {
+            border-radius: 12px;
+            padding: 16px 20px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .compare-grid .compare-item.selected {
+            background: #ecfdf5;
+            border: 2px solid #059669;
+            color: #065f46;
+        }
+        .compare-grid .compare-item.unselected {
+            background: #f1f4f9;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+        .compare-grid .compare-item .compare-label {
+            font-size: 12px;
+            font-weight: 400;
+            color: inherit;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        /* ===== 架构流程图 ===== */
+        .arch-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 20px;
+            background: #f8f9fc;
+            border-radius: 12px;
+            font-size: 13px;
+            flex-wrap: wrap;
+        }
+        .arch-flow .arch-node {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-weight: 600;
+            color: #0f172a;
+            text-align: center;
+            min-width: 80px;
+        }
+        .arch-flow .arch-node.primary {
+            border-color: #4f46e5;
+            background: #eef2ff;
+            color: #4f46e5;
+        }
+        .arch-flow .arch-node.success {
+            border-color: #059669;
+            background: #ecfdf5;
+            color: #065f46;
+        }
+        .arch-flow .arch-arrow {
+            color: #94a3b8;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        /* ===== 能力标签 ===== */
+        .capability-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .capability-tags span {
+            padding: 6px 14px;
+            background: #eef2ff;
+            color: #4f46e5;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        /* ===== 数据网格 ===== */
+        .data-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .data-grid-2 .data-item {
+            background: #f8f9fc;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+        }
+        .data-grid-2 .data-item .data-value {
+            font-size: 22px;
+            font-weight: 800;
+            color: #4f46e5;
+        }
+        .data-grid-2 .data-item .data-value.green {
+            color: #059669;
+        }
+        .data-grid-2 .data-item .data-label {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        /* ===== 消融表格 ===== */
+        .ablation-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            color: #475569;
+            background: #f8f9fc;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .ablation-table thead th {
+            padding: 10px 16px;
+            text-align: left;
+            font-weight: 700;
+            color: #0f172a;
+            background: #eef2ff;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .ablation-table thead th:not(:first-child) {
+            text-align: center;
+        }
+        .ablation-table tbody td {
+            padding: 9px 16px;
+            border-bottom: 1px solid #f1f4f9;
+        }
+        .ablation-table tbody td:not(:first-child) {
+            text-align: center;
+        }
+        .ablation-table tbody tr.highlight {
+            background: #eef2ff;
+            font-weight: 700;
+            color: #4f46e5;
+        }
+        .ablation-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ===== 学以致用卡片 ===== */
+        .learn-card {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            background: #ffffff;
+            border: 1px solid #e9edf4;
+            border-radius: 12px;
+            padding: 18px 20px;
+            transition: all 0.2s;
+        }
+        .learn-card:hover {
+            border-color: #c7d2fe;
+            box-shadow: 0 4px 12px rgba(79,70,229,0.06);
+        }
+        .learn-card .learn-source {
+            flex-shrink: 0;
+            width: 80px;
+            padding: 4px 10px;
+            background: #eef2ff;
+            color: #4f46e5;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+        }
+        .learn-card .learn-body {
+            flex: 1;
+        }
+        .learn-card .learn-body .learn-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+        .learn-card .learn-body .learn-desc {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        /* ===== 成本网格 ===== */
+        .cost-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+        .cost-grid .cost-item {
+            background: #ffffff;
+            border: 1px solid #e9edf4;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .cost-grid .cost-item:hover {
+            border-color: #c7d2fe;
+            box-shadow: 0 4px 12px rgba(79,70,229,0.06);
+            transform: translateY(-2px);
+        }
+        .cost-grid .cost-item .cost-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+        .cost-grid .cost-item .cost-desc {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.6;
+        }
+        .cost-grid .cost-item .cost-highlight {
+            font-size: 13px;
+            font-weight: 700;
+            color: #059669;
+            margin-top: 6px;
+        }
+
+        /* ===== 你可以问我 卡片 ===== */
+        .ask-card {
+            padding: 14px 20px;
+            background: #ffffff;
+            border: 1px solid #e9edf4;
+            border-radius: 12px;
+            font-size: 14px;
+            color: #4f46e5;
+            font-weight: 600;
+            transition: all 0.2s;
+            cursor: default;
+        }
+        .ask-card:hover {
+            border-color: #c7d2fe;
+            box-shadow: 0 4px 12px rgba(79,70,229,0.06);
+            transform: translateY(-2px);
+        }
+
+        /* ===== Toggle 按钮 ===== */
+        .toggle-speech-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 999;
+            padding: 10px 18px;
+            border-radius: 100px;
+            border: 1px solid #c7d2fe;
+            background: #ffffff;
+            color: #4f46e5;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transition: all 0.2s;
+        }
+        .toggle-speech-btn:hover {
+            background: #eef2ff;
+            border-color: #4f46e5;
+        }
+        .toggle-speech-btn.hidden {
+            background: #4f46e5;
+            color: #fff;
+            border-color: #4f46e5;
+        }
+
+        /* ===== 隐藏提示词 ===== */
+        .speech-right.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 1600px) {
+            .section-dual .speech-right {
+                left: calc(60px + 840px + 20px);
+                width: 260px;
+            }
+        }
+        @media (max-width: 1500px) {
+            .section-dual .speech-right {
+                left: calc(60px + 840px + 16px);
+                width: 220px;
+            }
+        }
+        @media (max-width: 1400px) {
+            .section-dual .speech-right {
+                left: calc(60px + 840px + 12px);
+                width: 180px;
+                font-size: 13px;
+            }
+            .section-dual .speech-right .speech-bubble {
+                padding: 12px 14px;
+            }
+            .cost-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 1200px) {
+            .section-dual .speech-right {
+                width: 160px;
+                font-size: 12px;
+            }
+            .section-dual .speech-right .speech-bubble {
+                padding: 10px 12px;
+                line-height: 1.6;
+            }
+            .section-dual .speech-right .speech-action {
+                font-size: 11px;
+            }
+        }
+        @media (max-width: 768px) {
+            section { padding: 40px 20px !important; }
+            .cost-grid { grid-template-columns: 1fr; }
+            .data-grid-2 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 顶部导航 ===== -->
+    <nav class="top-nav">
+        <a href="index3.html" class="nav-brand">程愚瀚</a>
+        <div class="nav-links">
+            <a href="index3.html" class="active">自我介绍</a>
+            <a href="index.html">博客首页</a>
+            <a href="文章/">文章</a>
+            <a href="项目/">项目</a>
+        </div>
+    </nav>
+
+    <!-- ===== Sidebar ===== -->
+    <aside class="sidebar">
+        <div class="name">程愚瀚</div>
+        <div class="title">Agent 开发者 · 面试自我介绍</div>
+        <nav>
+            <a href="#hero" class="active"><span class="dot"></span> 基本信息</a>
+            <a href="#skills"><span class="dot"></span> 技术栈</a>
+            <a href="#workflow"><span class="dot"></span> 可视化任务编排系统</a>
+            <a href="#cost"><span class="dot"></span> 成本意识</a>
+            <a href="#methodology"><span class="dot"></span> 测试方法论</a>
+            <a href="#contact"><span class="dot"></span> 联系方式</a>
+        </nav>
+    </aside>
+
+    <!-- ===== Main ===== -->
+    <div class="main">
+
+        <!-- ===== Part 1: Section 1 — Hero ===== -->
+        <section id="hero" class="section-dual">
+            <div class="content-left">
+                <div class="greeting">面试官，您好</div>
+                <h1>我是 <span class="highlight">程愚瀚</span></h1>
+                <p class="school">🎓 电子科技大学 · 软件工程 · 28届本科</p>
+
+                <!-- 关键信息 -->
+                <div style="margin-bottom: 28px;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 24px; font-size: 14px; color: #475569; margin-bottom: 16px;">
+                        <span><strong>希望的工作方向：</strong>Agent 开发</span>
+                        <span><strong>Base 地要求：</strong>无</span>
+                        <span><strong>支持实习时间：</strong>七月 - 来年一月</span>
+                    </div>
+                </div>
+
+                <!-- 横向时间轴 -->
+                <div style="margin-bottom: 36px;">
+                    <div style="font-size: 13px; font-weight: 600; color: #4f46e5; margin-bottom: 16px;">学习路线</div>
+
+                    <!-- 上层：主时间轴 -->
+                    <div style="position: relative; padding: 4px 0 20px 0;">
+                        <div style="position: absolute; top: 12px; left: 0; right: 0; height: 2px; background: #e2e8f0; z-index: 0;"></div>
+                        <div style="display: flex; width: 100%; position: relative; z-index: 1; align-items: flex-start;">
+                            <div style="display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 70px;">
+                                <div style="width: 14px; height: 14px; border-radius: 50%; background: #4f46e5; border: 3px solid #f8f9fc; box-shadow: 0 0 0 2px #4f46e5;"></div>
+                                <div style="font-size: 12px; font-weight: 600; color: #0f172a; margin-top: 8px;">24年11月</div>
+                            </div>
+                            <div style="flex: 1; display: flex; justify-content: center; padding-top: 0;">
+                                <div style="font-size: 13px; color: #fff; text-align: center; background: #4f46e5; padding: 4px 20px; border-radius: 20px; font-weight: 600;">Java 后端开发</div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 70px;">
+                                <div style="width: 14px; height: 14px; border-radius: 50%; background: #4f46e5; border: 3px solid #f8f9fc; box-shadow: 0 0 0 2px #4f46e5;"></div>
+                                <div style="font-size: 12px; font-weight: 600; color: #0f172a; margin-top: 8px;">26年2月</div>
+                            </div>
+                            <div style="flex: 2; display: flex; justify-content: center; padding-top: 0;">
+                                <div style="font-size: 13px; color: #fff; text-align: center; background: #7c3aed; padding: 4px 20px; border-radius: 20px; font-weight: 600;">Agent 学习</div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 70px;">
+                                <div style="width: 14px; height: 14px; border-radius: 50%; background: #10b981; border: 3px solid #f8f9fc; box-shadow: 0 0 0 2px #10b981;"></div>
+                                <div style="font-size: 12px; font-weight: 600; color: #059669; margin-top: 8px;">至今</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 下层：子项目 -->
+                    <div style="position: relative; padding: 0 0 0 0; margin-top: -4px;">
+                        <div style="display: flex; width: 100%; align-items: flex-start;">
+                            <div style="width: 70px; flex-shrink: 0;"></div>
+                            <div style="flex: 1; display: flex; justify-content: center; position: relative;">
+                                <div style="position: absolute; top: -16px; left: 50%; height: 16px; width: 2px; background: #c4b5fd;"></div>
+                                <div style="display: flex; flex-direction: column; align-items: center; padding-top: 10px;">
+                                    <div style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b; border: 2px solid #f8f9fc; box-shadow: 0 0 0 1px #f59e0b;"></div>
+                                    <div style="font-size: 12px; color: #d97706; font-weight: 600; margin-top: 6px; text-align: center;">社区平台</div>
+                                </div>
+                            </div>
+                            <div style="width: 70px; flex-shrink: 0;"></div>
+                            <div style="flex: 2; display: flex; justify-content: space-between; position: relative;">
+                                <div style="position: absolute; top: -16px; left: 16.6%; height: 16px; width: 2px; background: #c4b5fd;"></div>
+                                <div style="position: absolute; top: -16px; left: 50%; height: 16px; width: 2px; background: #c4b5fd;"></div>
+                                <div style="position: absolute; top: -16px; left: 83.3%; height: 16px; width: 2px; background: #c4b5fd;"></div>
+                                <div style="position: absolute; top: 0; left: 5%; right: 5%; height: 2px; background: #c4b5fd;"></div>
+                                <div style="display: flex; flex-direction: column; align-items: center; padding-top: 10px; width: 30%;">
+                                    <div style="width: 10px; height: 10px; border-radius: 50%; background: #8b5cf6; border: 2px solid #f8f9fc; box-shadow: 0 0 0 1px #8b5cf6;"></div>
+                                    <div style="font-size: 12px; color: #6d28d9; font-weight: 600; margin-top: 6px; text-align: center;">RAG 项目</div>
+                                </div>
+                                <div style="display: flex; flex-direction: column; align-items: center; padding-top: 10px; width: 30%;">
+                                    <div style="width: 10px; height: 10px; border-radius: 50%; background: #8b5cf6; border: 2px solid #f8f9fc; box-shadow: 0 0 0 1px #8b5cf6;"></div>
+                                    <div style="font-size: 12px; color: #6d28d9; font-weight: 600; margin-top: 6px; text-align: center;">任务编排项目</div>
+                                </div>
+                                <div style="display: flex; flex-direction: column; align-items: center; padding-top: 10px; width: 30%;">
+                                    <div style="width: 10px; height: 10px; border-radius: 50%; background: #8b5cf6; border: 2px solid #f8f9fc; box-shadow: 0 0 0 1px #8b5cf6;"></div>
+                                    <div style="font-size: 12px; color: #6d28d9; font-weight: 600; margin-top: 6px; text-align: center;">MyClaw 项目</div>
+                                </div>
+                            </div>
+                            <div style="width: 70px; flex-shrink: 0;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CTA -->
+                <a href="#skills" class="cta-btn">查看我的技术栈 ↓</a>
+            </div>
+
+            <div class="speech-right">
+                <div class="speech-bubble">
+                    <div class="speech-label">🎤 你说</div>
+                    面试官您好，我是程愚瀚，电子科技大学软件工程专业 28 届本科生。
+                    我之前做过 Java 后端开发，然后从今年的 2 月份开始学习 Agent 的相关内容，做了三个 Agent 的项目。
+                    后端经历让我养成了工程化思维，让我学会了考虑异常处理、成本控制、数据评估等意识。
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Part 1: Section 2 — 技术栈 ===== -->
+        <section id="skills" class="section-dual">
+            <div class="content-left">
+                <div class="section-label">Skills</div>
+                <h2 class="section-title">技术栈</h2>
+
+                <div class="skills-category">
+                    <h3>☕ Java 后端</h3>
+                    <div style="display: flex; flex-direction: column; gap: 6px; padding: 0 4px;">
+                        <div style="font-size: 14px; color: #475569; line-height: 1.8;">
+                            <span style="font-weight: 700; color: #4f46e5;">Java：</span>熟悉java语法，集合、异常、泛型、注解、反射、设计模式等内容。
+                        </div>
+                        <div style="font-size: 14px; color: #475569; line-height: 1.8;">
+                            <span style="font-weight: 700; color: #4f46e5;">JUC：</span>熟悉Java并发编程，熟悉Synchronized、AQS、CAS、volatile、ThreadLocal、线程池。
+                        </div>
+                        <div style="font-size: 14px; color: #475569; line-height: 1.8;">
+                            <span style="font-weight: 700; color: #4f46e5;">JVM：</span>对JMM、类加载机制、字节码执行、垃圾回收机制有深入理解。了解JVM调优、常见内存问题的解决。
+                        </div>
+                        <div style="font-size: 14px; color: #475569; line-height: 1.8;">
+                            <span style="font-weight: 700; color: #4f46e5;">MySQL：</span>熟练掌握MySQL，熟悉其底层原理、SQL优化、索引优化、事务、MVCC、锁机制。
+                        </div>
+                        <div style="font-size: 14px; color: #475569; line-height: 1.8;">
+                            <span style="font-weight: 700; color: #4f46e5;">Redis：</span>熟练使用Redis，了解其分布式锁、限流、消息队列的实现以及其数据结构、持久化、高可用。
+                        </div>
+                        <div style="font-size: 14px; color: #475569; line-height: 1.8;">
+                            <span style="font-weight: 700; color: #4f46e5;">框架：</span>熟练使用Spring、SpringBoot、SpringMVC，了解IOC、AOP、Bean的生命周期、自动装配。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skills-category">
+                    <h3>🤖 AI Agent 开发</h3>
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <div style="background: #ffffff; border: 1px solid #e9edf4; border-radius: 12px; padding: 20px 24px;">
+                            <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 6px;">1. 辅助编程层面</div>
+                            <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                                对基于 SDD 利用 AI 辅助编程比较熟练，简历上展示的项目 99% 都是 vibecoding 出来的，
+                                能够熟练利用 coding 工具，写出高质量的代码。
+                            </p>
+                            <div style="margin-top: 10px;">
+                                <a href="文章/posts/从VibeCoding到SDD.html" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; background: #eef2ff; border-radius: 100px; font-size: 13px; font-weight: 600; color: #4f46e5; text-decoration: none; transition: all 0.2s;" onmouseover="this.style.background='#4f46e5';this.style.color='#fff'" onmouseout="this.style.background='#eef2ff';this.style.color='#4f46e5'">
+                                    📄 阅读文章：从 Vibe Coding 到 SDD →
+                                </a>
+                            </div>
+                        </div>
+                        <div style="background: #ffffff; border: 1px solid #e9edf4; border-radius: 12px; padding: 20px 24px;">
+                            <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 6px;">2. 工具使用</div>
+                            <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 10px 0;">
+                                熟练使用多种 Agent 工具，深入学习了它们的核心策略与实现原理，并应用到了自己的项目当中：
+                            </p>
+                            <ul style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0; padding-left: 20px;">
+                                <li><strong>OpenClaw</strong> — 在使用过程中察觉其记忆实现的不足，于是做了 MyClaw</li>
+                                <li><strong>Claude Code</strong> — 学习 checkpoint 机制，应用到可视化任务编排系统的节点回滚与断点恢复</li>
+                                <li><strong>豆包</strong> — 学习对话主题更新机制，应用到 MyClaw 的滑动窗口策略</li>
+                                <li><strong>CodeBuddy</strong> — 学习可控的问题改写策略，应用到 RAG 的智能路由</li>
+                            </ul>
+                            <div style="margin-top: 10px;">
+                                <a href="文章/posts/读ClaudeCode源码我学到的五个设计.html" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; background: #eef2ff; border-radius: 100px; font-size: 13px; font-weight: 600; color: #4f46e5; text-decoration: none; transition: all 0.2s;" onmouseover="this.style.background='#4f46e5';this.style.color='#fff'" onmouseout="this.style.background='#eef2ff';this.style.color='#4f46e5'">
+                                    📄 阅读文章：Claude Code 源码分析 →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="speech-right">
+                <div class="speech-bubble">
+                    <div class="speech-label">🎤 你说</div>
+                    我的技术栈主要分为两块：Java 后端和 AI Agent。
+                    在后端方面，我对 JUC、JVM、MySQL、Redis 的底层原理和数据结构比较了解，但是说实话，我对后端方面的场景问题知识不是很全面。
+                    在 AI 方面，我对通过 AI 辅助编程比较熟练，也输出了一篇相关的文章。
+                    我还使用过并阅读过源码，包括 OpenClaw、Claude Code 等，从中学习到了一些策略，用到了我的项目中。
+
+                </div>
+            </div>
+        </section>
+
+<!-- ===== Part 2: Section 3 — 可视化任务编排系统 ===== -->
+        <section id="workflow" class="section-dual">
+            <div class="content-left">
+                <div class="section-label">Project 01 · 核心</div>
+                <h2 class="section-title">可视化任务编排与执行系统</h2>
+
+                <!-- 1. 问题 -->
+                <div class="project-card" style="margin-bottom: 16px;">
+                    <div style="font-size: 15px; font-weight: 700; color: #dc2626; margin-bottom: 12px;">❌ 问题：Agent 不按指令执行</div>
+                    <div class="counter-example">"检索竞品资料后生成分析报告" → Agent 直接生成，没检索</div>
+                    <div class="counter-example">"先查天气再安排行程" → 查完天气直接给行程，忘了查交通</div>
+                    <div class="counter-example">"分析代码前先做安全扫描" → 跳过扫描直接分析</div>
+                </div>
+
+                <!-- 2. 两条路径 -->
+                <div class="project-card" style="margin-bottom: 16px;">
+                    <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">🔀 两条确定化路径</div>
+                    <div class="compare-grid">
+                        <div class="compare-item selected">
+                            ✅ Workflow ← 我们选的
+                            <div class="compare-label">约束"整个流程"<br>按 Workflow 调度，无法跳过</div>
+                        </div>
+                        <div class="compare-item unselected">
+                            Hooks
+                            <div class="compare-label">约束"每一步前后"<br>对"跳过"问题不直接</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. 架构 -->
+                <div class="project-card" style="margin-bottom: 16px;">
+                    <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">🏗️ 方案：Plan Agent + 执行引擎解耦</div>
+                    <div class="arch-flow">
+                        <div class="arch-node primary">用户需求</div>
+                        <span class="arch-arrow">→</span>
+                        <div class="arch-node primary">Plan Agent</div>
+                        <span class="arch-arrow">→</span>
+                        <div class="arch-node primary">DAG 图</div>
+                        <span class="arch-arrow">→</span>
+                        <div class="arch-node success">执行引擎</div>
+                        <span class="arch-arrow">→</span>
+                        <div class="arch-node success">结果</div>
+                    </div>
+                    <div style="font-size: 13px; color: #64748b; margin-top: 8px; text-align: center;">
+                        Plan Agent 生成 DAG 后不再参与执行 → 规划与执行彻底解耦
+                    </div>
+                </div>
+
+                <!-- 4. 核心能力 -->
+                <div class="project-card" style="margin-bottom: 16px;">
+                    <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">⚡ 核心能力</div>
+                    <div class="capability-tags">
+                        <span>双层并行执行引擎</span>
+                        <span>节点级断点恢复</span>
+                        <span>Sub Agent 分发与 Token 优化</span>
+                        <span>三级异常治理与条件分支</span>
+                        <span>Plan 能力迭代优化</span>
+                    </div>
+                </div>
+
+                <!-- 5. 数据 -->
+                <div class="project-card">
+                    <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">📊 测评数据（200 项任务评估集）</div>
+                    <div class="data-grid-2">
+                        <div class="data-item">
+                            <div class="data-value">97%</div>
+                            <div class="data-label">DAG 构建正确率</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-value">94%</div>
+                            <div class="data-label">子 Agent 任务完成率</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-value green">-41%</div>
+                            <div class="data-label">Token 消耗降低</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-value green">-23%</div>
+                            <div class="data-label">并行执行时间缩短</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="speech-right">
+                <div class="speech-bubble">
+                    <div class="speech-label">🎤 你说</div>
+                    可视化任务编排与执行系统是我这里最核心的一个项目，它的框架是我自己的创新，是真的在其他人的简历上面看不见的内容。
+                    主要思想就是通过 Workflow 约束整个流程来实现 Agent 行为的确定化。
+                    我还基于这个框架实现了包括并行执行、断点恢复、异常治理等能力。
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Part 2: Section 4 — 成本意识 ===== -->
+        <section id="cost" class="section-dual">
+            <div class="content-left">
+                <div class="section-label">Cost Awareness</div>
+                <h2 class="section-title">成本意识</h2>
+
+                <div class="cost-grid">
+                    <div class="cost-item">
+                        <div class="cost-title">Workflow Sub Agent</div>
+                        <div class="cost-desc">职责拆分，每类只加载自身 Prompt</div>
+                        <div class="cost-highlight">↓ 41% 完整任务 Token</div>
+                    </div>
+                    <div class="cost-item">
+                        <div class="cost-title">RAG 智能路由</div>
+                        <div class="cost-desc">简单问题跳过向量检索</div>
+                        <div class="cost-highlight">↓ 30% Embedding API 调用</div>
+                    </div>
+                    <div class="cost-item">
+                        <div class="cost-title">MyClaw 上下文组装</div>
+                        <div class="cost-desc">Chatter 5 层精简只带聊天必需内容</div>
+                        <div class="cost-highlight">Token 优化</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; padding: 14px 20px; background: #f8f9fc; border-radius: 10px; font-size: 14px; color: #475569; line-height: 1.7;">
+                    <strong style="color: #4f46e5;">读到的一篇文章：</strong>
+                    Claude Code 的系统 Prompt 从 9K 降至 3K，我受到启发在可视化任务编排系统里做了同样的拆分策略。
+                    成本控制意识贯穿了我所有项目。
+                </div>
+                <div style="margin-top: 12px;">
+                    <a href="文章/posts/Token优化实践.html" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; background: #eef2ff; border-radius: 100px; font-size: 13px; font-weight: 600; color: #4f46e5; text-decoration: none; transition: all 0.2s;" onmouseover="this.style.background='#4f46e5';this.style.color='#fff'" onmouseout="this.style.background='#eef2ff';this.style.color='#4f46e5'">
+                        📄 阅读文章：Token 优化实践 →
+                    </a>
+                </div>
+            </div>
+
+            <div class="speech-right">
+                <div class="speech-bubble">
+                    <div class="speech-label">🎤 你说</div>
+                    在做项目的过程中我也有成本意识，在三个项目中我都有进行一些优化来降低 Token 消耗和 API 的调用。
+                    我也单独写了一篇文章来记录我实现的流程。
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Part 2: Section 5 — 测试方法论 ===== -->
+        <section id="methodology" class="section-dual">
+            <div class="content-left">
+                <div class="section-label">Testing Methodology</div>
+                <h2 class="section-title">测试方法论</h2>
+
+                <!-- RAG 检索消融（核心） -->
+                <div class="project-card" style="margin-bottom: 16px;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                        <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;">核心 · RAG 检索</span>
+                        <span style="font-size: 16px; font-weight: 700; color: #0f172a;">检索 4 轮消融实验</span>
+                    </div>
+
+                    <div style="font-size: 13px; color: #64748b; margin-bottom: 10px;">
+                        测试数据：C-MTEB / T2Retrieval · Milvus 数据库 · 36w 条分块 · 2000 条 query<br>
+                        模型：BAAI/bge-m3（dense + sparse 双向量） + BAAI/bge-reranker-v2-m3
+                    </div>
+
+                    <div style="font-size: 13px; color: #64748b; margin-bottom: 8px; font-weight: 600;">核心指标：recall_cap@5</div>
+                    <table class="ablation-table" style="margin-bottom: 16px;">
+                        <thead>
+                            <tr>
+                                <th>方案</th>
+                                <th>recall@5</th>
+                                <th>提升</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>dense 纯向量检索（基线）</td>
+                                <td>68.38%</td>
+                                <td style="color: #94a3b8;">—</td>
+                            </tr>
+                            <tr>
+                                <td>+ RRF 混合检索（dense + BM25）</td>
+                                <td>75.66%</td>
+                                <td style="color: #94a3b8;">+7.28pp</td>
+                            </tr>
+                            <tr>
+                                <td>+ BM25 → sparse 向量</td>
+                                <td>76.66%</td>
+                                <td style="color: #94a3b8;">+1.00pp</td>
+                            </tr>
+                            <tr class="highlight">
+                                <td>+ Rerank 重排（候选池 50）</td>
+                                <td>81.2%</td>
+                                <td>+4.54pp</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="font-size: 13px; color: #64748b; margin-bottom: 8px; font-weight: 600;">7 项指标全面对比（基线 → 最终方案）</div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-bottom: 12px;">
+                        <div style="background: #f8f9fc; border-radius: 8px; padding: 10px; text-align: center;">
+                            <div style="font-size: 10px; color: #94a3b8;">recall_cap@5<br>（上限截断召回率）</div>
+                            <div style="font-size: 14px; font-weight: 800; color: #4f46e5;">68%→81%</div>
+                        </div>
+                        <div style="background: #f8f9fc; border-radius: 8px; padding: 10px; text-align: center;">
+                            <div style="font-size: 10px; color: #94a3b8;">recall@5<br>（召回率）</div>
+                            <div style="font-size: 14px; font-weight: 800; color: #4f46e5;">57%→68%</div>
+                        </div>
+                        <div style="background: #f8f9fc; border-radius: 8px; padding: 10px; text-align: center;">
+                            <div style="font-size: 10px; color: #94a3b8;">ndcg@5<br>（排序质量）</div>
+                            <div style="font-size: 14px; font-weight: 800; color: #4f46e5;">72%→82%</div>
+                        </div>
+                        <div style="background: #f8f9fc; border-radius: 8px; padding: 10px; text-align: center;">
+                            <div style="font-size: 10px; color: #94a3b8;">mrr@5<br>（首个相关排名）</div>
+                            <div style="font-size: 14px; font-weight: 800; color: #4f46e5;">86%→91%</div>
+                        </div>
+                        <div style="background: #f8f9fc; border-radius: 8px; padding: 10px; text-align: center;">
+                            <div style="font-size: 10px; color: #94a3b8;">precision@1<br>（首位精确率）</div>
+                            <div style="font-size: 14px; font-weight: 800; color: #4f46e5;">83%→88%</div>
+                        </div>
+                        <div style="background: #f8f9fc; border-radius: 8px; padding: 10px; text-align: center;">
+                            <div style="font-size: 10px; color: #94a3b8;">f1@5<br>（综合准确率）</div>
+                            <div style="font-size: 14px; font-weight: 800; color: #4f46e5;">48%→57%</div>
+                        </div>
+                        <div style="background: #f8f9fc; border-radius: 8px; padding: 10px; text-align: center;">
+                            <div style="font-size: 10px; color: #94a3b8;">延迟</div>
+                            <div style="font-size: 14px; font-weight: 800; color: #f59e0b;">55ms→360ms</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 12px; color: #94a3b8; line-height: 1.6;">
+                        ⚡ 生成阶段同样做了 3 轮消融（72%→96%），详见 <a href="文章/posts/RAG检索优化.html" style="color: #4f46e5;">RAG 检索优化文章</a>
+                    </div>
+                </div>
+
+                <!-- 可视化任务编排 — Plan 测评 -->
+                <div class="project-card" style="margin-bottom: 16px;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                        <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #ecfdf5; color: #059669;">可视化任务编排</span>
+                        <span style="font-size: 16px; font-weight: 700; color: #0f172a;">Plan 能力测评</span>
+                    </div>
+                    <div style="font-size: 14px; color: #475569; line-height: 1.7; margin-bottom: 12px;">
+                        Plan Agent 的 DAG 构建能力从 <strong>Prompt（提示词）约束 → 后置校验 → FewShot（示例样本）→ 分级 Plan（规划）→ 双 Agent 评审 → 数据闭环采集</strong> 六层递进优化，DAG 构建正确率 <strong>97%</strong>。基于 Reflexion（自反思）闭环 + LLM-as-Judge（模型评判），低分样本自动回流改进。
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 14px; text-align: center;">
+                            <div style="font-size: 20px; font-weight: 800; color: #4f46e5;">97%</div>
+                            <div style="font-size: 12px; color: #64748b;">DAG 构建正确率</div>
+                        </div>
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 14px; text-align: center;">
+                            <div style="font-size: 20px; font-weight: 800; color: #4f46e5;">94%</div>
+                            <div style="font-size: 12px; color: #64748b;">子 Agent 任务完成率</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MyClaw — 长期记忆方案对比 -->
+                <div class="project-card">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                        <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f5f3ff; color: #7c3aed;">MyClaw</span>
+                        <span style="font-size: 16px; font-weight: 700; color: #0f172a;">长期记忆 4 种方案对比</span>
+                    </div>
+                    <div style="font-size: 14px; color: #475569; line-height: 1.7; margin-bottom: 12px;">
+                        基于 LongMemEval（长程记忆评估基准集），通过 RecallBench（召回评测框架）对比 4 种记忆方案在 4 个维度的准确率，最终选型选择 Hindsight。
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 13px; color: #475569;">
+                            <thead>
+                                <tr style="background: #f1f4f9;">
+                                    <th style="padding: 8px 10px; text-align: left; font-weight: 700; color: #0f172a; border-bottom: 2px solid #e2e8f0;">维度</th>
+                                    <th style="padding: 8px 10px; text-align: center; font-weight: 700; color: #0f172a; border-bottom: 2px solid #e2e8f0;">纯大窗口</th>
+                                    <th style="padding: 8px 10px; text-align: center; font-weight: 700; color: #0f172a; border-bottom: 2px solid #e2e8f0;">RAG检索</th>
+                                    <th style="padding: 8px 10px; text-align: center; font-weight: 700; color: #4f46e5; border-bottom: 2px solid #4f46e5;">Hindsight</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid #e9edf4;">
+                                    <td style="padding: 8px 10px; font-weight: 600;">Information Extraction（精确检索）</td>
+                                    <td style="padding: 8px 10px; text-align: center;">60%</td>
+                                    <td style="padding: 8px 10px; text-align: center;">65%</td>
+                                    <td style="padding: 8px 10px; text-align: center; font-weight: 700; color: #4f46e5;">95%</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e9edf4;">
+                                    <td style="padding: 8px 10px; font-weight: 600;">Multi-Session Reasoning（跨会话推理）</td>
+                                    <td style="padding: 8px 10px; text-align: center;">45%</td>
+                                    <td style="padding: 8px 10px; text-align: center;">50%</td>
+                                    <td style="padding: 8px 10px; text-align: center; font-weight: 700; color: #4f46e5;">90%</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e9edf4;">
+                                    <td style="padding: 8px 10px; font-weight: 600;">Knowledge Updates（知识更新）</td>
+                                    <td style="padding: 8px 10px; text-align: center;">50%</td>
+                                    <td style="padding: 8px 10px; text-align: center;">45%</td>
+                                    <td style="padding: 8px 10px; text-align: center; font-weight: 700; color: #4f46e5;">88%</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px 10px; font-weight: 600;">Temporal Reasoning（时序推理）</td>
+                                    <td style="padding: 8px 10px; text-align: center;">55%</td>
+                                    <td style="padding: 8px 10px; text-align: center;">50%</td>
+                                    <td style="padding: 8px 10px; text-align: center; font-weight: 700; color: #4f46e5;">90%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="speech-right">
+                <div class="speech-bubble">
+                    <div class="speech-label">🎤 你说</div>
+                    我做了大量系统测试，核心是 RAG 项目的检索消融实验。
+                    从基线 68% 到最终的 81%，4 轮优化每一步都有数据记录，覆盖了召回率、排序质量、首个相关排名等 7 项指标。
+                    生成阶段也做了 3 轮消融，忠实度从 72% 提升到 96%。
+
+                    可视化任务编排系统重点测评了 Plan 能力，六层递进优化后 DAG 构建正确率达到 97%。
+
+                    MyClaw 基于长程记忆评估基准做了 4 种方案的对比，最终选型选择 Hindsight。
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Part 2: Section 6 ===== -->
+        <section id="ask-me" style="max-width: 840px;">
+
+            <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                <a href="项目/workflow.html" class="ask-card" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">🔧 可视化任务编排系统 →</a>
+                <a href="项目/myclaw.html" class="ask-card" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">🧠 MyClaw →</a>
+                <a href="项目/rag.html" class="ask-card" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">📊 Agentic RAG →</a>
+                <a href="文章/posts/Token优化实践.html" class="ask-card" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">💰 Token 优化实践 →</a>
+                <a href="文章/posts/读ClaudeCode源码我学到的五个设计.html" class="ask-card" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">🔍 Claude Code 源码分析 →</a>
+                <a href="文章/posts/从VibeCoding到SDD.html" class="ask-card" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">📝 从 Vibe Coding 到 SDD →</a>
+                <a href="文章/posts/RAG检索优化.html" class="ask-card" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">📈 RAG 检索优化 →</a>
+            </div>
+        </section>
+
+        <!-- ===== Contact ===== -->
+        <section id="contact">
+            <div class="section-label">Contact</div>
+            <h2 class="section-title">联系方式</h2>
+            <p style="color: #64748b; margin-bottom: 24px; font-size: 15px;">
+                感谢您的时间，期待进一步交流！
+            </p>
+            <div class="contact-links">
+                <a href="tel:+8618111083906">📞 (+86) 18111083906</a>
+                <a href="mailto:2952486829@qq.com">📧 2952486829@qq.com</a>
+                <a href="https://github.com/cyh6213" target="_blank">🐙 GitHub</a>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ===== Toggle 按钮 ===== -->
+    <button class="toggle-speech-btn" id="toggleSpeechBtn">🎤 隐藏提示词</button>
+
+    <!-- ===== Footer ===== -->
+    <footer>
+        &copy; 2026 程愚瀚 · Built with &hearts;
+    </footer>
+
+    <script src="资源/js/main.js"></script>
+    <script>
+        // Toggle speech bubbles
+        const toggleBtn = document.getElementById('toggleSpeechBtn');
+        const speechBubbles = document.querySelectorAll('.speech-right');
+
+        toggleBtn.addEventListener('click', function() {
+            let isHidden = false;
+            speechBubbles.forEach(el => {
+                el.classList.toggle('hidden');
+                if (el.classList.contains('hidden')) isHidden = true;
+            });
+            if (isHidden) {
+                toggleBtn.textContent = '🎤 显示提示词';
+                toggleBtn.classList.add('hidden');
+            } else {
+                toggleBtn.textContent = '🎤 隐藏提示词';
+                toggleBtn.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

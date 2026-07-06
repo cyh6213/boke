@@ -1,6 +1,7 @@
 // ===== 侧边栏导航高亮 =====
 function updateActiveLink() {
     const sections = document.querySelectorAll('section[id]');
+    if (sections.length === 0) return; // 文章页面没有 section[id]，跳过避免冲突
     const navLinks = document.querySelectorAll('.sidebar nav a');
     let current = '';
     sections.forEach(section => {

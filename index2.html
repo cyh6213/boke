@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>程愚瀚 | 面试自我介绍</title>
+    <link rel="stylesheet" href="资源/css/style.css" />
+    <style>
+        /* ===== 双栏布局 ===== */
+        .section-dual {
+            position: relative;
+            max-width: none !important;
+        }
+        .section-dual .content-left {
+            max-width: 840px;
+        }
+        .section-dual .speech-right {
+            position: absolute;
+            left: calc(60px + 840px + 40px); /* padding-left + content width + gap */
+            top: 80px;
+            width: 320px;
+        }
+        #hero.section-dual .speech-right {
+            top: 120px;
+        }
+        /* 允许溢出，speech-bubble 超出也不隐藏 */
+        .main { overflow-x: visible; }
+
+        /* ===== speech-bubble ===== */
+        .speech-bubble {
+            background: #eef2ff;
+            border-left: 4px solid #7c3aed;
+            border-radius: 12px;
+            padding: 20px 24px;
+            font-size: 14px;
+            color: #334155;
+            line-height: 1.8;
+            position: sticky;
+            top: 80px;
+        }
+        .speech-bubble .speech-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #7c3aed;
+            margin-bottom: 10px;
+        }
+        .speech-bubble .speech-action {
+            display: block;
+            margin-top: 12px;
+            font-size: 13px;
+            color: #7c3aed;
+            font-weight: 500;
+            border-top: 1px dashed #c7d2fe;
+            padding-top: 10px;
+        }
+
+        /* ===== 工程意识卡片 ===== */
+        .awareness-card {
+            background: #f8f9fc;
+            border-radius: 14px;
+            padding: 24px;
+        }
+        .awareness-card .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .awareness-card .card-title .badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #eef2ff;
+            color: #4f46e5;
+        }
+        .awareness-card .inner-card {
+            background: #ffffff;
+            border-left: 3px solid #4f46e5;
+            border-radius: 0 10px 10px 0;
+            padding: 16px 20px;
+            margin-bottom: 10px;
+        }
+        .awareness-card .inner-card:last-child {
+            margin-bottom: 0;
+        }
+        .awareness-card .inner-card .inner-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+        .awareness-card .inner-card p {
+            font-size: 14px;
+            color: #475569;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        /* ===== 学以致用表格 ===== */
+        .transfer-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            color: #475569;
+        }
+        .transfer-table thead th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 700;
+            color: #0f172a;
+            background: #f1f4f9;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .transfer-table tbody td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e9edf4;
+        }
+        .transfer-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .transfer-table tbody tr:hover {
+            background: #f8f9fc;
+        }
+        .transfer-table .arrow-cell {
+            text-align: center;
+            color: #4f46e5;
+            font-size: 18px;
+        }
+
+        /* ===== 成本网格 ===== */
+        .cost-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+        .cost-grid .cost-item {
+            background: #ffffff;
+            border: 1px solid #e9edf4;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .cost-grid .cost-item:hover {
+            border-color: #c7d2fe;
+            box-shadow: 0 4px 12px rgba(79,70,229,0.06);
+            transform: translateY(-2px);
+        }
+        .cost-grid .cost-item .cost-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+        .cost-grid .cost-item .cost-desc {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.6;
+        }
+        .cost-grid .cost-item .cost-highlight {
+            font-size: 13px;
+            font-weight: 700;
+            color: #059669;
+            margin-top: 6px;
+        }
+
+        /* ===== 方案对比 ===== */
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .compare-grid .compare-item {
+            border-radius: 12px;
+            padding: 16px 20px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .compare-grid .compare-item.selected {
+            background: #ecfdf5;
+            border: 2px solid #059669;
+            color: #065f46;
+        }
+        .compare-grid .compare-item.unselected {
+            background: #f1f4f9;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+        .compare-grid .compare-item .compare-label {
+            font-size: 12px;
+            font-weight: 400;
+            color: inherit;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        /* ===== 反例列表 ===== */
+        .counter-example {
+            border-left: 3px solid #dc2626;
+            padding: 10px 16px;
+            margin-bottom: 8px;
+            background: #fef2f2;
+            border-radius: 0 8px 8px 0;
+            font-size: 14px;
+            color: #991b1b;
+            line-height: 1.6;
+        }
+        .counter-example:last-child {
+            margin-bottom: 0;
+        }
+
+        /* ===== 量化卡片 ===== */
+        .data-highlight-card {
+            border-left: 4px solid #059669;
+            border-radius: 0 12px 12px 0;
+            padding: 24px;
+            background: #ffffff;
+            border: 1px solid #e9edf4;
+            border-left-width: 4px;
+            border-left-color: #059669;
+        }
+        .data-highlight-card .data-number {
+            font-size: 13px;
+            font-weight: 700;
+            color: #059669;
+            margin-bottom: 4px;
+        }
+        .data-highlight-card .data-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 16px;
+        }
+        .data-grid-4 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .data-grid-4 .data-item {
+            background: #f8f9fc;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+        }
+        .data-grid-4 .data-item .data-value {
+            font-size: 22px;
+            font-weight: 800;
+            color: #4f46e5;
+        }
+        .data-grid-4 .data-item .data-value.green {
+            color: #059669;
+        }
+        .data-grid-4 .data-item .data-label {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        /* ===== 文章标签 ===== */
+        .article-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .article-tags a {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #4f46e5;
+            background: #eef2ff;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .article-tags a:hover {
+            background: #4f46e5;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79,70,229,0.25);
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 1600px) {
+            .section-dual .speech-right {
+                left: calc(60px + 840px + 20px);
+                width: 260px;
+            }
+        }
+        @media (max-width: 1500px) {
+            .section-dual .speech-right {
+                left: calc(60px + 840px + 16px);
+                width: 220px;
+            }
+        }
+        @media (max-width: 1400px) {
+            .section-dual .speech-right {
+                left: calc(60px + 840px + 12px);
+                width: 180px;
+                font-size: 13px;
+            }
+            .section-dual .speech-right .speech-bubble {
+                padding: 12px 14px;
+            }
+            .cost-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 1200px) {
+            .section-dual .speech-right {
+                width: 160px;
+                font-size: 12px;
+            }
+            .section-dual .speech-right .speech-bubble {
+                padding: 10px 12px;
+                line-height: 1.6;
+            }
+            .section-dual .speech-right .speech-action {
+                font-size: 11px;
+            }
+        }
+        @media (max-width: 768px) {
+            section {
+                padding: 40px 20px !important;
+            }
+            .cost-grid {
+                grid-template-columns: 1fr;
+            }
+            .compare-grid {
+                grid-template-columns: 1fr;
+            }
+            .data-grid-4 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 顶部导航 ===== -->
+    <nav class="top-nav">
+        <a href="index2.html" class="nav-brand">程愚瀚</a>
+        <div class="nav-links">
+            <a href="index2.html" class="active">自我介绍</a>
+            <a href="index.html">博客首页</a>
+            <a href="文章/">文章</a>
+            <a href="项目/">项目</a>
+        </div>
+    </nav>
+
+    <!-- ===== Sidebar ===== -->
+    <aside class="sidebar">
+        <div class="name">程愚瀚</div>
+        <div class="title">Agent 开发者 · 面试自我介绍</div>
+        <nav>
+            <a href="#hero" class="active"><span class="dot"></span> 基本信息</a>
+            <a href="#awareness-01"><span class="dot"></span> 工程意识</a>
+            <a href="#awareness-02"><span class="dot"></span> 学以致用</a>
+            <a href="#awareness-03"><span class="dot"></span> 创新意识</a>
+            <a href="#awareness-04"><span class="dot"></span> 量化意识</a>
+            <a href="#awareness-05"><span class="dot"></span> 成本意识</a>
+            <a href="#articles"><span class="dot"></span> 文章输出</a>
+            <a href="#contact"><span class="dot"></span> 联系方式</a>
+        </nav>
+    </aside>
+
+    <!-- ===== Main ===== -->
+    <div class="main">
+
+        <!-- ===== 区域 1：Hero ===== -->
+        <section id="hero" class="section-dual">
+            <div class="content-left">
+                <div class="greeting">面试官，您好</div>
+                <h1>我是 <span class="highlight">程愚瀚</span></h1>
+                <p class="school">电子科技大学 · 软件工程 · 28届本科</p>
+                <p class="tagline">"有后端工程化思维的 Agent 开发者"</p>
+
+                <div class="info-row">
+                    <span><strong>方向：</strong>Agent 开发</span>
+                    <span><strong>地点：</strong>不限</span>
+                    <span><strong>时间：</strong>七月 - 来年一月</span>
+                </div>
+
+                <!-- 时间轴 -->
+                <div style="margin-bottom: 16px;">
+                    <div style="font-size: 13px; font-weight: 600; color: #4f46e5; margin-bottom: 12px;">学习路线</div>
+                    <div style="position: relative; padding: 4px 0 20px 0;">
+                        <div style="position: absolute; top: 12px; left: 0; right: 0; height: 2px; background: #e2e8f0; z-index: 0;"></div>
+                        <div style="display: flex; width: 100%; position: relative; z-index: 1; align-items: flex-start;">
+                            <div style="display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 70px;">
+                                <div style="width: 14px; height: 14px; border-radius: 50%; background: #4f46e5; border: 3px solid #f8f9fc; box-shadow: 0 0 0 2px #4f46e5;"></div>
+                                <div style="font-size: 12px; font-weight: 600; color: #0f172a; margin-top: 8px;">24年11月</div>
+                            </div>
+                            <div style="flex: 1; display: flex; justify-content: center; padding-top: 0;">
+                                <div style="font-size: 13px; color: #fff; text-align: center; background: #4f46e5; padding: 4px 20px; border-radius: 20px; font-weight: 600;">Java 后端开发</div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 70px;">
+                                <div style="width: 14px; height: 14px; border-radius: 50%; background: #4f46e5; border: 3px solid #f8f9fc; box-shadow: 0 0 0 2px #4f46e5;"></div>
+                                <div style="font-size: 12px; font-weight: 600; color: #0f172a; margin-top: 8px;">26年2月</div>
+                            </div>
+                            <div style="flex: 2; display: flex; justify-content: center; padding-top: 0;">
+                                <div style="font-size: 13px; color: #fff; text-align: center; background: #7c3aed; padding: 4px 20px; border-radius: 20px; font-weight: 600;">Agent 学习</div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 70px;">
+                                <div style="width: 14px; height: 14px; border-radius: 50%; background: #10b981; border: 3px solid #f8f9fc; box-shadow: 0 0 0 2px #10b981;"></div>
+                                <div style="font-size: 12px; font-weight: 600; color: #059669; margin-top: 8px;">至今</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="speech-right">
+                <div class="speech-bubble">
+                    <div class="speech-label">🎤 你说</div>
+                    面试官您好，我是程愚瀚，电子科技大学软件工程 28 届本科生，方向是 Agent 开发。
+                    我之前做 Java 后端，现在转型做 Agent。后端经历让我养成了工程化思维——做任何系统我都会考虑架构设计、异常处理、成本控制和数据评估。这些习惯直接迁移到了我的 Agent 项目里。
+                    <span class="speech-action">👉 指着时间轴说"看这里，我的学习路线"</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 区域 2：工程意识 ===== -->
+        <section id="awareness-01" class="section-dual">
+            <div class="content-left">
+                <div class="section-label">Awareness 01</div>
+                <h2 class="section-title">工程意识</h2>
+
+                <div class="awareness-card">
+                    <div class="card-title">
+                        ⚙️ 来自 Java 后端开发的工程化思维
+                        <span class="badge">Workflow 项目</span>
+                    </div>
+
+                    <div class="inner-card">
+                        <div class="inner-title">一级 · 重试策略</div>
+                        <p>支持固定间隔、线性退避、指数退避三种策略，应对不同场景的临时故障。</p>
+                    </div>
+                    <div class="inner-card">
+                        <div class="inner-title">二级 · 超时控制</div>
+                        <p>防止 Agent 卡死在某个节点，确保系统整体可推进。</p>
+                    </div>
+                    <div class="inner-card">
+                        <div class="inner-title">三级 · 异常分流</div>
+                        <p>直接中断 / 错误码兜底 / 失败分支三种策略，全面覆盖异常场景。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="speech-right">
+                <div class="speech-bubble">
+                    <div class="speech-label">🎤 你说</div>
+                    第一个是工程意识。这来自我 Java 后端开发的训练。
+                    后端项目对异常处理、边界情况、系统稳定性有严格要求。我把这些习惯带到了 Agent 项目里。
+                    比如 Workflow 项目，我设计了三级异常治理——第一级是重试策略，支持固定间隔、线性退避、指数退避；第二级是超时控制，防止 Agent 卡死；第三级是异常分流，支持直接中断、错误码兜底、失败分支三种策略。
+                    <span class="speech-action">👉 指着工程意识卡片说</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 区域 3：学以致用意识 ===== -->
+        <section id="awareness-02" class="section-dual">
+            <div class="content-left">
+                <div class="section-label">Awareness 02</div>
+                <h2 class="section-title">学以致用意识</h2>
+
+                <table class="transfer-table">
+                    <thead>
+                        <tr>
+                            <th>来源</th>
+                            <th style="width: 40px; text-align: center;"></th>
+                            <th>应用到</th>
+                            <th>学到什么</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Claude Code 源码</td>
+                            <td class="arrow-cell">→</td>
+                            <td>Workflow 断点恢复</td>
+                            <td>checkpoint 机制、子 Agent 上下文隔离</td>
+                        </tr>
+                        <tr>
+                            <td>豆包</td>
+                            <td class="arrow-cell">→</td>
+                            <td>MyClaw 滑动窗口</td>
+                            <td>对话主题更新机制</td>
+                        </tr>
+                        <tr>
+                            <td>CodeBuddy</td>
+                            <td class="arrow-cell">→</td>
+                            <td>RAG 智能路由</td>
+                            <td>可控的问题改写策略</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="speech-right">
+                <div class="speech-bubble">
+                    <div class="speech-label">🎤 你说</div>
+                    第二个是学以致用意识。我不只是用工具，我会研究它们的源码，把学到的东西迁移到自己的项目里。
+                    比如我读了 Claude Code 源码，学到了它的 checkpoint 机制和子 Agent 上下文隔离策略，然后把 checkpoint 的思路用到了 Workflow 的节点级断点恢复中。
+                    我还研究了豆包的主题更新机制、CodeBuddy 的问题改写策略，分别用到了 MyClaw 和 RAG 项目里。
+                    <span class="speech-action">👉 指着对照表说"看这里"</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 区域 4：创新意识 + Workflow 项目 ===== -->
+        <section id="awareness-03" class="section-dual">
+            <div class="content-left">
+                <div class="section-label">Awareness 03</div>
+                <h2 class="section-title">创新意识</h2>
+
+                <!-- 卡片 1：为什么做 -->
+                <div class="project-card" style="margin-bottom: 16px;">
+                    <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">Agent 不按照需求执行</div>
+                    <div class="counter-example">❌ "检索竞品资料后生成分析报告" — Agent 直接生成，没去检索</div>
+                    <div class="counter-example">❌ "先查天气再安排行程" — 查完天气直接给行程，忘了查交通</div>
+                    <div class="counter-example">❌ "分析代码质量前先做安全扫描" — 跳过安全扫描直接分析</div>
+                </div>
+
+                <!-- 卡片 2：我的方案 -->
+                <div class="project-card" style="margin-bottom: 16px;">
+                    <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">Plan Agent + 执行引擎解耦</div>
+                    <p style="font-size: 14px; color: #475569; margin-bottom: 14px; line-height: 1.7;">Plan Agent 生成 DAG 图，执行引擎强制按图调度</p>
+                    <div class="compare-grid">
+                        <div class="compare-item selected">
+                            ✅ DAG（选中的）
+                            <div class="compare-label">约束"流程"</div>
+                        </div>
+                        <div class="compare-item unselected">
+                            Hooks（未选的）
+                            <div class="compare-label">约束"操作"</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 3：核心能力 -->
+                <div class="project-card">
+                    <div style="font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">核心能力</div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        <span style="padding: 6px 14px; background: #eef2ff; color: #4f46e5; border-radius: 100px; font-size: 13px; font-weight: 500;">双层并行执行引擎</span>
+                        <span style="padding: 6px 14px; background: #eef2ff; color: #4f46e5; border-radius: 100px; font-size: 13px; font-weight: 500;">节点级断点恢复</span>
+                        <span style="padding: 6px 14px; background: #eef2ff; color: #4f46e5; border-radius: 100px; font-size: 13px; font-weight: 500;">Sub Agent 分发与 Token 优化</span>
+                        <span style="padding: 6px 14px; background: #eef2ff; color: #4f46e5; border-radius: 100px; font-size: 13px; font-weight: 500;">三级异常治理与条件分支</span>
+                        <span style="padding: 6px 14px; background: #eef2ff; color: #4f46e5; border-radius: 100px; font-size: 13px; font-weight: 500;">Plan 能力迭代优化</span>
+                    </div>
+                    <div style="margin-top: 14px; text-align: right;">
+                        <a href="项目/workflow.html" style="font-size: 13px; color: #4f46e5; text-decoration: none; font-weight: 600;">查看完整项目详情 →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="speech-right">
+                <div class="speech-bubble">
+                    <div class="speech-label">🎤 你说</div>
+                    第三个是创新意识。我不满足于调 API 跑 Demo，每个项目都交出了自己的方案。
+                    以 Workflow 项目为例——
+                    为什么做？使用 Agent 时发现它不按指令执行。要求它'检索后回答'，它直接生成答案。这不是策略不一致的问题，是 Agent 会无视你的指令，自己决定怎么做。
+                    我的方案是什么？我设计了 Plan Agent + 执行引擎解耦的架构。Plan Agent 根据用户需求生成 DAG 图，执行引擎强制按图调度。Agent 在每个节点只能做该节点的事，不存在跳过某一步的可能。
+                    核心能力有哪些？双层并行执行引擎、节点级断点恢复、Sub Agent 分发、三级异常治理、Plan 能力迭代优化。
+                    <span class="speech-action">👉 指着 Workflow 项目区域说"看这里"</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 区域 5：量化意识 ===== -->
+        <section id="awareness-04" class="section-dual">
+            <div class="content-left">
+                <div class="section-label">Awareness 04</div>
+                <h2 class="section-title">量化意识</h2>
+
+                <!-- 卡片 1：项目亮点 -->
+                <div class="data-highlight-card" style="margin-bottom: 20px;">
+                    <div class="data-number">编号 02</div>
+                    <div class="data-title">不靠嘴说，用数据说话</div>
+                    <div class="data-grid-4">
+                        <div class="data-item">
+                            <div class="data-value">68.4%→81.2%</div>
+                            <div class="data-label">RAG 检索</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-value">72%→96%</div>
+                            <div class="data-label">RAG 生成忠实度</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-value green">97%/-41%/-23%</div>
+                            <div class="data-label">Workflow</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-value green">全面领先</div>
+                            <div class="data-label">长期记忆 Hindsight</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 2：RAG 消融实验表格 -->
+                <div class="project-card" style="margin-bottom: 20px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">RAG 检索消融实验 — recall_cap@5</div>
+                    <div style="background: #f8f9fc; border-radius: 10px; overflow: hidden; font-size: 13px;">
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 10px 16px; background: #eef2ff; font-weight: 600; color: #4f46e5; border-bottom: 1px solid #e2e8f0;">
+                            <div>方案</div>
+                            <div style="text-align: center;">recall_cap@5</div>
+                            <div style="text-align: right;">提升</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
+                            <div>dense 纯向量检索（基线）</div>
+                            <div style="text-align: center;"><strong>68.38%</strong></div>
+                            <div style="text-align: right; color: #94a3b8;">—</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
+                            <div>+ RRF 混合检索</div>
+                            <div style="text-align: center;"><strong>75.66%</strong></div>
+                            <div style="text-align: right; color: #94a3b8;">+7.28pp</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
+                            <div>+ BM25 升级 sparse</div>
+                            <div style="text-align: center;"><strong>76.66%</strong></div>
+                            <div style="text-align: right; color: #94a3b8;">+1.00pp</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 9px 16px; background: #eef2ff; font-weight: 700; color: #4f46e5;">
+                            <div>+ Rerank 重排</div>
+                            <div style="text-align: center;"><strong>81.2%</strong></div>
+                            <div style="text-align: right;">+4.54pp</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 3：Workflow 数据 -->
+                <div class="project-card" style="margin-bottom: 20px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">Workflow 测评数据</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">97%</div>
+                            <div style="font-size: 12px; color: #64748b;">DAG 图构建正确率</div>
+                        </div>
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: 800; color: #4f46e5;">94%</div>
+                            <div style="font-size: 12px; color: #64748b;">子 Agent 任务完成率</div>
+                        </div>
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: 800; color: #059669;">-41%</div>
+                            <div style="font-size: 12px; color: #64748b;">Token 消耗降低</div>
+                        </div>
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 16px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: 800; color: #059669;">-23%</div>
+                            <div style="font-size: 12px; color: #64748b;">并行执行时间缩短</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 4：MyClaw 记忆方案对比 -->
+                <div class="project-card">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">MyClaw 记忆方案对比测评</div>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 13px; color: #475569;">
+                            <thead>
+                                <tr style="background: #f1f4f9;">
+                                    <th style="padding: 10px 12px; text-align: left; font-weight: 700; color: #0f172a; border-bottom: 2px solid #e2e8f0;">维度</th>
+                                    <th style="padding: 10px 12px; text-align: center; font-weight: 700; color: #0f172a; border-bottom: 2px solid #e2e8f0;">纯大窗口</th>
+                                    <th style="padding: 10px 12px; text-align: center; font-weight: 700; color: #0f172a; border-bottom: 2px solid #e2e8f0;">RAG检索</th>
+                                    <th style="padding: 10px 12px; text-align: center; font-weight: 700; color: #4f46e5; border-bottom: 2px solid #4f46e5;">Hindsight</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid #e9edf4;">
+                                    <td style="padding: 10px 12px; font-weight: 600;">Information Extraction</td>
+                                    <td style="padding: 10px 12px; text-align: center;">60%</td>
+                                    <td style="padding: 10px 12px; text-align: center;">65%</td>
+                                    <td style="padding: 10px 12px; text-align: center; font-weight: 700; color: #4f46e5;">95%</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e9edf4;">
+                                    <td style="padding: 10px 12px; font-weight: 600;">Multi-Session Reasoning</td>
+                                    <td style="padding: 10px 12px; text-align: center;">45%</td>
+                                    <td style="padding: 10px 12px; text-align: center;">50%</td>
+                                    <td style="padding: 10px 12px; text-align: center; font-weight: 700; color: #4f46e5;">90%</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e9edf4;">
+                                    <td style="padding: 10px 12px; font-weight: 600;">Knowledge Updates</td>
+                                    <td style="padding: 10px 12px; text-align: center;">50%</td>
+                                    <td style="padding: 10px 12px; text-align: center;">45%</td>
+                                    <td style="padding: 10px 12px; text-align: center; font-weight: 700; color: #4f46e5;">88%</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 10px 12px; font-weight: 600;">Temporal Reasoning</td>
+                                    <td style="padding: 10px 12px; text-align: center;">55%</td>
+                                    <td style="padding: 10px 12px; text-align: center;">50%</td>
+                                    <td style="padding: 10px 12px; text-align: center; font-weight: 700; color: #4f46e5;">90%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="speech-right">
+                <div class="speech-bubble">
+                    <div class="speech-label">🎤 你说</div>
+                    第四个是量化意识。每个优化都有数据支撑，不靠感觉说话。
+                    RAG 项目做了检索和生成两轮消融实验。recall_cap@5 从 68.4% 到 81.2%，忠实度从 72% 到 96%，每一步的提升都有表格记录。
+                    Workflow 项目建了 200 项任务评估集，DAG 构建正确率 97%，Token 消耗降低 41%，执行时间缩短 23%。
+                    MyClaw 项目做了 4 种记忆方案的对比测评，Hindsight 在四个维度全面领先。
+                    <span class="speech-action">👉 指着消融实验表格说"看这个表格"</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 区域 6：成本意识 ===== -->
+        <section id="awareness-05" class="section-dual">
+            <div class="content-left">
+                <div class="section-label">Awareness 05</div>
+                <h2 class="section-title">成本意识</h2>
+
+                <div class="cost-grid">
+                    <div class="cost-item">
+                        <div class="cost-title">RAG 智能路由</div>
+                        <div class="cost-desc">简单问题跳过向量检索</div>
+                        <div class="cost-highlight">↓30% Embedding API 调用</div>
+                    </div>
+                    <div class="cost-item">
+                        <div class="cost-title">Workflow Sub Agent</div>
+                        <div class="cost-desc">职责拆分只加载自身 Prompt</div>
+                        <div class="cost-highlight">↓41% 完整任务 Token</div>
+                    </div>
+                    <div class="cost-item">
+                        <div class="cost-title">MyClaw 上下文组装</div>
+                        <div class="cost-desc">Chatter 5 层精简</div>
+                        <div class="cost-highlight">Token 优化</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; text-align: center; font-size: 14px; color: #4f46e5; font-weight: 600;">
+                    ⚡ 成本优化是我所有项目的共同主线
+                </div>
+            </div>
+
+            <div class="speech-right">
+                <div class="speech-bubble">
+                    <div class="speech-label">🎤 你说</div>
+                    第五个是成本意识。Agent 项目消耗 Token 就是消耗钱。
+                    RAG 的智能路由让 Embedding API 调用减少 30%。Workflow 的 Sub Agent 拆分让完整任务 Token 降低 41%。MyClaw 的上下文组装也省了 Token。
+                    成本优化是我所有项目的共同主线。
+                    <span class="speech-action">👉 指着成本区域说"每个项目都在省 Token"</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 区域 7：文章输出 ===== -->
+        <section id="articles" class="section-dual">
+            <div class="content-left">
+                <div class="section-label">Output</div>
+                <h2 class="section-title">文章输出</h2>
+
+                <div class="article-tags">
+                    <a href="文章/posts/RAG检索优化.html">RAG 检索优化</a>
+                    <a href="文章/posts/RAG智能路由.html">RAG 智能路由</a>
+                    <a href="文章/posts/Token优化实践.html">Token 优化实践</a>
+                    <a href="文章/posts/从VibeCoding到SDD.html">从 Vibe Coding 到 SDD</a>
+                    <a href="文章/posts/读ClaudeCode源码我学到的五个设计.html">Claude Code 源码分析</a>
+                    <a href="文章/posts/MCP-FunctionCalling-Skill.html">MCP / FC / Skill</a>
+                    <a href="文章/posts/Transformer原理.html">Transformer 原理</a>
+                    <a href="文章/posts/Agent测试.html">Agent 测试</a>
+                </div>
+            </div>
+
+            <div class="speech-right">
+                <div class="speech-bubble">
+                    <div class="speech-label">🎤 你说</div>
+                    另外我还输出了 8 篇文章，记录了我的学习和优化过程。
+                    以上就是我的自我介绍。具体的优化细节和数据，页面上都有详细的支撑。我们可以深入聊任何一个点。
+                    <span class="speech-action">👉 指着文章列表说"看这里"</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Contact ===== -->
+        <section id="contact">
+            <div class="section-label">Contact</div>
+            <h2 class="section-title">联系方式</h2>
+            <p style="color: #64748b; margin-bottom: 24px; font-size: 15px;">
+                感谢您的时间，期待进一步交流！
+            </p>
+            <div class="contact-links">
+                <a href="tel:+8618111083906">📞 (+86) 18111083906</a>
+                <a href="mailto:2952486829@qq.com">📧 2952486829@qq.com</a>
+                <a href="https://github.com/cyh6213" target="_blank">🐙 GitHub</a>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ===== Footer ===== -->
+    <footer>
+        &copy; 2026 程愚瀚 · Built with &hearts;
+    </footer>
+
+    <script src="资源/js/main.js"></script>
+</body>
+</html>

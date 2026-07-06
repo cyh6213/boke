@@ -252,6 +252,9 @@
                         current = c.getAttribute('id');
                     }
                 });
+                if (!current && cards.length > 0) {
+                    current = cards[cards.length - 1].getAttribute('id');
+                }
                 navLinks.forEach(function(link) {
                     link.classList.remove('active');
                     if (link.getAttribute('href') === '#' + current) {

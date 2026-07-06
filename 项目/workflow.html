@@ -36,6 +36,95 @@
         .sidebar-sub.active .dot { background: #4f46e5; }
         .sidebar-sub-group { margin: 2px 0 6px 20px; border-left: 2px solid #e2e8f0; padding-left: 6px; }
         [id] { scroll-margin-top: 120px; }
+        /* ===== Speech Bubble ===== */
+        .speech-bubble-wrap {
+            position: fixed;
+            right: 24px;
+            top: 80px;
+            width: 320px;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 50;
+        }
+        .speech-bubble-wrap.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .speech-bubble {
+            background: #eef2ff;
+            border-left: 4px solid #7c3aed;
+            border-radius: 12px;
+            padding: 20px 24px;
+            font-size: 14px;
+            color: #334155;
+            line-height: 1.8;
+            position: sticky;
+            top: 80px;
+        }
+        .speech-bubble .speech-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #7c3aed;
+            margin-bottom: 10px;
+        }
+        .toggle-speech-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 999;
+            padding: 10px 18px;
+            border-radius: 100px;
+            border: 1px solid #c7d2fe;
+            background: #ffffff;
+            color: #4f46e5;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transition: all 0.2s;
+        }
+        .toggle-speech-btn:hover {
+            background: #eef2ff;
+            border-color: #4f46e5;
+        }
+        .toggle-speech-btn.hidden {
+            background: #4f46e5;
+            color: #fff;
+            border-color: #4f46e5;
+        }
+
+        @media (max-width: 1600px) {
+            .speech-bubble-wrap {
+                width: 260px;
+            }
+        }
+        @media (max-width: 1400px) {
+            .speech-bubble-wrap {
+                width: 200px;
+                font-size: 13px;
+            }
+            .speech-bubble-wrap .speech-bubble {
+                padding: 14px 16px;
+            }
+        }
+        @media (max-width: 1200px) {
+            .speech-bubble-wrap {
+                width: 160px;
+                font-size: 12px;
+            }
+            .speech-bubble-wrap .speech-bubble {
+                padding: 10px 12px;
+                line-height: 1.6;
+            }
+        }
+        @media (max-width: 900px) {
+            .speech-bubble-wrap {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -131,12 +220,12 @@
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
                         <div style="padding: 16px 18px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px;">
-                            <div style="font-size: 14px; font-weight: 700; color: #059669; margin-bottom: 6px;">DAG — 约束「流程」</div>
+                            <div style="font-size: 14px; font-weight: 700; color: #059669; margin-bottom: 6px;">Workflow — 约束「流程」</div>
                             <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 10px 0;">
                                 限制 Agent <strong>在整个流程中</strong>必须要做什么。
                             </p>
                             <div style="padding: 8px 12px; background: #fff; border-radius: 6px; font-size: 12px; color: #64748b; line-height: 1.7;">
-                                <strong style="color: #0f172a;">举例：</strong>"帮我分析财报并写报告" — DAG 强制流程为 <code>[读取财报 → 分析指标 → 生成报告]</code>，Agent 不能跳过「分析」直接写。
+                                <strong style="color: #0f172a;">举例：</strong>"帮我分析财报并写报告" — Workflow 强制流程为 <code>[读取财报 → 分析指标 → 生成报告]</code>，Agent 不能跳过「分析」直接写。
                             </div>
                             <div style="margin-top: 6px; font-size: 12px; color: #16a34a;">✅ 保证"该做的事都做了"</div>
                         </div>
@@ -154,7 +243,7 @@
                     </div>
 
                     <div style="padding: 10px 14px; background: #fff; border-left: 3px solid #64748b; border-radius: 0 6px 6px 0; font-size: 12px; color: #475569; line-height: 1.7;">
-                        我选择了 DAG 路径，因为流程层面的约束对"Agent 不按需求执行"这个问题更直接。同时 Hooks 的思路可以后续补充，两者不冲突，可以结合。
+                        我选择了 Workflow 路径，因为流程层面的约束对"Agent 不按需求执行"这个问题更直接。同时 Hooks 的思路可以后续补充，两者不冲突，可以结合。
                     </div>
                 </div>
 
@@ -179,6 +268,71 @@
                             <strong style="color: #d97706;">坏处</strong><br>
                             相比 PAE 框架可根据前一步结果动态改变下一步计划，本方案是固定化的。但针对节点执行失败的情况，支持三种异常处理机制确保流程完整执行。
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 架构总览图 -->
+            <div class="project-card" id="arch" style="margin-bottom: 16px; padding: 32px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 24px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f5f3ff; color: #7c3aed;">架构总览</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">核心能力架构</span>
+                </div>
+
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 0;">
+                    <!-- 顶层：Plan Agent → 跳转 Plan 优化 -->
+                    <a href="#plan-opt" style="text-decoration: none; display: block;">
+                        <div style="background: linear-gradient(135deg, #4f46e5, #7c3aed); color: #fff; border-radius: 12px; padding: 16px 36px; text-align: center; box-shadow: 0 4px 16px rgba(79,70,229,0.3); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                            <div style="font-size: 16px; font-weight: 800; letter-spacing: 1px;">Plan Agent</div>
+                            <div style="font-size: 12px; opacity: 0.85; margin-top: 4px;">核心 · 生成 DAG 图</div>
+                        </div>
+                    </a>
+
+                    <!-- 向下箭头 -->
+                    <div style="width: 2px; height: 28px; background: linear-gradient(180deg, #7c3aed, #94a3b8);"></div>
+                    <div style="border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 10px solid #94a3b8; margin-top: -1px;"></div>
+
+                    <!-- 中间：DAG 图 -->
+                    <div style="background: #ffffff; border: 2px solid #4f46e5; border-radius: 10px; padding: 12px 32px; text-align: center; margin: 12px 0 8px;">
+                        <div style="font-size: 14px; font-weight: 700; color: #4f46e5;">DAG 图</div>
+                        <div style="font-size: 12px; color: #94a3b8; margin-top: 2px;">节点列表 + 边关系</div>
+                    </div>
+
+                    <!-- 向下箭头 -->
+                    <div style="width: 2px; height: 24px; background: #d1d9e6;"></div>
+                    <div style="border-left: 8px solid transparent; border-right: 8px solid transparent; border-top: 10px solid #d1d9e6; margin-top: -1px;"></div>
+
+                    <!-- 底层：四列 -->
+                    <div style="font-size: 12px; font-weight: 600; color: #64748b; margin: 12px 0 8px;">执行引擎按图调度</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; width: 100%;">
+                        <a href="#parallel" style="text-decoration: none;">
+                            <div style="background: linear-gradient(135deg, #ecfdf5, #d1fae5); border-radius: 10px; padding: 16px 10px; text-align: center; border: 1px solid #a7f3d0; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                <div style="font-size: 22px; margin-bottom: 4px;">⚡</div>
+                                <div style="font-size: 13px; font-weight: 700; color: #065f46;">并行执行</div>
+                                <div style="font-size: 11px; color: #059669; margin-top: 4px;">更好的并行策略</div>
+                            </div>
+                        </a>
+                        <a href="#rollback" style="text-decoration: none;">
+                            <div style="background: linear-gradient(135deg, #eef2ff, #e0e7ff); border-radius: 10px; padding: 16px 10px; text-align: center; border: 1px solid #c7d2fe; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                <div style="font-size: 22px; margin-bottom: 4px;">🔄</div>
+                                <div style="font-size: 13px; font-weight: 700; color: #3730a3;">断点恢复</div>
+                                <div style="font-size: 11px; color: #4f46e5; margin-top: 4px;">不同的恢复策略</div>
+                            </div>
+                        </a>
+                        <a href="#sub-agent" style="text-decoration: none;">
+                            <div style="background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 10px; padding: 16px 10px; text-align: center; border: 1px solid #fcd34d; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                <div style="font-size: 22px; margin-bottom: 4px;">🤖</div>
+                                <div style="font-size: 13px; font-weight: 700; color: #92400e;">Sub Agent</div>
+                                <div style="font-size: 11px; color: #d97706; margin-top: 4px;">Token 优化</div>
+                            </div>
+                        </a>
+                        <a href="#exception" style="text-decoration: none;">
+                            <div style="background: linear-gradient(135deg, #fce7f3, #fbcfe8); border-radius: 10px; padding: 16px 10px; text-align: center; border: 1px solid #f9a8d4; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                <div style="font-size: 22px; margin-bottom: 4px;">🛡️</div>
+                                <div style="font-size: 13px; font-weight: 700; color: #831843;">三级异常治理</div>
+                                <div style="font-size: 11px; color: #db2777; margin-top: 4px;">+ 条件分支</div>
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -549,7 +703,7 @@
 
                     <div style="display: flex; flex-direction: column; gap: 14px; font-size: 14px; color: #475569; line-height: 1.8;">
                         <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
-                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">Prompt 层</div>
+                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">① Prompt 层 — 说清楚要做什么 + 规则是什么</div>
                             <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
                                 <li><strong>强制输出模板</strong> — JsonSchema 约束输出格式</li>
                                 <li><strong>拆解规则</strong> — 检索/工具操作必须在生成类节点之前；独立无依赖任务拆为并行节点</li>
@@ -559,7 +713,15 @@
                         </div>
 
                         <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
-                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">后置校验层</div>
+                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">② FewShot 样本 — 举例说明</div>
+                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
+                                <li><strong>标准样本</strong> — 基础串行流程、多并行分支、带汇聚节点复杂拓扑</li>
+                                <li><strong>反例样本</strong> — 展示错误 DAG（反向依赖、环路反例）+ 修正后的正确 DAG，让 Plan 规避常见误区</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
+                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">③ 后置校验层 — 保证 DAG 无环 + 合法性检测</div>
                             <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
                                 <li>环路检测</li>
                                 <li>引用合法性检测</li>
@@ -568,15 +730,7 @@
                         </div>
 
                         <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
-                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">FewShot 样本</div>
-                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
-                                <li><strong>标准样本</strong> — 基础串行流程、多并行分支、带汇聚节点复杂拓扑</li>
-                                <li><strong>反例样本</strong> — 展示错误 DAG（反向依赖、环路反例）+ 修正后的正确 DAG，让 Plan 规避常见误区</li>
-                            </ul>
-                        </div>
-
-                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
-                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">分级 Plan（解决长任务失效问题）</div>
+                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">④ 分级 Plan（解决长任务失效问题） <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;background:#fef2f2;color:#dc2626;font-weight:600;vertical-align:middle;">待实现</span></div>
                             <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
                                 <li>针对长任务先进行粗任务划分，再调用子 Plan 单独生成 DAG</li>
                                 <li>顶层 DAG 串联各个子流程，避免单次生成超大图导致输出截断、逻辑混乱</li>
@@ -584,14 +738,14 @@
                         </div>
 
                         <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
-                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">双 Agent 机制</div>
+                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">⑤ 双 Agent 评审</div>
                             <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
                                 <li>引入评审 Agent，独立评审流程逻辑、依赖、环路、需求匹配度，输出修改意见</li>
                             </ul>
                         </div>
 
                         <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4; border-left: 3px solid #7c3aed;">
-                            <div style="font-size: 13px; font-weight: 600; color: #7c3aed; margin-bottom: 8px;">迭代数据闭环优化 — 基于 Reflexion 的自改进机制</div>
+                            <div style="font-size: 13px; font-weight: 600; color: #7c3aed; margin-bottom: 8px;">⑥ 迭代数据闭环优化 — 基于 Reflexion 的自改进机制</div>
                             <div style="font-size: 12px; color: #94a3b8; margin-bottom: 10px; padding: 6px 10px; background: #f5f3ff; border-radius: 6px; display: inline-block;">
                                 参考 Reflexion (NeurIPS 2023)：通过语言反馈替代权重更新的强化学习范式
                             </div>
@@ -687,6 +841,17 @@
             </div>
 
         </div>
+
+        <!-- Speech Bubble -->
+        <div class="speech-bubble-wrap" id="speechWrap">
+            <div class="speech-bubble">
+                <div class="speech-label">🎤 你的话术</div>
+                <div id="speechContent">滚动到各个章节查看对应话术</div>
+            </div>
+        </div>
+
+        <!-- Toggle -->
+        <button class="toggle-speech-btn" id="toggleSpeechBtn">🎤 隐藏话术</button>
     </div>
 
     <footer>
@@ -695,6 +860,65 @@
 
     <script src="../资源/js/main.js"></script>
     <script>
+        // ===== Speech bubble: scroll-based content switching =====
+        var speechContent = document.getElementById('speechContent');
+        var speechSections = [
+            { id: 'workflow-v1', label: '前身 · Workflow 1.0', text: '（待填写）Workflow 1.0 的前身背景介绍' },
+            { id: 'arch', label: '核心能力架构', text: '由此也能够看出这个项目最核心的部分就是 Plan Agent 生成 DAG 图的这个步骤。因为你必须要生成一个好的 DAG 图，把这个任务规划好，才能够对这个任务有一个比较好的执行策略。\n\n在实现好这个 DAG 图之后，我就发现它的一些优势和它跟 LangGraph 不一样的地方。比如我能够通过这个 DAG 图实现更好的、更彻底的并行策略，让更多的任务并行执行，来缩短任务执行的时间。断点恢复的策略也跟 LangGraph 的 checkpoint 机制不太一样。还有就是我能够通过很多 Sub Agent 来分别执行不同的任务，让他们对这个任务更加专业，并且减少 Token 消耗。\n\n最后一点，这个项目成也是因为它的流程不能变化，让 Agent 不会跳过步骤；败也是因为它的流程不能变化——这也是它跟 Plan-and-Execute 架构最大的区别。Plan-and-Execute 可以在运行时动态修改执行计划，但这里因为是 DAG 图，所以不能修改。所以我就设计了三级的异常处理和条件分支来对这个 DAG 图任务执行的流程提供更多的可能性。' },
+            { id: 'origin', label: '从问题到方案',
+              text: '这个项目的起源是因为我发现使用 Agent 时，我已经给了非常明确的指令，但它就是会跳过或拒绝执行。比如让它先检索竞品资料再生成分析报告，结果它根本没去检索，因为它觉得自己知道。\n\n我调研了两种方式来强制 Agent 执行：Workflow 是限定整个流程，Hooks 是约束某一步前后要做什么。它们不在一个层级，我的需求属于前者。\n\n一般的 Workflow 是由人来定义（写代码或低代码平台），但我之前做的编排平台的实践让我觉得——任务编排不应该由人来定义，应该由 AI 来帮我编排。于是我就想到把 DAG 图的构建交给大模型来完成，和 Plan-and-Execute 架构联系起来。\n\n核心思想就是：Plan Agent 构建 DAG 图，执行引擎读取 DAG 图自动完成任务。我可以通过将 DAG 图可视化展示给用户，在任务开始之前就确定好执行计划，防止遗漏。' },
+            { id: 'parallel', label: '双层并行执行引擎', text: '（待填写）双层并行的实现思路与效果' },
+            { id: 'rollback', label: '节点级断点恢复', text: '（待填写）断点恢复的设计与实现' },
+            { id: 'sub-agent', label: 'Sub Agent 与 Token 优化', text: '目前我设定了三类 Sub Agent：调研、审查和执行。这么设计的原因其实是因为我觉得 Agent 应该匹配到某一个领域里面才好设计，也就是说这个应该是交给使用者去定制的。比如我要写代码，那这个执行 Agent 的内容肯定就会针对代码场景做针对性的修改。我这里相当于只是打一个比方，暂时先设定了这三种。\n\n我分析过 Token 的构成占比，发现 System Prompt（角色定义 + 规则 + 工具描述）占了超过一半，是消耗最大的一块。单 Agent ReAct 一次调用的 System Prompt 大概 9K，但 Sub Agent 只需要加载自己相关的部分，大概 3K 就够了——刚好是在 System Prompt 这部分做了大量精简。所以把职责拆开之后，每类 Agent 只关心自己该做的事，Token 消耗自然就降下来了。' },
+            { id: 'exception', label: '三级异常治理与条件分支', text: '因为这里是固定的 DAG 图，如果没有异常治理和条件分支路由的话，就会出现执行结果不如预期、流程进行不下去的情况。\n\n针对这个问题，我设计了三级的异常治理和分支路由两个策略。\n异常治理包括重试策略、超时控制和异常处理。异常处理又分三种方式：第一种是直接中断，适用于那些特别关键的节点，比如支付、扣款——这种节点如果执行失败，整个流程就没有意义了。第二种是通过错误码策略，遇到错误后标记失败，但拿出预先准备好的输出继续执行下去。第三种是失败条件分支，失败了就引导到失败的那条路径上面。\n\n而条件分支路由是为了解决有些情况 Plan Agent 不知道这一步的结果是什么，遇到不同的结果可能会有不同的路径。但这里就遇到一个问题：我们的并行策略是把一排节点拿来并行执行，但遇到条件分支的话，难道要同时执行两个分支吗？于是我就设计了 condition 字段——只有匹配条件的边才会被激活，来解决这个问题。' },
+            { id: 'plan-opt', label: 'Plan 优化', text: '想要 Agent 能够帮你执行好一件事情，主要就是三个策略：第一个是给他说清楚你要做什么，第二个是列举清楚规则是什么，第三个是举一些例子。这就是 Prompt Engineering 里面最基本的操作。\n\n然后我为了保证这个 DAG 图它是没有环的，以及做一些其他的检测，我还设置了一个后置的校验层对它进行校验。\n\nPrompt + 样本 + 校验做到位了，DAG 质量有了基本保障。但模型会犯错，而且同样的错误可能反复出现——这就需要一套机制让 Plan 能力能自己不断变好。于是我就参考了 Reflexion 的思路，把每次执行失败的 DAG 当作负样本收集起来，自动分析失败原因，再把高频错误注入到 Prompt 和样本中。这样每次失败都变成一次教学，Plan 的能力就随着使用次数越来越多，形成一个持续改进的闭环。' },
+            { id: 'eval', label: '测评结果', text: '（待填写）各维度测评数据与结论' }
+        ];
+
+        function updateSpeechOnScroll() {
+            var current = '';
+            var scrollY = window.scrollY;
+            for (var i = 0; i < speechSections.length; i++) {
+                var el = document.getElementById(speechSections[i].id);
+                if (el) {
+                    var top = el.offsetTop - 150;
+                    var bottom = top + el.offsetHeight;
+                    if (scrollY >= top && scrollY < bottom) {
+                        current = speechSections[i];
+                        break;
+                    }
+                }
+            }
+            if (!current && speechSections.length > 0) {
+                // Check if at the top (before first section)
+                var firstEl = document.getElementById(speechSections[0].id);
+                if (firstEl && scrollY < firstEl.offsetTop - 150) {
+                    current = speechSections[0];
+                }
+                // Or at the bottom (after last section)
+                if (!current) {
+                    current = speechSections[speechSections.length - 1];
+                }
+            }
+            if (current && speechContent) {
+                speechContent.innerHTML = '<strong style="font-size:13px;color:#4f46e5;display:block;margin-bottom:6px;">' + current.label + '</strong>' + current.text.replace(/\n/g, '<br>');
+            }
+        }
+        window.addEventListener('scroll', updateSpeechOnScroll);
+        window.addEventListener('load', updateSpeechOnScroll);
+
+        // Toggle speech bubble
+        var toggleBtn = document.getElementById('toggleSpeechBtn');
+        var speechWrap = document.getElementById('speechWrap');
+        if (toggleBtn && speechWrap) {
+            toggleBtn.addEventListener('click', function() {
+                speechWrap.classList.toggle('hidden');
+                var isHidden = speechWrap.classList.contains('hidden');
+                toggleBtn.textContent = isHidden ? '🎤 显示话术' : '🎤 隐藏话术';
+                toggleBtn.classList.toggle('hidden', isHidden);
+            });
+        }
+
         // 项目页也支持 project-card 和 sidebar-sub 的滚动高亮
         document.addEventListener('DOMContentLoaded', function() {
             function updateProjectNav() {
