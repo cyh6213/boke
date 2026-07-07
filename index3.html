@@ -628,26 +628,20 @@
 
                 <div class="cost-grid">
                     <div class="cost-item">
-                        <div class="cost-title">Workflow Sub Agent</div>
-                        <div class="cost-desc">职责拆分，每类只加载自身 Prompt</div>
+                        <div class="cost-title">💡 Token 优化</div>
+                        <div class="cost-desc">Workflow Sub Agent 职责拆分 · MyClaw 上下文精简</div>
                         <div class="cost-highlight">↓ 41% 完整任务 Token</div>
                     </div>
                     <div class="cost-item">
-                        <div class="cost-title">RAG 智能路由</div>
-                        <div class="cost-desc">简单问题跳过向量检索</div>
+                        <div class="cost-title">📡 API 调用优化</div>
+                        <div class="cost-desc">RAG 智能路由跳过向量检索</div>
                         <div class="cost-highlight">↓ 30% Embedding API 调用</div>
                     </div>
                     <div class="cost-item">
-                        <div class="cost-title">MyClaw 上下文组装</div>
-                        <div class="cost-desc">Chatter 5 层精简只带聊天必需内容</div>
-                        <div class="cost-highlight">Token 优化</div>
+                        <div class="cost-title">⏱️ 耗时缩短</div>
+                        <div class="cost-desc">Workflow 并行执行 · RAG 智能路由跳过检索</div>
+                        <div class="cost-highlight">↓ 23% 执行时间</div>
                     </div>
-                </div>
-
-                <div style="margin-top: 20px; padding: 14px 20px; background: #f8f9fc; border-radius: 10px; font-size: 14px; color: #475569; line-height: 1.7;">
-                    <strong style="color: #4f46e5;">读到的一篇文章：</strong>
-                    Claude Code 的系统 Prompt 从 9K 降至 3K，我受到启发在可视化任务编排系统里做了同样的拆分策略。
-                    成本控制意识贯穿了我所有项目。
                 </div>
                 <div style="margin-top: 12px;">
                     <a href="文章/posts/Token优化实践.html" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 16px; background: #eef2ff; border-radius: 100px; font-size: 13px; font-weight: 600; color: #4f46e5; text-decoration: none; transition: all 0.2s;" onmouseover="this.style.background='#4f46e5';this.style.color='#fff'" onmouseout="this.style.background='#eef2ff';this.style.color='#4f46e5'">
@@ -869,11 +863,11 @@
         // ===== Speech bubble: scroll-based content switching =====
         var speechContent = document.getElementById('speechContent');
         var speechSections = [
-            { id: 'hero', text: '面试官您好，我是程愚瀚，电子科技大学软件工程专业 28 届本科生。我之前做过 Java 后端开发，然后从今年的 2 月份开始学习 Agent 的相关内容，做了三个 Agent 的项目。后端经历让我养成了工程化思维，让我学会了考虑异常处理、成本控制、数据评估等意识。' },
-            { id: 'skills', text: '我的技术栈主要分为两块：Java 后端和 AI Agent。在后端方面，我对 JUC、JVM、MySQL、Redis 的底层原理和数据结构比较了解，但是说实话，我对后端方面的场景问题知识不是很全面。在 AI 方面，我对通过 AI 辅助编程比较熟练，也输出了一篇相关的文章。我还使用过并阅读过源码，包括 OpenClaw、Claude Code 等，从中学习到了一些策略，用到了我的项目中。' },
-            { id: 'workflow', text: '可视化任务编排与执行系统是我这里最核心的一个项目，它的框架是我自己的创新，是真的在其他人的简历上面看不见的内容。主要思想就是通过 Workflow 约束整个流程来实现 Agent 行为的确定化。我还基于这个框架实现了包括并行执行、断点恢复、异常治理等能力。' },
-            { id: 'cost', text: '在做项目的过程中我也有成本意识，在三个项目中我都有进行一些优化来降低 Token 消耗和 API 的调用。我也单独写了一篇文章来记录我实现的流程。' },
-            { id: 'methodology', text: '我做了大量系统测试，核心是 RAG 项目的检索消融实验。从基线 68% 到最终的 81%，4 轮优化每一步都有数据记录，覆盖了召回率、排序质量、首个相关排名等 7 项指标。生成阶段也做了 3 轮消融，忠实度从 72% 提升到 96%。可视化任务编排系统重点测评了 Plan 能力，六层递进优化后 DAG 构建正确率达到 97%。MyClaw 基于长程记忆评估基准做了 4 种方案的对比，最终选型选择 Hindsight。' }
+            { id: 'hero', text: '面试官您好，我是程愚瀚，电子科技大学软件工程专业 28 届本科生。我之前做过 Java 后端开发，然后从今年的 2 月份开始学习 Agent 的相关内容，做了三个 Agent 的项目。' },
+            { id: 'skills', text: '我的技术栈主要分为两块：Java 后端和 AI Agent。在后端方面，我对 JUC、JVM、MySQL、Redis 的底层原理和数据结构比较了解，也做过一个后端项目。在 AI 方面，我对通过 AI 辅助编程比较熟练，输出了一篇经验的文章。然后对于 OpenClaw、Claude Code 这些工具，我也有使用经验并阅读过源码，从中学习到了一些策略，用到了我的项目中。' },
+            { id: 'workflow', text: '然后我在简单说一下我的核心项目，就是这个可视化任务编排与执行系统。它的核心就是通过 Workflow 来约束整个流程，来实现 Agent 行为的确定化。因为框架与传统的 LangGraph 不同，所以包括并行执行、断点恢复、异常重试这些能力都与传统的 LangGraph 不一样。' },
+            { id: 'cost', text: '我在做项目的时候也有成本意识，我对这三个项目都实现了一些策略，包括节约他们的 Token 的使用、API 的调用，以及缩短耗时。' },
+            { id: 'methodology', text: '我也对这几个项目都进行了一些消融测试，包括 RAG 的召回、排序、忠实度，对可视化任务编排 Plan 能力的测试，让我的每一次优化都能够看见具体的数据提升。还有 MyClaw 这个项目，我是经过长期记忆测试，来选择他的长期记忆实现。' }
         ];
 
         function updateSpeechOnScroll() {

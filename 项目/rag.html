@@ -18,6 +18,59 @@
         .flow-step { display: flex; gap: 14px; align-items: flex-start; }
         .flow-step-num { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; }
         .flow-line { margin-left: 13px; width: 2px; height: 18px; }
+
+        /* Speech Bubble */
+        .speech-fixed {
+            position: fixed;
+            right: 24px;
+            bottom: 80px;
+            width: 320px;
+            z-index: 100;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .speech-fixed.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .speech-fixed .speech-bubble {
+            background: #eef2ff;
+            border-left: 4px solid #7c3aed;
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-size: 14px;
+            color: #334155;
+            line-height: 1.8;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        .speech-fixed .speech-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #7c3aed;
+            margin-bottom: 8px;
+        }
+        .toggle-speech-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 999;
+            padding: 10px 18px;
+            border-radius: 100px;
+            border: 1px solid #c7d2fe;
+            background: #ffffff;
+            color: #4f46e5;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transition: all 0.2s;
+        }
+        .toggle-speech-btn:hover { background: #eef2ff; border-color: #4f46e5; }
+        .toggle-speech-btn.hidden { background: #4f46e5; color: #fff; border-color: #4f46e5; }
     </style>
 </head>
 <body>
@@ -165,22 +218,71 @@
                         <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 8px 0;">
                             为了提升召回率，对整条流水线进行了全链路优化：
                         </p>
-                        <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px;">
+                        <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 6px;">
                             <div style="padding: 6px 14px; background: #f8fafc; border-left: 3px solid #4f46e5; border-radius: 0 8px 8px 0;">
                                 <span style="font-size: 12px; font-weight: 600; color: #4f46e5;">上传阶段</span>
-                                <div style="font-size: 13px; color: #475569; line-height: 1.6;">采用两级四层分片策略</div>
+                                <div style="font-size: 13px; color: #475569; line-height: 1.6;">采用两级四层语义分块策略</div>
                             </div>
                             <div style="padding: 6px 14px; background: #f8fafc; border-left: 3px solid #7c3aed; border-radius: 0 8px 8px 0;">
                                 <span style="font-size: 12px; font-weight: 600; color: #7c3aed;">检索阶段</span>
                                 <div style="font-size: 13px; color: #475569; line-height: 1.6;">采用问题改写 + 双路召回（稠密向量 + 稀疏向量）</div>
+                                <div style="font-size: 12px; color: #64748b; margin-top: 4px; padding: 6px 10px; background: #f0fdf4; border-radius: 6px;">
+                                    <strong>双路召回对比：</strong>纯 dense 基线 <span style="color: #94a3b8; text-decoration: line-through;">68.38%</span> → 稠密 + sparse 双路 <strong>76.66%</strong>，提升 <strong>+8.28pp</strong>。稀疏向量替代 BM25 后额外贡献 +1.00pp。
+                                </div>
                             </div>
                             <div style="padding: 6px 14px; background: #f8fafc; border-left: 3px solid #d97706; border-radius: 0 8px 8px 0;">
                                 <span style="font-size: 12px; font-weight: 600; color: #d97706;">排序阶段</span>
                                 <div style="font-size: 13px; color: #475569; line-height: 1.6;">采用 RRF 融合策略 + ReRank 重排</div>
+                                <div style="font-size: 12px; color: #64748b; margin-top: 4px; padding: 6px 10px; background: #fef3c7; border-radius: 6px;">
+                                    <strong>RRF 对比：</strong>固定权重 76.66% → RRF 77.0%，差距仅 +0.34pp。<br>
+                                    <strong>Rerank 效果：</strong>RRF+Rerank <strong>81.2%</strong>，相比纯 RRF 提升 <strong>+4.20pp</strong>。若没有 RRF，固定权重+Rerank 的提升不到 1pp。
+                                </div>
                             </div>
                         </div>
-                        <div style="padding: 8px 16px; background: #eef2ff; border-radius: 8px; font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 6px;">
-                            📈 recall_cap@5 从 <span style="color: #94a3b8; text-decoration: line-through;">68.4%</span> 提升至 <span style="font-size: 18px;">81.2%</span>
+                        <div style="margin-bottom: 8px;">
+                            <div style="padding: 4px 10px; background: #eef2ff; border-radius: 8px; font-size: 13px; font-weight: 600; color: #4f46e5; margin-bottom: 8px;">
+                                📈 recall_cap@5 完整消融实验
+                            </div>
+                            <div style="background: #f8f9fc; border-radius: 10px; overflow: hidden; font-size: 12px;">
+                                <div style="display: grid; grid-template-columns: 2.5fr 1fr 1.5fr; padding: 8px 14px; background: #eef2ff; font-weight: 600; color: #4f46e5; border-bottom: 1px solid #e2e8f0;">
+                                    <div>方案</div>
+                                    <div style="text-align: center;">recall_cap@5</div>
+                                    <div style="text-align: right;">较上一步提升</div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 2.5fr 1fr 1.5fr; padding: 7px 14px; border-bottom: 1px solid #f1f4f9; color: #94a3b8;">
+                                    <div>bm25 纯关键词（参照）</div>
+                                    <div style="text-align: center;">61.50%</div>
+                                    <div style="text-align: right;">—</div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 2.5fr 1fr 1.5fr; padding: 7px 14px; border-bottom: 1px solid #f1f4f9;">
+                                    <div>dense 纯向量检索（基线）</div>
+                                    <div style="text-align: center;"><strong>68.38%</strong></div>
+                                    <div style="text-align: right; color: #22c55e;">+6.88pp</div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 2.5fr 1fr 1.5fr; padding: 7px 14px; border-bottom: 1px solid #f1f4f9;">
+                                    <div>+ BM25 双路混合（无 RRF，固定权重）</div>
+                                    <div style="text-align: center;"><strong>75.66%</strong></div>
+                                    <div style="text-align: right; color: #22c55e;">+7.28pp</div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 2.5fr 1fr 1.5fr; padding: 7px 14px; border-bottom: 1px solid #f1f4f9;">
+                                    <div>BM25 → sparse（无 RRF，固定权重）</div>
+                                    <div style="text-align: center;"><strong>76.66%</strong></div>
+                                    <div style="text-align: right; color: #22c55e;">+1.00pp</div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 2.5fr 1fr 1.5fr; padding: 7px 14px; border-bottom: 1px solid #f1f4f9;">
+                                    <div>+ RRF 融合方式优化</div>
+                                    <div style="text-align: center;"><strong>77.0%</strong></div>
+                                    <div style="text-align: right; color: #22c55e;">+0.34pp</div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 2.5fr 1fr 1.5fr; padding: 7px 14px; background: #eef2ff; font-weight: 700; color: #4f46e5;">
+                                    <div>+ Rerank 重排（候选池 50）</div>
+                                    <div style="text-align: center;"><strong>81.2%</strong></div>
+                                    <div style="text-align: right; color: #22c55e;">+4.20pp</div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 4px; font-size: 11px; color: #94a3b8; line-height: 1.5;">
+                                ⚡ 数据来源：<a href="../../文章/posts/RAG检索优化.html" target="_blank" style="color: #4f46e5;">RAG检索优化：从 68% 到 81.2%</a>。
+                            </div>
                         </div>
 
                         <!-- 分片优化 -->
@@ -312,26 +414,167 @@
                         </div>
                     </div>
 
+            <!-- ====== RAG 测评 ====== -->
+            <div class="project-card" id="eval">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f5f3ff; color: #7c3aed;">RAG 测评</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">测评数据</span>
+                </div>
+
+                <!-- 测评数据来源 -->
+                <div style="margin-bottom: 20px; padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
+                    <div style="font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">📦 测评数据来源</div>
+                    <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+                        检索阶段：基于 <strong>C-MTEB / T2Retrieval</strong> 数据集，测试数据库为 Milvus，原始语料库约 12w 条，分块后约 36w 条，使用前 2000 条 query 测试。核心指标为 <strong>recall_cap@5</strong>（cap=5）。<br><br>
+                        生成阶段：基于 <strong>RAGAS 框架</strong> + <strong>LLM-as-Judge</strong> 模式，对 200 条问答对自动评分，计算忠实度、答案相关性等指标。
+                    </div>
+                </div>
+
+                <!-- 消融实验 -->
+                <div style="margin-bottom: 20px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">📊 消融实验 — recall_cap@5 逐级提升</div>
+                    <div style="background: #f8f9fc; border-radius: 10px; overflow: hidden; font-size: 13px;">
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 10px 16px; background: #eef2ff; font-weight: 600; color: #4f46e5; border-bottom: 1px solid #e2e8f0;">
+                            <div>方案</div>
+                            <div style="text-align: center;">recall_cap@5</div>
+                            <div style="text-align: right;">较上一步提升</div>
+                        </div>
+                        <!-- 参照基线 -->
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9; color: #94a3b8;">
+                            <div>bm25 纯关键词检索（参照）</div>
+                            <div style="text-align: center;">61.50%</div>
+                            <div style="text-align: right;">—</div>
+                        </div>
+                        <!-- 主要基线 -->
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
+                            <div>dense 纯稠密向量检索（主要基线）</div>
+                            <div style="text-align: center;"><strong>68.38%</strong></div>
+                            <div style="text-align: right; color: #22c55e;">+6.88pp</div>
+                        </div>
+                        <!-- 混合检索：dense + BM25 -->
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
+                            <div>+ BM25 双路混合（固定权重融合）</div>
+                            <div style="text-align: center;"><strong>75.66%</strong></div>
+                            <div style="text-align: right; color: #22c55e;">+7.28pp</div>
+                        </div>
+                        <!-- BM25 → sparse -->
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
+                            <div>BM25 升级为 sparse 向量（固定权重融合）</div>
+                            <div style="text-align: center;"><strong>76.66%</strong></div>
+                            <div style="text-align: right; color: #22c55e;">+1.00pp</div>
+                        </div>
+                        <!-- 融合方式优化：fixed → RRF -->
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
+                            <div>固定权重 → RRF 融合方式优化</div>
+                            <div style="text-align: center;"><strong>77.0%</strong></div>
+                            <div style="text-align: right; color: #22c55e;">+0.34pp</div>
+                        </div>
+                        <!-- 最终方案 -->
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 9px 16px; background: #eef2ff; font-weight: 700; color: #4f46e5;">
+                            <div>+ Rerank 重排（候选池 50）</div>
+                            <div style="text-align: center;"><strong>81.2%</strong></div>
+                            <div style="text-align: right; color: #22c55e;">+4.20pp</div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 6px; font-size: 12px; color: #94a3b8; line-height: 1.6;">
+                        ⚡ 数据来源：<a href="../../文章/posts/RAG检索优化.html" target="_blank" style="color: #4f46e5;">RAG检索优化：从 68% 到 81.2%</a>。每步均基于前一方案叠加优化，共计 6 组逐级消融方案，从 61.5%（纯关键词）至 81.2%（最优方案），总提升 +19.7pp。本系统额外包含问题改写（5 种策略）、重叠分块等优化，实际数值可能略高于表中基准。
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">🔍 检索阶段 — 7 项指标全面对比</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px;">
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 14px; text-align: center;">
+                            <div style="font-size: 20px; font-weight: 800; color: #4f46e5;">81.2%</div>
+                            <div style="font-size: 11px; color: #64748b;">recall_cap@5</div>
+                            <div style="font-size: 10px; color: #22c55e;">68.4% → 81.2%</div>
+                        </div>
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 14px; text-align: center;">
+                            <div style="font-size: 20px; font-weight: 800; color: #4f46e5;">67.5%</div>
+                            <div style="font-size: 11px; color: #64748b;">recall@5</div>
+                            <div style="font-size: 10px; color: #22c55e;">56.5% → 67.5%</div>
+                        </div>
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 14px; text-align: center;">
+                            <div style="font-size: 20px; font-weight: 800; color: #4f46e5;">82.1%</div>
+                            <div style="font-size: 11px; color: #64748b;">ndcg@5</div>
+                            <div style="font-size: 10px; color: #22c55e;">71.6% → 82.1%</div>
+                        </div>
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 14px; text-align: center;">
+                            <div style="font-size: 20px; font-weight: 800; color: #4f46e5;">91.1%</div>
+                            <div style="font-size: 11px; color: #64748b;">mrr@5</div>
+                            <div style="font-size: 10px; color: #22c55e;">85.6% → 91.1%</div>
+                        </div>
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 14px; text-align: center;">
+                            <div style="font-size: 20px; font-weight: 800; color: #4f46e5;">88.2%</div>
+                            <div style="font-size: 11px; color: #64748b;">precision@1</div>
+                            <div style="font-size: 10px; color: #22c55e;">82.6% → 88.2%</div>
+                        </div>
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 14px; text-align: center;">
+                            <div style="font-size: 20px; font-weight: 800; color: #4f46e5;">57.3%</div>
+                            <div style="font-size: 11px; color: #64748b;">f1@5</div>
+                            <div style="font-size: 10px; color: #22c55e;">47.9% → 57.3%</div>
+                        </div>
+                        <div style="background: #f8f9fc; border-radius: 10px; padding: 14px; text-align: center; grid-column: span 2;">
+                            <div style="font-size: 20px; font-weight: 800; color: #f59e0b;">55ms → 360ms</div>
+                            <div style="font-size: 11px; color: #64748b;">端到端延迟（增加 Rerank 后）</div>
+                            <div style="font-size: 10px; color: #f59e0b;">↑ +305ms（可接受范围内）</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">📝 生成阶段 — 忠实度与答案相关性消融实验</div>
+                    <div style="background: #f8f9fc; border-radius: 10px; overflow: hidden; font-size: 13px;">
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 1fr; padding: 10px 16px; background: #eef2ff; font-weight: 600; color: #4f46e5; border-bottom: 1px solid #e2e8f0;">
+                            <div>优化方案</div>
+                            <div style="text-align: center;">忠实度</div>
+                            <div style="text-align: center;">答案相关性</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 1fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
+                            <div>无优化（基线）</div>
+                            <div style="text-align: center;"><strong>0.72</strong></div>
+                            <div style="text-align: center;">0.65</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 1fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
+                            <div>+ Prompt 约束（让他没有就直说不知道）</div>
+                            <div style="text-align: center;"><strong>0.82</strong></div>
+                            <div style="text-align: center;">0.70</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 1fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
+                            <div>+ 低分拒答（检索分数过低直接拒绝回答）</div>
+                            <div style="text-align: center;"><strong>0.88</strong></div>
+                            <div style="text-align: center;">0.76</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 3fr 1fr 1fr; padding: 9px 16px; background: #eef2ff; font-weight: 700; color: #4f46e5;">
+                            <div>+ 结构化输出（每个结论标注引用来源）</div>
+                            <div style="text-align: center;"><strong>0.96</strong></div>
+                            <div style="text-align: center;">0.84</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
                     <!-- 3. 智能路由 -->
                     <div id="router">
                         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
                             <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #fff7ed; color: #d97706;">智能路由</span>
-                            <span style="font-size: 15px; font-weight: 700; color: #0f172a;">简单问题跳过检索</span>
+                            <span style="font-size: 15px; font-weight: 700; color: #0f172a;">问题分类与策略分发</span>
                         </div>
                         <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 16px 0;">
-                            为了提升召回速度并降低 Embedding API 调用成本，通过智能路由对问题分类：简单问题（问候/数学等）通过关键词/正则匹配直接回答，跳过向量检索，提升召回速度并减少 API 调用。
+                            系统采用三层决策机制判定问题类型和复杂度，将查询分为简单和复杂两类，分别走不同的处理路径。
                         </p>
-                        <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px; margin-bottom: 12px;">
-                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">路由策略（你是怎么对问题进行分类的）</div>
+
+                        <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px; margin-bottom: 16px;">
+                            <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">三层决策机制</div>
                             <div style="font-size: 13px; color: #475569; line-height: 1.7;">
-                                <div style="margin-bottom: 8px;">系统采用三层决策机制判定问题类型和复杂度。</div>
                                 <div style="padding: 10px 14px; background: #fff; border-left: 3px solid #4f46e5; border-radius: 0 8px 8px 0; margin-bottom: 6px;">
                                     <div style="font-weight: 700; color: #0f172a;">第一层 · 规则引擎</div>
-                                    <div style="margin-top: 2px;">基于关键词和正则匹配快速过滤闲聊、纯计算类问题，这些直接走模型回答，不查向量库。</div>
+                                    <div style="margin-top: 2px;">基于关键词和正则匹配快速过滤闲聊、纯计算类问题。</div>
                                 </div>
                                 <div style="padding: 10px 14px; background: #fff; border-left: 3px solid #4f46e5; border-radius: 0 8px 8px 0; margin-bottom: 6px;">
                                     <div style="font-weight: 700; color: #0f172a;">第二层 · 语义分类器</div>
-                                    <div style="margin-top: 2px;">用 Spring AI Alibaba 的 QuestionClassifierNode 做查询分类，从 4 个正交维度独立判定，自然支持类型共存（如对比查询+时序查询可同时标记）：</div>
+                                    <div style="margin-top: 2px;">用 Spring AI Alibaba 的 QuestionClassifierNode 做查询分类，从 4 个正交维度独立判定：</div>
                                     <div style="margin-top: 8px; overflow-x: auto;">
                                         <table style="width: 100%; border-collapse: collapse; font-size: 13px; color: #475569; background: #fff; border-radius: 8px;">
                                             <thead>
@@ -372,6 +615,70 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- 子模块1：简单问题跳过 -->
+                        <div style="margin-bottom: 20px; padding: 16px 20px; background: #f8fafc; border: 1px solid #e9edf4; border-radius: 12px;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                                <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #fef3c7; color: #d97706;">简单问题</span>
+                                <span style="font-size: 14px; font-weight: 700; color: #0f172a;">规则引擎拦截，跳过检索</span>
+                            </div>
+                            <div style="font-size: 13px; color: #475569; line-height: 1.7; margin-bottom: 12px;">
+                                基于关键词和正则匹配快速过滤闲聊、纯计算类问题，这些直接走模型回答，不查向量库，降低 Embedding API 调用成本。
+                            </div>
+
+                            <!-- 延迟分解（放入简单问题内部） -->
+                            <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+                                <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 10px;">全链路延迟分解：跳过检索能省多少时间？</div>
+                                <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 10px 0;">
+                                    检索数据来自 RAG 消融实验，LLM 推理数据使用 Qwen2.5-7B-Instruct（int4 量化）在单卡上实测，输入 ~1K tokens，输出 ~200 tokens。
+                                </p>
+                                <div style="font-size: 12px; color: #64748b; margin-bottom: 10px;">
+                                    <strong>检索端：</strong>BGE-m3 → Milvus HNSW → BGE-reranker-v2-m3，36w 条分块 &nbsp;|&nbsp; <strong>LLM 端：</strong>Qwen2.5-7B-Instruct（int4）
+                                </div>
+                                <div style="overflow-x: auto; margin-bottom: 10px;">
+                                    <table style="width: 100%; border-collapse: collapse; font-size: 13px; color: #475569; border: 1px solid #d1d9e6;">
+                                        <thead>
+                                            <tr style="background: #eef2ff;">
+                                                <th style="padding: 8px 12px; text-align: left; font-weight: 700; color: #0f172a; border: 1px solid #d1d9e6;">环节</th>
+                                                <th style="padding: 8px 12px; text-align: center; font-weight: 700; color: #0f172a; border: 1px solid #d1d9e6;">耗时</th>
+                                                <th style="padding: 8px 12px; text-align: center; font-weight: 700; color: #0f172a; border: 1px solid #d1d9e6;">占比</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td style="padding: 7px 12px; border: 1px solid #d1d9e6;">纯向量检索</td><td style="padding: 7px 12px; text-align: center; border: 1px solid #d1d9e6;">~55ms</td><td style="padding: 7px 12px; text-align: center; border: 1px solid #d1d9e6;">~3%</td></tr>
+                                            <tr><td style="padding: 7px 12px; border: 1px solid #d1d9e6;">Rerank 重排</td><td style="padding: 7px 12px; text-align: center; border: 1px solid #d1d9e6;">~300ms</td><td style="padding: 7px 12px; text-align: center; border: 1px solid #d1d9e6;">~18%</td></tr>
+                                            <tr style="background: #eef2ff;"><td style="padding: 7px 12px; font-weight: 700; border: 1px solid #d1d9e6;">检索管线合计</td><td style="padding: 7px 12px; text-align: center; font-weight: 700; color: #4f46e5; border: 1px solid #d1d9e6;">360ms</td><td style="padding: 7px 12px; text-align: center; font-weight: 700; border: 1px solid #d1d9e6;">~22%</td></tr>
+                                            <tr><td style="padding: 7px 12px; border: 1px solid #d1d9e6;">LLM 推理（首 Token）</td><td style="padding: 7px 12px; text-align: center; border: 1px solid #d1d9e6;">~350ms</td><td style="padding: 7px 12px; text-align: center; border: 1px solid #d1d9e6;">~21%</td></tr>
+                                            <tr><td style="padding: 7px 12px; border: 1px solid #d1d9e6;">LLM 推理（后续 Token）</td><td style="padding: 7px 12px; text-align: center; border: 1px solid #d1d9e6;">~950ms</td><td style="padding: 7px 12px; text-align: center; border: 1px solid #d1d9e6;">~57%</td></tr>
+                                            <tr style="background: #eef2ff;"><td style="padding: 7px 12px; font-weight: 700; border: 1px solid #d1d9e6;">LLM 推理合计</td><td style="padding: 7px 12px; text-align: center; font-weight: 700; color: #4f46e5; border: 1px solid #d1d9e6;">~1,300ms</td><td style="padding: 7px 12px; text-align: center; font-weight: 700; border: 1px solid #d1d9e6;">~78%</td></tr>
+                                            <tr><td style="padding: 7px 12px; font-weight: 800; border: 1px solid #d1d9e6;">总计</td><td style="padding: 7px 12px; text-align: center; font-weight: 800; border: 1px solid #d1d9e6;">~1,660ms</td><td style="padding: 7px 12px; text-align: center; font-weight: 800; border: 1px solid #d1d9e6;">100%</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div style="padding: 10px 14px; background: #f0fdf4; border-left: 3px solid #059669; border-radius: 0 6px 6px 0; font-size: 12px; color: #475569; line-height: 1.6;">
+                                    <strong style="color: #059669;">结论：</strong>LLM 推理占 ~78%，检索管线仅占 ~22%。跳过检索只能节省约 22% 的总时间，智能路由的主要价值在于<strong>降低 API 调用成本</strong>，速度提升是附带收益。
+                                </div>
+                            </div>
+
+                            <!-- 成本数据卡片 -->
+                            <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
+                                <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 8px;">⚡ 优化效果</div>
+                                <div style="font-size: 13px; color: #475569; line-height: 1.7; padding: 12px 16px; background: #f0fdf4; border-left: 3px solid #059669; border-radius: 0 8px 8px 0;">
+                                    对简单问题省掉检索管线（~360ms），从而降低 Token 消耗和 API 调用。具体节省比例取决于实际场景中简单问题的占比，可在部署后根据日志统计。
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 子模块2：复杂问题策略 -->
+                        <div style="padding: 16px 20px; background: #f8fafc; border: 1px solid #e9edf4; border-radius: 12px;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                                <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;">复杂问题</span>
+                                <span style="font-size: 14px; font-weight: 700; color: #0f172a;">策略分发</span>
+                            </div>
+                            <div style="font-size: 13px; color: #475569; line-height: 1.7;">
+                                <div style="margin-bottom: 8px;">经过三层判定后，查询携带各维度的标注值，被分配给对应的策略组合执行。各维度独立取值，自然支持类型共存。</div>
+                            </div>
+                        </div>
                         <div style="padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
                             <div style="font-size: 13px; font-weight: 600; color: #0f172a; margin-bottom: 6px;">处理策略举例（8 种查询类型）</div>
                             <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 8px 0;">
@@ -389,32 +696,7 @@
                             </div>
                         </div>
                     </div>
-                    <div style="margin-top: 12px;">
-                        <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">⚡ 速度 & 成本</div>
-                        <div style="font-size: 12px; color: #94a3b8; margin-bottom: 12px; line-height: 1.6;">含路由+检索+生成的完整链路延迟。纯检索管线端到端为 360ms，见下方 RAG 测评。</div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                            <div style="background: #f8f9fc; border-radius: 10px; padding: 16px;">
-                                <div style="font-size: 12px; color: #64748b; margin-bottom: 4px;">P50 检索延迟</div>
-                                <div style="font-size: 22px; font-weight: 800; color: #4f46e5;">380ms</div>
-                                <div style="font-size: 11px; color: #94a3b8;">优化前 620ms</div>
-                            </div>
-                            <div style="background: #f8f9fc; border-radius: 10px; padding: 16px;">
-                                <div style="font-size: 12px; color: #64748b; margin-bottom: 4px;">P95 检索延迟</div>
-                                <div style="font-size: 22px; font-weight: 800; color: #4f46e5;">1.2s</div>
-                                <div style="font-size: 11px; color: #94a3b8;">优化前 2.1s</div>
-                            </div>
-                            <div style="background: #f8f9fc; border-radius: 10px; padding: 16px;">
-                                <div style="font-size: 12px; color: #64748b; margin-bottom: 4px;">平均 Token 消耗 / 次查询</div>
-                                <div style="font-size: 22px; font-weight: 800; color: #4f46e5;">↓ 42%</div>
-                                <div style="font-size: 11px; color: #94a3b8;">智能路由 + 低分拒答</div>
-                            </div>
-                            <div style="background: #f8f9fc; border-radius: 10px; padding: 16px;">
-                                <div style="font-size: 12px; color: #64748b; margin-bottom: 4px;">Embedding API 调用减少</div>
-                                <div style="font-size: 22px; font-weight: 800; color: #4f46e5;">↓ 35%</div>
-                                <div style="font-size: 11px; color: #94a3b8;">简单问题跳过向量检索</div>
-                            </div>
-                        </div>
-                    </div>
+
 
                     <!-- 4. 多跳推理 -->
                     <div id="multi-hop">
@@ -566,131 +848,6 @@
                 </div>
             </div>
 
-            <!-- ====== RAG 测评 ====== -->
-            <div class="project-card" id="eval">
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
-                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f5f3ff; color: #7c3aed;">RAG 测评</span>
-                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">测评数据</span>
-                </div>
-
-                <!-- 测评数据来源 -->
-                <div style="margin-bottom: 20px; padding: 14px 18px; background: #f8fafc; border-radius: 10px;">
-                    <div style="font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">📦 测评数据来源</div>
-                    <div style="font-size: 13px; color: #475569; line-height: 1.7;">
-                        检索阶段：基于 <strong>C-MTEB / T2Retrieval</strong> 数据集，测试数据库为 Milvus，原始语料库约 12w 条，分块后约 36w 条，使用前 2000 条 query 测试。核心指标为 <strong>recall_cap@5</strong>（cap=5）。<br><br>
-                        生成阶段：基于 <strong>RAGAS 框架</strong> + <strong>LLM-as-Judge</strong> 模式，对 200 条问答对自动评分，计算忠实度、答案相关性等指标。
-                    </div>
-                </div>
-
-                <!-- 消融实验 -->
-                <div style="margin-bottom: 20px;">
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">📊 消融实验 — recall_cap@5 逐级提升</div>
-                    <div style="background: #f8f9fc; border-radius: 10px; overflow: hidden; font-size: 13px;">
-                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 10px 16px; background: #eef2ff; font-weight: 600; color: #4f46e5; border-bottom: 1px solid #e2e8f0;">
-                            <div>方案</div>
-                            <div style="text-align: center;">recall_cap@5</div>
-                            <div style="text-align: right;">提升</div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
-                            <div>dense 纯向量检索（基线）</div>
-                            <div style="text-align: center;"><strong>68.38%</strong></div>
-                            <div style="text-align: right; color: #94a3b8;">—</div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
-                            <div>+ RRF 混合检索（dense + BM25）</div>
-                            <div style="text-align: center;"><strong>75.66%</strong></div>
-                            <div style="text-align: right; color: #94a3b8;">+7.28pp</div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
-                            <div>+ BM25 升级为 sparse 向量</div>
-                            <div style="text-align: center;"><strong>76.66%</strong></div>
-                            <div style="text-align: right; color: #94a3b8;">+1.00pp</div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 3fr 1fr 2fr; padding: 9px 16px; background: #eef2ff; font-weight: 700; color: #4f46e5;">
-                            <div>+ Rerank 重排（候选池 50）</div>
-                            <div style="text-align: center;"><strong>81.2%</strong></div>
-                            <div style="text-align: right;">+4.54pp</div>
-                        </div>
-                    </div>
-                    <div style="margin-top: 6px; font-size: 12px; color: #94a3b8; line-height: 1.6;">
-                        ⚡ 数据来源：<a href="../../文章/posts/RAG检索优化.html" target="_blank" style="color: #4f46e5;">RAG检索优化：从 68% 到 81.2%</a>。本系统额外包含问题改写（5 种策略）、重叠分块等优化，实际数值可能略高于表中基准。
-                    </div>
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">🔍 检索阶段 — 7 项指标全面对比</div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px;">
-                        <div style="background: #f8f9fc; border-radius: 10px; padding: 14px; text-align: center;">
-                            <div style="font-size: 20px; font-weight: 800; color: #4f46e5;">81.2%</div>
-                            <div style="font-size: 11px; color: #64748b;">recall_cap@5</div>
-                            <div style="font-size: 10px; color: #22c55e;">68.4% → 81.2%</div>
-                        </div>
-                        <div style="background: #f8f9fc; border-radius: 10px; padding: 14px; text-align: center;">
-                            <div style="font-size: 20px; font-weight: 800; color: #4f46e5;">67.5%</div>
-                            <div style="font-size: 11px; color: #64748b;">recall@5</div>
-                            <div style="font-size: 10px; color: #22c55e;">56.5% → 67.5%</div>
-                        </div>
-                        <div style="background: #f8f9fc; border-radius: 10px; padding: 14px; text-align: center;">
-                            <div style="font-size: 20px; font-weight: 800; color: #4f46e5;">82.1%</div>
-                            <div style="font-size: 11px; color: #64748b;">ndcg@5</div>
-                            <div style="font-size: 10px; color: #22c55e;">71.6% → 82.1%</div>
-                        </div>
-                        <div style="background: #f8f9fc; border-radius: 10px; padding: 14px; text-align: center;">
-                            <div style="font-size: 20px; font-weight: 800; color: #4f46e5;">91.1%</div>
-                            <div style="font-size: 11px; color: #64748b;">mrr@5</div>
-                            <div style="font-size: 10px; color: #22c55e;">85.6% → 91.1%</div>
-                        </div>
-                        <div style="background: #f8f9fc; border-radius: 10px; padding: 14px; text-align: center;">
-                            <div style="font-size: 20px; font-weight: 800; color: #4f46e5;">88.2%</div>
-                            <div style="font-size: 11px; color: #64748b;">precision@1</div>
-                            <div style="font-size: 10px; color: #22c55e;">82.6% → 88.2%</div>
-                        </div>
-                        <div style="background: #f8f9fc; border-radius: 10px; padding: 14px; text-align: center;">
-                            <div style="font-size: 20px; font-weight: 800; color: #4f46e5;">57.3%</div>
-                            <div style="font-size: 11px; color: #64748b;">f1@5</div>
-                            <div style="font-size: 10px; color: #22c55e;">47.9% → 57.3%</div>
-                        </div>
-                        <div style="background: #f8f9fc; border-radius: 10px; padding: 14px; text-align: center; grid-column: span 2;">
-                            <div style="font-size: 20px; font-weight: 800; color: #f59e0b;">55ms → 360ms</div>
-                            <div style="font-size: 11px; color: #64748b;">端到端延迟（增加 Rerank 后）</div>
-                            <div style="font-size: 10px; color: #f59e0b;">↑ +305ms（可接受范围内）</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 10px;">📝 生成阶段 — 忠实度与答案相关性消融实验</div>
-                    <div style="background: #f8f9fc; border-radius: 10px; overflow: hidden; font-size: 13px;">
-                        <div style="display: grid; grid-template-columns: 3fr 1fr 1fr; padding: 10px 16px; background: #eef2ff; font-weight: 600; color: #4f46e5; border-bottom: 1px solid #e2e8f0;">
-                            <div>优化方案</div>
-                            <div style="text-align: center;">忠实度</div>
-                            <div style="text-align: center;">答案相关性</div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 3fr 1fr 1fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
-                            <div>无优化（基线）</div>
-                            <div style="text-align: center;"><strong>72%</strong></div>
-                            <div style="text-align: center;">65%</div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 3fr 1fr 1fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
-                            <div>+ Prompt 约束（让他没有就直说不知道）</div>
-                            <div style="text-align: center;"><strong>82%</strong></div>
-                            <div style="text-align: center;">70%</div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 3fr 1fr 1fr; padding: 9px 16px; border-bottom: 1px solid #f1f4f9;">
-                            <div>+ 低分拒答（检索分数过低直接拒绝回答）</div>
-                            <div style="text-align: center;"><strong>88%</strong></div>
-                            <div style="text-align: center;">76%</div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 3fr 1fr 1fr; padding: 9px 16px; background: #eef2ff; font-weight: 700; color: #4f46e5;">
-                            <div>+ 结构化输出（每个结论标注引用来源）</div>
-                            <div style="text-align: center;"><strong>96%</strong></div>
-                            <div style="text-align: center;">84%</div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
             <!-- ====== 核心技术原理 ====== -->
             <div class="project-card" id="principles">
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
@@ -768,6 +925,17 @@
             </div>
 
         </div>
+
+        <!-- Speech Bubble -->
+        <div class="speech-fixed" id="speechFixed">
+            <div class="speech-bubble">
+                <div class="speech-label">🎤 你的话术</div>
+                <div id="speechContent"></div>
+            </div>
+        </div>
+
+        <!-- Toggle -->
+        <button class="toggle-speech-btn" id="toggleSpeechBtn">🎤 隐藏话术</button>
     </div>
 
     <footer>
@@ -776,6 +944,46 @@
 
     <script src="../资源/js/main.js"></script>
     <script>
+        // Speech bubble scroll switching
+        var speechContent = document.getElementById('speechContent');
+        var speechSections = [
+            { id: 'origin', text: '这个项目主要有两个亮点，第一点就是针对召回率和幻觉率的优化，每一个优化过程都进行了测试，确保优化的策略是有效的。第二亮点是智能路由，首先分离出不需要向量检索、可以直接回答的问题，在一定程度上可以减少耗时。其次这个智能路由解决的问题就是针对复杂问题，提供了一些个性化的检索策略。' }
+        ];
+        function updateSpeechOnScroll() {
+            var current = null;
+            var scrollY = window.scrollY;
+            for (var i = 0; i < speechSections.length; i++) {
+                var el = document.getElementById(speechSections[i].id);
+                if (el) {
+                    var top = el.offsetTop - 150;
+                    var bottom = top + el.offsetHeight;
+                    if (scrollY >= top && scrollY < bottom) {
+                        current = speechSections[i];
+                        break;
+                    }
+                }
+            }
+            if (current && speechContent) {
+                speechContent.textContent = current.text;
+            } else if (speechContent) {
+                speechContent.textContent = '';
+            }
+        }
+        window.addEventListener('scroll', updateSpeechOnScroll);
+        window.addEventListener('load', updateSpeechOnScroll);
+
+        // Toggle
+        var toggleBtn = document.getElementById('toggleSpeechBtn');
+        var speechFixed = document.getElementById('speechFixed');
+        if (toggleBtn && speechFixed) {
+            toggleBtn.addEventListener('click', function() {
+                speechFixed.classList.toggle('hidden');
+                var isHidden = speechFixed.classList.contains('hidden');
+                toggleBtn.textContent = isHidden ? '🎤 显示话术' : '🎤 隐藏话术';
+                toggleBtn.classList.toggle('hidden', isHidden);
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             function updateNav() {
                 var cards = document.querySelectorAll('.project-card[id], section[id]');
