@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>做项目的四个阶段：从技术驱动到问题驱动 | 程愚瀚</title>
+    <link rel="stylesheet" href="../../资源/css/style.css" />
+    <style>
+        .post { max-width: 800px; margin: 0 auto; padding: 120px 40px 80px; }
+        .post h1 { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.3; margin-bottom: 8px; }
+        .post .post-meta { font-size: 13px; color: #94a3b8; margin-bottom: 40px; }
+        .post h2 {
+            font-size: 22px; font-weight: 700; color: #0f172a;
+            margin-top: 48px; margin-bottom: 16px;
+            padding-bottom: 8px; border-bottom: 2px solid #eef2ff;
+        }
+        .post h3 { font-size: 17px; font-weight: 700; color: #0f172a; margin-top: 28px; margin-bottom: 10px; }
+        .post p { font-size: 15px; color: #475569; line-height: 1.9; margin-bottom: 14px; }
+        .post blockquote {
+            margin: 20px 0; padding: 16px 20px;
+            background: #f8fafc; border-left: 4px solid #4f46e5;
+            border-radius: 0 8px 8px 0; font-size: 15px; color: #475569; line-height: 1.8;
+        }
+        .post .stage-label {
+            display: inline-block; padding: 2px 12px; border-radius: 6px;
+            font-size: 12px; font-weight: 600; margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <a href="../../" class="nav-brand">程愚瀚</a>
+        <div class="nav-links">
+            <a href="../../">首页</a>
+            <a href="../" class="active">文章</a>
+            <a href="../../项目/">项目</a>
+        </div>
+    </nav>
+
+    <div class="main" style="margin-left: 0;">
+        <div class="post">
+
+            <h1>做项目的四个阶段：从技术驱动到问题驱动</h1>
+            <div class="post-meta">2026 年 7 月 7 日 · 约 2000 字</div>
+
+            <p>整理自己过去做项目的思路变化，大概可以分成四个阶段。每个阶段都有鲜明的特征和局限，写下来是为了帮自己理清下一步该往哪走。</p>
+
+            <h2>阶段一：技术驱动阶段——项目的意义就是学技术栈</h2>
+
+            <p>这个阶段，我做项目的出发点很单纯：这个项目用了 Spring Boot + Redis + MQ，我就去学。项目是网上找的，不是我自己想出来的，所以我不理解做它的意义是什么——它要解决什么问题？用户是谁？为什么要用这些技术？</p>
+
+            <p>于是我的简历就变成了技术点的大杂烩：用了 Redis 做缓存、用了消息队列削峰、用了分库分表……但我不知道为什么用，也不知道不用会怎样。</p>
+
+            <p>我也知道 STAR 原则，但我不理解为什么要这样写。因为按 STAR 写，一个项目只能展开一两个点；不按 STAR 写，我可以堆很多个技术点。而且我不知道怎么把一个技术点拆成 Situation / Task / Action / Result——"实现了 Redis 白名单控制"，实现了就实现了，有什么情景任务行动结果可言？</p>
+
+            <p>最根本的原因是这个项目没有真正跑过，没有人抱怨它慢，没有人给我提需求让我去优化。我没有经历过"真有问题需要解决"的场景，自然写不出 STAR。</p>
+
+            <h2>阶段二：优化驱动阶段——项目需要持续优化，但优化没有止境</h2>
+
+            <p>后来我开始认识到，一个项目不是做完就完了，它需要优化。</p>
+
+            <p>比如 RAG 项目，我意识到它的整个流程——从文档分片、向量检索到生成回答——每一个环节都可以优化。我开始做消融实验，用数据说话。召回率从 68% 提到 81%，忠实度从 72% 提到 96%。</p>
+
+            <p>但做着做着我发现了一个问题：优化是没有止境的。分片策略，从直接按长度分片，到父子分片，再到按语义分片——这条路的进化是无穷的。你怎么确保你比别人做得好？况且 RAG 的优化有那么多研究人员在研究，你的策略怎么可能比他们更好？</p>
+
+            <p>但真正让我卡住的是更深一层的问题：就算我比他们做得好，然后呢？我的召回率从68%提到81%，这13个百分点的提升，真的有人在乎吗？这个项目没有用户、没有上线、没有人抱怨它检索不准。我花了那么多精力去优化这个指标，它到底解决了谁的什么问题？</p>
+
+            <p>说白了，我是在一个没有反馈闭环的环境里做优化。我不知道我的优化是不是"有用"——因为没有人在用。我只能凭感觉觉得"提升了就是好的"，但提升的方向对不对、幅度够不够、值不值得花这些时间，我完全没有判断依据。</p>
+
+            <p>这个危机感倒逼我进入下一个阶段——我不再只盯着"能不能优化"，而是开始问：该不该优化、值不值得优化、优化的收益到底被谁感知到了。</p>
+
+            <h2>阶段三：权衡驱动阶段——不是优化得越多越好，而是要看值不值</h2>
+
+            <p>这时候我的认知开始变了。我不再只盯着"能不能优化"，而是开始问几个之前从来没想过的问题：</p>
+
+            <p><strong>你优化这个东西的场景真的存在吗？</strong>比如我花了很多精力提高 RAG 的召回率，但假如这个场景本身不需要那么高的召回率呢？</p>
+
+            <p><strong>你为优化付出了什么代价？</strong>我踩过一个坑：用 LLM 来判断用户提问需不需要走向量检索。听起来很合理吧？但实际一算——向量查询只占整个流程耗时的 10%，LLM 判断本身就要 2 秒，而且还有可能判错导致回答质量下降。我费了半天劲，省了芝麻，丢了西瓜。</p>
+
+            <p><strong>你的技术选型有思考过为什么吗？</strong>大部分时候，大家选什么我就跟着选什么。但我开始意识到，不是"就该用 Redis"，而是"在这个场景下，选它的收益和成本分别是多少"。每个项目都不一样，你需要自己去判断。</p>
+
+            <p>这个阶段的核心变化是：我开始从"能不能做"转向"该不该做"。</p>
+
+            <h2>阶段四：问题驱动阶段——最好的项目是解决一个真实的问题</h2>
+
+            <p>走到这一步，我觉得最好的方向是——找到一个别人没做过、或者做得不够好的真实问题，用你的技术栈去解决它。</p>
+
+            <p>比如现在 Agent 开发这条赛道，大部分人的简历上都是 RAG、CodingAgent、校园 Agent、多 Agent 这些。大家都在做一样的东西，写出来的简历都长一个样。</p>
+
+            <p>那你能不能绕开这些，去做一些不一样的事情？比如我的 Workflow 项目，虽然比较小众，但它有一个真实的痛点——Agent 不按指令执行。Plan Agent + 执行引擎解耦的方案是我自己想的，我知道为什么这样做，也知道换成别的方式会有什么利弊。即使还有一些问题存在，但只要能清楚地讲出取舍逻辑，就能证明你是在认真思考。</p>
+
+            <p>这一阶段的核心理念是：不要为了用技术而做项目，要为解决一个问题而做项目。</p>
+
+        </div>
+    </div>
+
+    <footer style="margin-left: 0;">
+        &copy; 2026 程愚瀚 · Built with &hearts;
+    </footer>
+
+</body>
+</html>
