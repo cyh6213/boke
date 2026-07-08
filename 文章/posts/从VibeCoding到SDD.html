@@ -388,18 +388,25 @@ docs/
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         function updateProjectNav() {
-            var cards = document.querySelectorAll('h2[id], h3[id], h4[id]');
+            var allHeadings = document.querySelectorAll('h2[id], h3[id], h4[id]');
             var navLinks = document.querySelectorAll('.sidebar nav a, .sidebar-sub');
+            var scrollY = window.scrollY;
             var current = '';
-            cards.forEach(function(c) {
-                var top = c.offsetTop - 130;
-                var bottom = top + c.offsetHeight;
-                if (window.scrollY >= top && window.scrollY < bottom) {
-                    current = c.getAttribute('id');
-                }
+            var positions = [];
+            allHeadings.forEach(function(h) {
+                positions.push({ id: h.getAttribute('id'), top: h.offsetTop });
             });
-            if (!current && cards.length > 0) {
-                current = cards[cards.length - 1].getAttribute('id');
+            positions.sort(function(a, b) { return a.top - b.top; });
+            for (var i = 0; i < positions.length; i++) {
+                var sectionTop = positions[i].top - 130;
+                var sectionBottom = (i < positions.length - 1) ? positions[i + 1].top - 130 : document.documentElement.scrollHeight;
+                if (scrollY >= sectionTop && scrollY < sectionBottom) {
+                    current = positions[i].id;
+                    break;
+                }
+            }
+            if (!current && positions.length > 0) {
+                current = scrollY < positions[0].top - 130 ? positions[0].id : positions[positions.length - 1].id;
             }
             navLinks.forEach(function(link) {
                 link.classList.remove('active');

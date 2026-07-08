@@ -704,26 +704,29 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             function updateProjectNav() {
-                var cards = document.querySelectorAll('h2[id], h3[id], h4[id]');
+                var allHeadings = document.querySelectorAll('h2[id], h3[id], h4[id]');
                 var subTargets = document.querySelectorAll('[id="s1q11"],[id="s1q21"],[id="s1q22"],[id="s2q01"],[id="s2q02"],[id="s2q03"],[id="s2q11"],[id="s2q31"],[id="s2q51"],[id="s2q52"],[id="s2q53"],[id="s2q71"],[id="s2q101"],[id="s2q102"],[id="s2q103"],[id="s3q11"],[id="s3q12"],[id="s3q31"],[id="s3q32"],[id="s3q321"],[id="s3q33"],[id="s3q34"],[id="s3q35"],[id="s3q36"]');
                 var navLinks = document.querySelectorAll('.sidebar nav a, .sidebar-sub');
+                var scrollY = window.scrollY;
                 var current = '';
-                cards.forEach(function(c) {
-                    var top = c.offsetTop - 130;
-                    var bottom = top + c.offsetHeight;
-                    if (window.scrollY >= top && window.scrollY < bottom) {
-                        current = c.getAttribute('id');
-                    }
+                var positions = [];
+                allHeadings.forEach(function(h) {
+                    positions.push({ id: h.getAttribute('id'), top: h.offsetTop });
                 });
                 subTargets.forEach(function(s) {
-                    var top = s.offsetTop - 130;
-                    var bottom = top + s.offsetHeight;
-                    if (window.scrollY >= top && window.scrollY < bottom) {
-                        current = s.getAttribute('id');
-                    }
+                    positions.push({ id: s.getAttribute('id'), top: s.offsetTop });
                 });
-                if (!current && cards.length > 0) {
-                    current = cards[cards.length - 1].getAttribute('id');
+                positions.sort(function(a, b) { return a.top - b.top; });
+                for (var i = 0; i < positions.length; i++) {
+                    var sectionTop = positions[i].top - 130;
+                    var sectionBottom = (i < positions.length - 1) ? positions[i + 1].top - 130 : document.documentElement.scrollHeight;
+                    if (scrollY >= sectionTop && scrollY < sectionBottom) {
+                        current = positions[i].id;
+                        break;
+                    }
+                }
+                if (!current && positions.length > 0) {
+                    current = scrollY < positions[0].top - 130 ? positions[0].id : positions[positions.length - 1].id;
                 }
                 navLinks.forEach(function(link) {
                     link.classList.remove('active');

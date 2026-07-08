@@ -439,27 +439,43 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             function updateNav() {
-                var cards = document.querySelectorAll('h2[id], h3[id]');
+                var allHeadings = document.querySelectorAll('h2[id], h3[id]');
                 var subTargets = document.querySelectorAll('[id="dual-agent"],[id="token-audit"]');
                 var navLinks = document.querySelectorAll('.sidebar nav a, .sidebar-sub');
+                var scrollY = window.scrollY;
                 var current = '';
-                cards.forEach(function(c) {
-                    var top = c.offsetTop - 130;
-                    var bottom = top + c.offsetHeight;
-                    if (window.scrollY >= top && window.scrollY < bottom) {
-                        current = c.getAttribute('id');
-                    }
+
+                // Collect heading positions
+                var positions = [];
+                allHeadings.forEach(function(h) {
+                    positions.push({ id: h.getAttribute('id'), top: h.offsetTop });
                 });
                 subTargets.forEach(function(s) {
-                    var top = s.offsetTop - 130;
-                    var bottom = top + s.offsetHeight;
-                    if (window.scrollY >= top && window.scrollY < bottom) {
-                        current = s.getAttribute('id');
-                    }
+                    positions.push({ id: s.getAttribute('id'), top: s.offsetTop });
                 });
-                if (!current && cards.length > 0) {
-                    current = cards[cards.length - 1].getAttribute('id');
+                // Sort by position
+                positions.sort(function(a, b) { return a.top - b.top; });
+
+                // Find which section the scroll position falls in
+                for (var i = 0; i < positions.length; i++) {
+                    var sectionTop = positions[i].top - 130;
+                    var sectionBottom = (i < positions.length - 1)
+                        ? positions[i + 1].top - 130
+                        : document.documentElement.scrollHeight;
+                    if (scrollY >= sectionTop && scrollY < sectionBottom) {
+                        current = positions[i].id;
+                        break;
+                    }
                 }
+                // Fallback: before first section -> first, after last -> last
+                if (!current && positions.length > 0) {
+                    if (scrollY < positions[0].top - 130) {
+                        current = positions[0].id;
+                    } else {
+                        current = positions[positions.length - 1].id;
+                    }
+                }
+
                 navLinks.forEach(function(link) {
                     link.classList.remove('active');
                     if (link.getAttribute('href') === '#' + current) {
