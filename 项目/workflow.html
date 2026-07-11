@@ -877,33 +877,16 @@
         ];
 
         function updateSpeechOnScroll() {
-            var scrollY = window.scrollY;
+            var scrollY = window.scrollY + 180;
             var current = '';
-            // Build section boundary list
-            var positions = [];
             for (var i = 0; i < speechSections.length; i++) {
                 var el = document.getElementById(speechSections[i].id);
-                if (el) {
-                    positions.push({ idx: i, top: el.offsetTop });
+                if (el && el.offsetTop <= scrollY) {
+                    current = speechSections[i];
                 }
             }
-            positions.sort(function(a, b) { return a.top - b.top; });
-            // Find section by interval: from this section's top to the next section's top
-            for (var i = 0; i < positions.length; i++) {
-                var sectionTop = positions[i].top - 150;
-                var sectionBottom = (i < positions.length - 1)
-                    ? positions[i + 1].top - 150
-                    : document.documentElement.scrollHeight;
-                if (scrollY >= sectionTop && scrollY < sectionBottom) {
-                    current = speechSections[positions[i].idx];
-                    break;
-                }
-            }
-            // Fallback: before first -> first, after last -> last
-            if (!current && positions.length > 0) {
-                current = scrollY < positions[0].top - 150
-                    ? speechSections[positions[0].idx]
-                    : speechSections[positions[positions.length - 1].idx];
+            if (!current && speechSections.length > 0) {
+                current = speechSections[0];
             }
             if (current && speechContent) {
                 speechContent.innerHTML = '<strong style="font-size:13px;color:#4f46e5;display:block;margin-bottom:6px;">' + current.label + '</strong>' + current.text.replace(/\n/g, '<br>');
