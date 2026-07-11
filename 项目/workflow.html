@@ -879,14 +879,20 @@
         function updateSpeechOnScroll() {
             var scrollY = window.scrollY + 180;
             var current = '';
-            for (var i = 0; i < speechSections.length; i++) {
-                var el = document.getElementById(speechSections[i].id);
-                if (el && el.offsetTop <= scrollY) {
-                    current = speechSections[i];
+            // If at the bottom of the page, show the last section (eval)
+            if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100) {
+                current = speechSections[speechSections.length - 1];
+            } else {
+                // Find the last section whose top has been scrolled past
+                for (var i = 0; i < speechSections.length; i++) {
+                    var el = document.getElementById(speechSections[i].id);
+                    if (el && el.offsetTop <= scrollY) {
+                        current = speechSections[i];
+                    }
                 }
-            }
-            if (!current && speechSections.length > 0) {
-                current = speechSections[0];
+                if (!current && speechSections.length > 0) {
+                    current = speechSections[0];
+                }
             }
             if (current && speechContent) {
                 speechContent.innerHTML = '<strong style="font-size:13px;color:#4f46e5;display:block;margin-bottom:6px;">' + current.label + '</strong>' + current.text.replace(/\n/g, '<br>');
