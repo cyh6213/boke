@@ -237,6 +237,91 @@
             border-radius: 50%;
             flex-shrink: 0;
         }
+
+        .speech-bubble-wrap {
+            position: fixed;
+            right: 24px;
+            top: 80px;
+            width: 320px;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 50;
+        }
+        .speech-bubble-wrap.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .speech-bubble {
+            background: #eef2ff;
+            border-left: 4px solid #7c3aed;
+            border-radius: 12px;
+            padding: 20px 24px;
+            font-size: 14px;
+            color: #334155;
+            line-height: 1.8;
+            position: sticky;
+            top: 80px;
+        }
+        .speech-bubble .speech-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #7c3aed;
+            margin-bottom: 10px;
+        }
+        .toggle-speech-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 999;
+            padding: 10px 18px;
+            border-radius: 100px;
+            border: 1px solid #c7d2fe;
+            background: #ffffff;
+            color: #4f46e5;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transition: all 0.2s;
+        }
+        .toggle-speech-btn:hover {
+            background: #f5f3ff;
+            border-color: #a5b4fc;
+            transform: translateY(-1px);
+        }
+        @media (max-width: 1600px) {
+            .speech-bubble-wrap {
+                width: 260px;
+            }
+        }
+        @media (max-width: 1400px) {
+            .speech-bubble-wrap {
+                width: 200px;
+                font-size: 13px;
+            }
+            .speech-bubble-wrap .speech-bubble {
+                padding: 14px 16px;
+            }
+        }
+        @media (max-width: 1200px) {
+            .speech-bubble-wrap {
+                width: 160px;
+                font-size: 12px;
+            }
+            .speech-bubble-wrap .speech-bubble {
+                padding: 10px 12px;
+                line-height: 1.6;
+            }
+        }
+        @media (max-width: 900px) {
+            .speech-bubble-wrap {
+                display: none;
+            }
+        }
+        .main { margin-right: 350px; }
     </style>
 </head>
 <body>
@@ -653,6 +738,17 @@
                 <a href="../">&larr; 返回文章列表</a>
             </div>
         </div>
+
+        <!-- Speech Bubble -->
+        <div class="speech-bubble-wrap" id="speechWrap">
+            <div class="speech-bubble">
+                <div class="speech-label">🎤</div>
+                <div id="speechContent">滚动到各个章节查看对应话术</div>
+            </div>
+        </div>
+
+        <!-- Toggle -->
+        <button class="toggle-speech-btn" id="toggleSpeechBtn">🎤 隐藏话术</button>
     </div>
 
     <footer>
@@ -660,5 +756,58 @@
     </footer>
 
     <script src="../../资源/js/main.js"></script>
+    <script>
+        var speechContent = document.getElementById('speechContent');
+        var speechSections = [
+            { id: 'sec-what-to-test', label: '一、测什么', text: '测评 Agent 需要包含结果和过程两个维度。结果维度比较直观，比如需求完成度、总耗时、Token 消耗。但过程维度才是核心，因为 Agent 是一个复杂的决策系统，单纯测结果很难获得优化的有用信息。比如结果正确但过程错误，或者结果错误不知道错在哪，这些都需要过程数据来分析。' },
+            { id: 'sec-general-eval', label: '通用 Agent 全维度评测', text: '通用评测分为结果和过程两个维度。结果维度包括需求完成度、格式规范、完成时间、Token 消耗、用户满意度。过程维度包括工具调用、规划链路、记忆能力、异常处理、成本耗时安全权限——这才是真正能指导优化的核心指标。' },
+            { id: 'sec-targeted-eval', label: '针对性的 Agent 测评', text: '不同类型的 Agent 侧重点不同。代码 Agent 要测代码生成质量、任务完成度、工程路径正确性、测试验证。客服 Agent 要测会话解决率、多轮交互质量、记忆召回精度、情绪识别。运维 Agent 要测工具调用准确率、异常恢复能力、安全边界遵守。' },
+            { id: 'sec-dataset', label: '构建测评数据集', text: '质量比量重要。测评集要包含常规样本（常见用户请求）、边界样本（参数缺失等需要追问的场景）、对抗样本（恶意输入、越权请求等安全测试）。每个 Case 必须明确写清楚用户输入、初始环境、成功标准、失败标准、评分方式和风险点。' },
+            { id: 'sec-scorer', label: '设计评分器', text: '评分器分三层：第一层是确定性检查，比如是否调用了禁止工具、缺少权限校验、传了必填参数、输出敏感字段、超过最大工具调用次数、超过成本阈值——这些都可以用代码自动判断。第二层是轨迹评分，检查是否有循环调用、调用顺序是否合理。第三层是 LLM-as-Judge，评估回答是否真正解决问题、是否遗漏关键解释、是否把不确定结论说得过满。' },
+            { id: 'sec-methods', label: '选择测评方法', text: '常用的测评方法有四种：基准测试在标准数据集上跑分做横向对比；回归测试每次迭代后自动运行确保不破坏已有能力；AB 测试线上真实流量分流对比不同策略效果；Trace Diff 对比新旧版本在同一样本上的执行轨迹差异，直接定位退化原因。' },
+            { id: 'sec-trace', label: '获得任务执行的 Trace', text: '记录每次模型输入输出、工具调用、参数、耗时、Token、错误。完整的 Trace 是后续分析和优化的基础，也是构建数据闭环的关键。' },
+            { id: 'sec-workflow', label: '三、Agent 测评流程', text: '一个可落地的测评流程：明确业务目标→收集 20 个真实 Case→给每个 Case 写成功标准→设计评分器→保存完整 Trace→每次改动后跑一遍→对失败样本做分类→把线上问题补回评测集。' },
+            { id: 'sec-project', label: '四、回归项目', text: '回到 Workflow 项目，测试的主要方向放在对比优化上：测 Plan 能力（任务分解、DAG 构建、冗余步骤、多步连贯性、并发性）、任务执行确定化（重试次数）、成本效率（时间、Token）、无效 ReAct 循环占比、故障场景流程完整执行率。通过 Prompt 层约束、后置校验层、FewShot 样本、分级 Plan、双 Agent 评审、动态需求兼容、迭代数据闭环优化等手段不断提升。' }
+        ];
+
+        function updateSpeechOnScroll() {
+            var scrollY = window.scrollY + 180;
+            var current = '';
+            if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100) {
+                current = speechSections[speechSections.length - 1];
+            } else {
+                for (var i = 0; i < speechSections.length; i++) {
+                    var el = document.getElementById(speechSections[i].id);
+                    if (el && el.offsetTop <= scrollY) {
+                        current = speechSections[i];
+                    }
+                }
+                if (!current && speechSections.length > 0) {
+                    current = speechSections[0];
+                }
+            }
+            if (current && speechContent) {
+                speechContent.innerHTML = '<strong style="font-size:13px;color:#4f46e5;display:block;margin-bottom:6px;">' + current.label + '</strong>' + current.text.replace(/\n/g, '<br>');
+            }
+        }
+
+        window.addEventListener('scroll', updateSpeechOnScroll);
+        window.addEventListener('load', updateSpeechOnScroll);
+        updateSpeechOnScroll();
+
+        var toggleBtn = document.getElementById('toggleSpeechBtn');
+        var speechWrap = document.getElementById('speechWrap');
+        if (toggleBtn && speechWrap) {
+            toggleBtn.addEventListener('click', function() {
+                if (speechWrap.style.display === 'none') {
+                    speechWrap.style.display = 'block';
+                    toggleBtn.textContent = '🎤 隐藏话术';
+                } else {
+                    speechWrap.style.display = 'none';
+                    toggleBtn.textContent = '🎤 显示话术';
+                }
+            });
+        }
+    </script>
 </body>
 </html>

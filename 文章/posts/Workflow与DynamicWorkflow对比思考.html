@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Workflow 与 Dynamic Workflow：架构对比与设计思考 | 程愚瀚</title>
+    <link rel="stylesheet" href="../../资源/css/style.css" />
+    <style>
+        .post { max-width: 800px; margin: 0 auto; padding: 120px 40px 80px; }
+        .post h1 { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.3; margin-bottom: 8px; }
+        .post .post-meta { font-size: 13px; color: #94a3b8; margin-bottom: 40px; }
+        .post h2 {
+            font-size: 22px; font-weight: 700; color: #0f172a;
+            margin-top: 48px; margin-bottom: 16px;
+            padding-bottom: 8px; border-bottom: 2px solid #eef2ff;
+        }
+        .post h3 { font-size: 17px; font-weight: 700; color: #0f172a; margin-top: 28px; margin-bottom: 10px; }
+        .post h4 { font-size: 15px; font-weight: 700; color: #4f46e5; margin-top: 24px; margin-bottom: 8px; }
+        .post p, .post li { font-size: 15px; color: #475569; line-height: 1.9; }
+        .post p { margin-bottom: 14px; }
+        .post ul, .post ol { padding-left: 20px; margin-bottom: 16px; }
+        .post li { margin-bottom: 6px; }
+        .post strong { color: #0f172a; }
+        .post blockquote {
+            border-left: 4px solid #4f46e5; background: #f8f9fc;
+            padding: 14px 20px; margin: 20px 0; border-radius: 0 8px 8px 0;
+            font-size: 14px; color: #475569;
+        }
+        .post pre {
+            background: #1e293b; color: #e2e8f0; padding: 16px 20px;
+            border-radius: 10px; overflow-x: auto; font-size: 13px;
+            line-height: 1.6; margin-bottom: 16px;
+        }
+        .post code { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+        .post :not(pre) > code {
+            background: #f1f4f9; padding: 2px 8px; border-radius: 4px;
+            font-size: 14px; color: #4f46e5;
+        }
+        .post .callout {
+            padding: 16px 20px; border-radius: 10px; margin: 20px 0;
+            font-size: 14px; line-height: 1.8;
+        }
+        .post .callout-tip { background: #ecfdf5; border-left: 4px solid #10b981; }
+        .post .callout-warn { background: #fff7ed; border-left: 4px solid #f59e0b; }
+        .post .callout-danger { background: #fef2f2; border-left: 4px solid #ef4444; }
+        .post table {
+            width: 100%; border-collapse: collapse; font-size: 14px;
+            margin-bottom: 16px;
+        }
+        .post th {
+            background: #f1f4f9; padding: 10px 14px; text-align: left;
+            font-weight: 700; color: #0f172a; border-bottom: 2px solid #e2e8f0;
+        }
+        .post td {
+            padding: 10px 14px; border-bottom: 1px solid #e9edf4; color: #475569;
+        }
+        .post .tag {
+            display: inline-block; padding: 3px 12px; border-radius: 20px;
+            font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;
+            margin-right: 6px; margin-bottom: 6px;
+        }
+        .post .highlight-box {
+            background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+            border: 1px solid #c7d2fe; border-radius: 12px;
+            padding: 20px 24px; margin: 20px 0;
+        }
+        .post .timeline { position: relative; padding-left: 24px; margin: 20px 0; }
+        .post .timeline::before {
+            content: ''; position: absolute; left: 8px; top: 0; bottom: 0;
+            width: 2px; background: #e2e8f0;
+        }
+        .post .timeline-item {
+            position: relative; margin-bottom: 24px; padding-left: 20px;
+        }
+        .post .timeline-item::before {
+            content: ''; position: absolute; left: -20px; top: 8px;
+            width: 12px; height: 12px; border-radius: 50%;
+            background: #4f46e5; border: 2px solid #f8f9fc;
+        }
+        .post .timeline-item .tl-label { font-size: 13px; color: #4f46e5; font-weight: 700; }
+
+        .sidebar-sub { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #64748b; text-decoration: none; transition: all 0.2s; }
+        .sidebar-sub:hover { background: #f1f4f9; color: #0f172a; }
+        .sidebar-sub.active { background: #eef2ff; color: #4f46e5; }
+        .sidebar-sub .dot { width: 4px; height: 4px; border-radius: 50%; background: #cbd5e1; flex-shrink: 0; transition: background 0.2s; }
+        .sidebar-sub:hover .dot { background: #4f46e5; }
+        .sidebar-sub.active .dot { background: #4f46e5; }
+        .sidebar-sub-group { margin: 2px 0 6px 20px; border-left: 2px solid #e2e8f0; padding-left: 6px; }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <a href="../../" class="nav-brand">程愚瀚</a>
+        <div class="nav-links">
+            <a href="../../">首页</a>
+            <a href="../" class="active">文章</a>
+            <a href="../../项目/">项目</a>
+        </div>
+    </nav>
+
+    <div class="main" style="margin-left: 0;">
+        <div class="post">
+            <h1>Workflow 与 Dynamic Workflow：架构对比与设计思考</h1>
+            <div class="post-meta">2026 年 7 月 13 日 · 阅读时间约 15 分钟</div>
+
+            <div class="tag">Workflow</div>
+            <div class="tag">Dynamic Workflow</div>
+            <div class="tag">Agent</div>
+            <div class="tag">架构对比</div>
+
+            <h2>1. 背景与动机：单上下文窗口的三大失败模式</h2>
+
+            <p>
+                Claude Code 默认的 Harness 在一个上下文窗口里同时做"规划"和"执行"，对于大多数编程任务来说这很高效，但在长时间运行、大规模并行、高度结构化或者需要对抗性验证的任务上会失效。具体来说，单上下文窗口模式有三个典型的失败模式：
+            </p>
+
+            <div class="callout callout-warn">
+                <strong>Agent 懒惰（Agentic Laziness）</strong><br>
+                当任务特别复杂、步骤特别多的时候，Claude 可能在完成部分工作后就停下来，宣布任务完成。比如一个安全审查有 50 项，它可能做完 35 项就说做完了。这不是它故意偷懒，而是单一上下文窗口里信息太多，它失去了对"完整任务"的感知。
+            </div>
+
+            <div class="callout callout-warn">
+                <strong>自我偏好偏差（Self-Preferential Bias）</strong><br>
+                当 Claude 需要审查或评价自己的输出时，它倾向于认为自己的结果是好的。比如让它写代码再让自己 review，它很难发现自己的问题。
+            </div>
+
+            <div class="callout callout-warn">
+                <strong>目标漂移（Goal Drift）</strong><br>
+                经过多轮对话和上下文压缩之后，原始目标会逐渐失真。每次压缩都有信息损失，一些边缘条件和约束可能在几轮之后就被丢掉了。
+            </div>
+
+            <p>
+                Dynamic Workflow 的解决思路是：把一个大任务拆成多个子 Agent，每个子 Agent 有自己独立的上下文窗口和聚焦的目标。这样每个子 Agent 不会被全局上下文的噪音干扰，而且可以通过不同的编排模式（扇出聚合、对抗验证、锦标赛等）来解决单 Agent 模式下固有的问题。
+            </p>
+
+            <p>
+                有意思的是，我的项目虽然设计初衷不同——我是从"Agent 不按需求执行"这个具体问题出发的——但解决的底层逻辑是一样的。我的 DAG 方案通过把执行计划固定为图结构，同样解决了这三个问题：DAG 强制所有步骤必须执行完毕（对抗 Agentic Laziness），Plan Agent 和执行引擎分离（对抗 Self-Preferential Bias），DAG 图一旦确认就不再变更（对抗 Goal Drift）。可以说，我们是从不同的路径走向了同一个答案：<strong>把规划和执行分离，让 Agent 只做它擅长的事，把流程控制交给更确定性的机制</strong>。
+            </p>
+
+            <h2>2. 架构对比：我的项目 vs Dynamic Workflow</h2>
+
+            <h3>2.1 确定性</h3>
+            <p>
+                这是我最核心的优势。Dynamic Workflow 的脚本虽然灵活，但本质上还是 Agent 在写代码、Agent 在执行，Agent 仍然有可能"自己决定怎么做"。而我的 DAG 图一旦生成并经过用户确认，执行引擎就<strong>强制按图执行</strong>，不存在 Agent 跳过某一步的可能。
+            </p>
+            <p>
+                举个例子——"检索后回答"这个任务，在 Dynamic Workflow 里，脚本是 Agent 写的，它可能写出一个"先检索再回答"的脚本，但也可能写出"直接回答"的脚本。但在我的系统里，DAG 图定义了"必须先检索再回答"，执行引擎不会给 Agent 任何跳过检索的机会。这是<strong>架构层面的保证</strong>，不是 prompt 层面的引导。
+            </p>
+
+            <h3>2.2 可视化与可审查性</h3>
+            <p>
+                我的 DAG 图是展示给用户确认的，用户可以清楚地看到"这个任务会被拆成哪些步骤、步骤之间的依赖关系是什么"。如果 Plan Agent 规划错了，用户可以直接修改。Dynamic Workflow 的 JavaScript 脚本虽然也是可读的，但对非技术用户来说，看代码比看图难得多。
+            </p>
+            <p>
+                而且我项目中"用户确认"的环节，本质上是<strong>把人的判断力嵌入到流程中</strong>——让用户在最关键的地方把关，而不是完全交给 Agent。
+            </p>
+
+            <h3>2.3 节点级的精细控制</h3>
+            <p>
+                我的三张表设计（flow_data 存拓扑、execution_snapshot 存节点状态、execution_record 存全局汇总）让每个节点的输入输出和状态都是独立可追溯的。这意味着我可以精确地从任意一个节点恢复执行，可以在恢复前修改节点变量，可以清晰地看到每个节点的执行轨迹。
+            </p>
+            <p>
+                Dynamic Workflow 的恢复粒度是"整个工作流"级别的——它可以在中断后恢复，但不能精确地"跳过某个已成功的节点，只重跑失败的节点"。
+            </p>
+
+            <h2>3. Token 消耗差异的根因分析</h2>
+
+            <p>
+                为什么我的项目 Token 降低了，而 Dynamic Workflow 的 Token 增加了？这两个系统在架构上本质相同——都要启动子 Agent、都要重新加载 System Prompt、都有扇出聚合模式、都是结构化输出、都有协调成本。所以这些点都不能解释差异。
+            </p>
+            <p>
+                真正的根因只有一个：<strong>子 Agent 的上下文大小与基线的比例关系不同</strong>。
+            </p>
+
+            <div style="overflow-x: auto; margin-bottom: 20px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>对比维度</th>
+                            <th>我的项目</th>
+                            <th>Dynamic Workflow</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>基线上下文大小</strong></td>
+                            <td>9K（单 Agent 加载所有工具）</td>
+                            <td>33K（Harness 固定开销）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>子 Agent 上下文大小</strong></td>
+                            <td>3K（仅加载角色相关工具）</td>
+                            <td>33K（完整 Harness，无法裁剪）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>上下文比例</strong></td>
+                            <td><strong>0.33x</strong>（子 Agent 更轻）</td>
+                            <td><strong>1.0x</strong>（子 Agent 一样重）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>扇出 N 个子 Agent 的总开销</strong></td>
+                            <td>N × 3K</td>
+                            <td>N × 33K</td>
+                        </tr>
+                        <tr>
+                            <td><strong>与基线对比</strong></td>
+                            <td>N × 3K vs 9K</td>
+                            <td>N × 33K vs 33K</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>
+                我的项目省 Token 的原因：把一个 9K 的"胖 Agent"拆成了多个 3K 的"瘦 Agent"。即使扇出 3 个子 Agent，总 Prompt 开销（9K）和基线持平；扇出少于 3 个时甚至更省。
+            </p>
+            <p>
+                Dynamic Workflow 费 Token 的原因：把一个 33K 的"标准 Agent"复制成了多个 33K 的"同样重的 Agent"。扇出 N 个，开销就是 N × 33K，而基线只需要 1 × 33K。
+            </p>
+
+            <h3>为什么我的子 Agent 可以更轻？</h3>
+            <p>
+                因为我的项目是从零设计的专用系统。Plan Agent 生成的 DAG 明确知道每个 Sub Agent 需要什么工具，所以可以精确裁剪 System Prompt。调研 Agent 不需要执行工具，审查 Agent 不需要代码生成工具。这种裁剪是架构内置的。
+            </p>
+
+            <h3>为什么 Dynamic Workflow 的子 Agent 不能更轻？</h3>
+            <p>
+                Claude Code 的 Harness 是通用基础设施。33K 的固定开销包括系统指令、所有工具的定义和 Schema（文件读写、搜索、执行命令等）、脚手架代码等。每个 agent() 调用都需要完整的 Harness，因为子 Agent 可能执行任何操作——读文件、写代码、运行命令。你无法预知子 Agent 需要什么工具，所以必须加载全部。这不是设计缺陷，而是通用 Agent 系统的固有约束。
+            </p>
+
+            <div class="highlight-box">
+                <strong>一句话总结：</strong>我的项目是"把胖的拆成瘦的"（3K &lt; 9K），Dynamic Workflow 是"把一份胖的复制成多份胖的"（33K = 33K）。前者受益于领域专用性（可以裁剪），后者受限于通用性（必须完整）。这不是架构上的对错问题，而是两个系统面对的根本约束不同。
+            </div>
+
+            <h2>4. 设计思路的相互借鉴</h2>
+
+            <h3>4.1 我可以从 Dynamic Workflow 学什么</h3>
+            <p>
+                Dynamic Workflow 的 <strong>pipeline 和 parallel 原语</strong>设计得很优雅，特别是 pipeline 的"每项独立通过所有阶段"模式，比我当前的"所有节点统一调度"更灵活。如果我的 DAG 图支持子图级别的 pipeline 模式，可以更自然地处理"批量处理同类任务"的场景。
+            </p>
+            <p>
+                另外，Dynamic Workflow 的 <strong>对抗验证模式</strong>（adversarial verification）也值得借鉴——让独立的 Agent 去反驳另一个 Agent 的发现，能有效降低误报率。我可以在 DAG 中预设"审查节点"，让执行引擎自动为关键节点生成对应的审查任务。
+            </p>
+
+            <h3>4.2 Dynamic Workflow 可以从我学什么</h3>
+            <p>
+                我的 <strong>DAG 可视化 + 用户确认</strong> 机制是 Dynamic Workflow 没有的。如果 Dynamic Workflow 能在执行前把脚本流程可视化展示给用户确认，可以降低脚本出错的风险。
+            </p>
+            <p>
+                另外，我的 <strong>节点级断点恢复</strong> 比 Dynamic Workflow 的"整个工作流恢复"更精细。如果 Dynamic Workflow 能记录每个子 Agent 的独立状态而不是整体 checkpoint，恢复灵活性和存储效率都会提升。
+            </p>
+
+            <h2>5. 总结：面向不同需求的设计取舍</h2>
+
+            <div style="overflow-x: auto; margin-bottom: 20px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>对比维度</th>
+                            <th>我的项目（DAG 方案）</th>
+                            <th>Dynamic Workflow</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>核心思想</strong></td>
+                            <td>Plan Agent 生成 DAG，执行引擎强制按图执行</td>
+                            <td>Agent 生成 JavaScript 脚本，运行时驱动子 Agent</td>
+                        </tr>
+                        <tr>
+                            <td><strong>确定性</strong></td>
+                            <td>✅ 架构层面保证，不存在跳过步骤的可能</td>
+                            <td>⚠️ 脚本也是 Agent 写的，仍有不确定性</td>
+                        </tr>
+                        <tr>
+                            <td><strong>可视化</strong></td>
+                            <td>✅ DAG 图展示，用户可直接修改</td>
+                            <td>❌ JavaScript 脚本，非技术用户难以阅读</td>
+                        </tr>
+                        <tr>
+                            <td><strong>恢复粒度</strong></td>
+                            <td>✅ 节点级，可精确指定恢复点</td>
+                            <td>⚠️ 工作流级，不能跳过已成功节点</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Token 消耗</strong></td>
+                            <td>✅ 降低（子 Agent 可裁剪，3K &lt; 9K）</td>
+                            <td>❌ 增加（子 Agent 不可裁剪，33K = 33K）</td>
+                        </tr>
+                        <tr>
+                            <td><strong>灵活性</strong></td>
+                            <td>❌ 流程固定，动态分支能力有限</td>
+                            <td>✅ 循环、条件、并行扇出等高度灵活</td>
+                        </tr>
+                        <tr>
+                            <td><strong>表达能力</strong></td>
+                            <td>❌ DAG 图表达能力有限</td>
+                            <td>✅ JavaScript 脚本，图灵完备</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>
+                Dynamic Workflow 的优势是<strong>灵活性和表达能力</strong>（循环、条件、并行扇出等），我的优势是<strong>确定性、可视化、精细控制和 Token 效率</strong>。它适合"需要 Agent 发挥创造力、探索多种方案"的场景，我适合"流程必须严格执行、不能有偏差"的场景。
+            </p>
+
+            <div class="highlight-box">
+                两者不是替代关系，而是面向不同需求的设计取舍。理解各自的优劣，才能在合适的场景选择合适的技术方案。
+            </div>
+
+        </div>
+    </div>
+
+    <footer style="margin-left: 0;">
+        &copy; 2026 程愚瀚 · Built with &hearts;
+    </footer>
+
+</body>
+</html>
