@@ -144,15 +144,23 @@
         <div class="name">程愚瀚</div>
         <div class="title">Java 后端和 agent 开发</div>
         <nav>
-            <a href="#workflow-v1" class="active"><span class="dot"></span> Workflow 1.0（前身）</a>
+            <div style="font-size: 11px; font-weight: 700; color: #64748b; letter-spacing: 1px; padding: 4px 14px 2px; margin-top: 4px;">1.0</div>
+            <a href="#workflow-v1" class="active"><span class="dot"></span> 前身：拖拽式工作流</a>
+
+            <div style="font-size: 11px; font-weight: 700; color: #4f46e5; letter-spacing: 1px; padding: 10px 14px 2px; margin-top: 4px;">2.0 · AI Plan + DAG 引擎</div>
             <a href="#origin"><span class="dot"></span> 从问题到方案</a>
-            <a href="#node-io"><span class="dot"></span> 节点输入输出选型</a>
-            <a href="#parallel"><span class="dot"></span> 双层并行执行引擎</a>
-            <a href="#rollback"><span class="dot"></span> 节点级断点恢复</a>
-            <a href="#sub-agent"><span class="dot"></span> Sub Agent 与 Token 优化</a>
-            <a href="#exception"><span class="dot"></span> 三级异常治理与条件分支</a>
-            <a href="#plan-opt"><span class="dot"></span> Plan 优化</a>
+            <a href="#plan-opt"><span class="dot"></span> Plan 优化闭环</a>
+            <a href="#parallel"><span class="dot"></span> 并行执行引擎</a>
+            <a href="#node-io"><span class="dot"></span> 节点输入输出</a>
+            <a href="#rollback"><span class="dot"></span> 断点恢复</a>
+            <a href="#sub-agent"><span class="dot"></span> Sub Agent + Token</a>
+            <a href="#exception"><span class="dot"></span> 异常治理 + 分支</a>
             <a href="#eval"><span class="dot"></span> 测评结果</a>
+
+            <div style="font-size: 11px; font-weight: 700; color: #7c3aed; letter-spacing: 1px; padding: 10px 14px 2px; margin-top: 4px;">3.0 · Tree（构想中）</div>
+            <a href="tree.html" style="display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; color: #7c3aed; text-decoration: none; transition: all 0.2s; background: #f5f3ff;">
+                🌳 前往 Tree 页面 →
+            </a>
         </nav>
     </aside>
 
@@ -186,7 +194,7 @@
             <!-- 1. 项目来源 -->
             <div class="project-card" id="origin">
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;">项目来源</span>
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;">项目来源</span><span style="padding: 3px 10px; border-radius: 5px; font-size: 13px; font-weight: 700; background: #4f46e5; color: #fff; margin-left: 8px;">2.0</span>
                     <span style="font-size: 16px; font-weight: 700; color: #0f172a;">从问题到方案</span>
                 </div>
                 <div style="padding: 20px 22px; background: #f8fafc; border: 1px solid #e9edf4; border-radius: 12px;">
@@ -282,7 +290,7 @@
             <!-- 架构总览图 -->
             <div class="project-card" id="arch" style="margin-bottom: 16px; padding: 32px;">
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 24px;">
-                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f5f3ff; color: #7c3aed;">架构总览</span>
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f5f3ff; color: #7c3aed;">架构总览</span><span style="padding: 3px 10px; border-radius: 5px; font-size: 13px; font-weight: 700; background: #4f46e5; color: #fff; margin-left: 8px;">2.0</span>
                     <span style="font-size: 16px; font-weight: 700; color: #0f172a;">核心能力架构</span>
                 </div>
 
@@ -347,7 +355,7 @@
             <!-- 2. 节点输入输出选型 -->
             <div class="project-card" id="node-io">
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
-                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f1f4f9; color: #64748b;">节点设计</span>
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f1f4f9; color: #64748b;">节点设计</span><span style="padding: 3px 10px; border-radius: 5px; font-size: 13px; font-weight: 700; background: #4f46e5; color: #fff; margin-left: 8px;">2.0</span>
                     <span style="font-size: 16px; font-weight: 700; color: #0f172a;">节点输入输出选型</span>
                 </div>
 
@@ -431,7 +439,7 @@
             <!-- 3. 双层并行执行引擎 -->
             <div class="project-card" id="parallel">
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
-                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #ecfdf5; color: #059669;">双层并行</span>
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #ecfdf5; color: #059669;">双层并行</span><span style="padding: 3px 10px; border-radius: 5px; font-size: 13px; font-weight: 700; background: #4f46e5; color: #fff; margin-left: 8px;">2.0</span>
                     <span style="font-size: 16px; font-weight: 700; color: #0f172a;">双层并行执行引擎</span>
                 </div>
                 <p style="font-size: 13px; color: #475569; line-height: 1.7; margin-bottom: 16px;">
@@ -481,7 +489,7 @@
             <!-- 3. 节点级断点恢复 -->
             <div class="project-card" id="rollback">
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
-                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f1f4f9; color: #64748b;">断点恢复</span>
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f1f4f9; color: #64748b;">断点恢复</span><span style="padding: 3px 10px; border-radius: 5px; font-size: 13px; font-weight: 700; background: #4f46e5; color: #fff; margin-left: 8px;">2.0</span>
                     <span style="font-size: 16px; font-weight: 700; color: #0f172a;">节点级断点恢复</span>
                 </div>
                 <p style="font-size: 13px; color: #475569; line-height: 1.7; margin-bottom: 16px;">
@@ -658,7 +666,7 @@
             <!-- 4. Sub Agent 分发执行 -->
             <div class="project-card" id="sub-agent">
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
-                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f5f3ff; color: #7c3aed;">Sub Agent</span>
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f5f3ff; color: #7c3aed;">Sub Agent</span><span style="padding: 3px 10px; border-radius: 5px; font-size: 13px; font-weight: 700; background: #4f46e5; color: #fff; margin-left: 8px;">2.0</span>
                     <span style="font-size: 16px; font-weight: 700; color: #0f172a;">Sub Agent 分发执行与 Token 优化</span>
                 </div>
 
@@ -710,7 +718,7 @@
             <!-- 6. 三级异常治理与条件分支路由 -->
             <div class="project-card" id="exception">
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
-                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #fff7ed; color: #d97706;">异常治理</span>
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #fff7ed; color: #d97706;">异常治理</span><span style="padding: 3px 10px; border-radius: 5px; font-size: 13px; font-weight: 700; background: #4f46e5; color: #fff; margin-left: 8px;">2.0</span>
                     <span style="font-size: 16px; font-weight: 700; color: #0f172a;">三级异常治理与条件分支路由</span>
                 </div>
                 <p style="font-size: 13px; color: #475569; line-height: 1.7; margin-bottom: 16px;">
@@ -757,7 +765,7 @@
             <!-- 5. Plan 优化 -->
             <div class="project-card" id="plan-opt">
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f0fdf4; color: #059669;">Plan 优化</span>
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f0fdf4; color: #059669;">Plan 优化</span><span style="padding: 3px 10px; border-radius: 5px; font-size: 13px; font-weight: 700; background: #4f46e5; color: #fff; margin-left: 8px;">2.0</span>
                     <span style="font-size: 16px; font-weight: 700; color: #0f172a;">如何优化 Plan Agent 的 DAG 构建能力</span>
                 </div>
 
@@ -892,7 +900,7 @@
             <!-- 4. 测评结果 -->
             <div class="project-card" id="eval">
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
-                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f5f3ff; color: #7c3aed;">测评结果</span>
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f5f3ff; color: #7c3aed;">测评结果</span><span style="padding: 3px 10px; border-radius: 5px; font-size: 13px; font-weight: 700; background: #4f46e5; color: #fff; margin-left: 8px;">2.0</span>
                     <span style="font-size: 16px; font-weight: 700; color: #0f172a;">Agent 测评数据</span>
                 </div>
 
@@ -937,6 +945,18 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- ===== 跳转到 Tree 3.0 ===== -->
+            <div class="project-card" style="border: 2px dashed #7c3aed; background: linear-gradient(135deg, #f5f3ff, #eef2ff); text-align: center; padding: 40px 32px;">
+                <div style="font-size: 13px; color: #6d28d9; font-weight: 700; margin-bottom: 6px;">👉 下一站：3.0</div>
+                <div style="font-size: 26px; font-weight: 800; color: #4f46e5; margin-bottom: 12px;">Tree</div>
+                <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 18px 0;">
+                    Workflow 2.0 的下一个进化版本。从固定 DAG 走向更灵活、更智能的任务编排。
+                </p>
+                <a href="tree.html" style="display: inline-block; padding: 10px 28px; border-radius: 8px; background: #4f46e5; color: #fff; font-size: 14px; font-weight: 600; text-decoration: none; transition: all 0.2s;" onmouseover="this.style.background='#4338ca'" onmouseout="this.style.background='#4f46e5'">
+                    了解更多 →
+                </a>
             </div>
 
         </div>
