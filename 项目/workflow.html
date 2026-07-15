@@ -149,6 +149,7 @@
 
             <div style="font-size: 11px; font-weight: 700; color: #4f46e5; letter-spacing: 1px; padding: 10px 14px 2px; margin-top: 4px;">2.0 · AI Plan + DAG 引擎</div>
             <a href="#origin"><span class="dot"></span> 从问题到方案</a>
+            <a href="#arch"><span class="dot"></span> 架构总览</a>
             <a href="#plan-opt"><span class="dot"></span> Plan 优化闭环</a>
             <a href="#parallel"><span class="dot"></span> 并行执行引擎</a>
             <a href="#node-io"><span class="dot"></span> 节点输入输出</a>
@@ -351,6 +352,143 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 5. Plan 优化 -->
+            <div class="project-card" id="plan-opt">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f0fdf4; color: #059669;">Plan 优化</span><span style="padding: 3px 10px; border-radius: 5px; font-size: 13px; font-weight: 700; background: #4f46e5; color: #fff; margin-left: 8px;">2.0</span>
+                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">如何优化 Plan Agent 的 DAG 构建能力</span>
+                </div>
+
+                <!-- 问题分析 -->
+                <div style="margin-bottom: 20px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">问题分析</div>
+                    <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: #475569; line-height: 1.8;">
+                        <div style="display: flex; gap: 10px; align-items: baseline;">
+                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #dc2626; margin-top: 9px;"></span>
+                            <span><strong>任务逻辑错误</strong> — 遗漏步骤、颠倒步骤、无效步骤</span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: baseline;">
+                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #dc2626; margin-top: 9px;"></span>
+                            <span><strong>DAG 逻辑错误</strong> — 环路、孤立节点、汇聚分支混乱</span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: baseline;">
+                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #dc2626; margin-top: 9px;"></span>
+                            <span><strong>输出格式不正确</strong></span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: baseline;">
+                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #dc2626; margin-top: 9px;"></span>
+                            <span><strong>任务颗粒度失衡</strong> — 节点太大或太小，影响并行度和可复用性</span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: baseline;">
+                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #dc2626; margin-top: 9px;"></span>
+                            <span><strong>并行度不够</strong> — 未能充分利用 DAG 的并发能力</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 优化手段 -->
+                <div style="margin-bottom: 20px; padding: 20px 24px; background: #f8fafc; border-radius: 14px; border: 1px solid #e9edf4;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">优化手段</div>
+
+                    <div style="display: flex; flex-direction: column; gap: 14px; font-size: 14px; color: #475569; line-height: 1.8;">
+                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
+                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">① Prompt 层 — 说清楚要做什么 + 规则是什么</div>
+                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
+                                <li><strong>强制输出模板</strong> — JsonSchema 约束输出格式</li>
+                                <li><strong>拆解规则</strong> — 检索/工具操作必须在生成类节点之前；独立无依赖任务拆为并行节点</li>
+                                <li><strong>生成规则</strong> — 不存在循环依赖；所有边指向已定义节点；用户需求全部覆盖</li>
+                                <li><strong>颗粒度规则</strong> — 单次工具调用 = 1 个节点；单一独立目标 = 独立节点；禁止跨工具、跨目标合并节点</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
+                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">② FewShot 样本 — 举例说明</div>
+                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
+                                <li><strong>标准样本</strong> — 基础串行流程、多并行分支、带汇聚节点复杂拓扑</li>
+                                <li><strong>反例样本</strong> — 展示错误 DAG（反向依赖、环路反例）+ 修正后的正确 DAG，让 Plan 规避常见误区</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
+                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">③ 后置校验层 — 保证 DAG 无环 + 合法性检测</div>
+                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
+                                <li>环路检测</li>
+                                <li>引用合法性检测</li>
+                                <li>步骤完整性检测</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
+                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">④ 分级 Plan（解决长任务失效问题） <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;background:#fef2f2;color:#dc2626;font-weight:600;vertical-align:middle;">待实现</span></div>
+                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
+                                <li>针对长任务先进行粗任务划分，再调用子 Plan 单独生成 DAG</li>
+                                <li>顶层 DAG 串联各个子流程，避免单次生成超大图导致输出截断、逻辑混乱</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
+                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">⑤ 双 Agent 评审</div>
+                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
+                                <li>引入评审 Agent，独立评审流程逻辑、依赖、环路、需求匹配度，输出修改意见</li>
+                            </ul>
+                        </div>
+
+                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4; border-left: 3px solid #7c3aed;">
+                            <div style="font-size: 13px; font-weight: 600; color: #7c3aed; margin-bottom: 8px;">⑥ 迭代数据闭环优化 — 基于 Reflexion 的自改进机制</div>
+                            <div style="font-size: 12px; color: #94a3b8; margin-bottom: 10px; padding: 6px 10px; background: #f5f3ff; border-radius: 6px; display: inline-block;">
+                                参考 Reflexion (NeurIPS 2023)：通过语言反馈替代权重更新的强化学习范式
+                            </div>
+                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
+                                <li><strong>Actor → Evaluator 闭环：</strong>采集所有校验失败、执行失败的错误 DAG 和用户原始需求，作为 Evaluator 的负样本输入</li>
+                                <li><strong>Self-Reflection 错误归因：</strong>自动归类错误类型——环路、步骤遗漏、顺序颠倒、JSON 格式错误，提炼可复现的失败模式</li>
+                                <li><strong>Experience Replay 经验回放：</strong>将高频错误案例自动加入 FewShot 样本库，等价于 Reflexion 中将反思注入长期记忆，持续迭代 Plan 能力</li>
+                                <li><strong>LLM-as-Judge 量化评估：</strong>基于 LLM-as-Judge 量化 DAG 匹配得分，低分样本自动回流至 Prompt 优化流程，形成完整的 Verbal Reinforcement Learning 循环</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 测试维度 -->
+                <div>
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">测试维度</div>
+                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 12px 0;">
+                        测试的主要方向放在对比优化上，从以下维度评估：
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: #475569; line-height: 1.8;">
+                        <div style="display: flex; gap: 10px; align-items: baseline;">
+                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #4f46e5; margin-top: 9px;"></span>
+                            <span><strong>Plan 能力</strong> — 任务分解、DAG 图构建（无环）、冗余步骤、多步连贯性、并发性</span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: baseline;">
+                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #4f46e5; margin-top: 9px;"></span>
+                            <span><strong>任务执行确定性</strong> — 重试次数、稳定性指数</span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: baseline;">
+                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #4f46e5; margin-top: 9px;"></span>
+                            <span><strong>成本效率</strong> — 总执行时间、Token 消耗量</span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: baseline;">
+                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #4f46e5; margin-top: 9px;"></span>
+                            <span><strong>无效 ReAct 循环占比下降</strong></span>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: baseline;">
+                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #4f46e5; margin-top: 9px;"></span>
+                            <span><strong>故障场景流程完整执行率</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trace -->
+                <div style="margin-top: 24px; padding: 16px 20px; background: #f8fafc; border-radius: 10px;">
+                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">执行轨迹 Trace</div>
+                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
+                        节点分开存储天然保留了每一次执行的完整 Trace（输入、输出、工具调用、耗时、Token），可直接用于 Plan 质量的评估。结合 Reflexion 闭环中的 LLM-as-Judge，Trace 数据为低分样本回流提供了基础。
+                    </p>
+                </div>
+            </div>
+
+
 
             <!-- 2. 节点输入输出选型 -->
             <div class="project-card" id="node-io">
@@ -762,140 +900,7 @@
                 </p>
             </div>
 
-            <!-- 5. Plan 优化 -->
-            <div class="project-card" id="plan-opt">
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                    <span style="padding: 2px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; background: #f0fdf4; color: #059669;">Plan 优化</span><span style="padding: 3px 10px; border-radius: 5px; font-size: 13px; font-weight: 700; background: #4f46e5; color: #fff; margin-left: 8px;">2.0</span>
-                    <span style="font-size: 16px; font-weight: 700; color: #0f172a;">如何优化 Plan Agent 的 DAG 构建能力</span>
-                </div>
 
-                <!-- 问题分析 -->
-                <div style="margin-bottom: 20px;">
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">问题分析</div>
-                    <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: #475569; line-height: 1.8;">
-                        <div style="display: flex; gap: 10px; align-items: baseline;">
-                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #dc2626; margin-top: 9px;"></span>
-                            <span><strong>任务逻辑错误</strong> — 遗漏步骤、颠倒步骤、无效步骤</span>
-                        </div>
-                        <div style="display: flex; gap: 10px; align-items: baseline;">
-                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #dc2626; margin-top: 9px;"></span>
-                            <span><strong>DAG 逻辑错误</strong> — 环路、孤立节点、汇聚分支混乱</span>
-                        </div>
-                        <div style="display: flex; gap: 10px; align-items: baseline;">
-                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #dc2626; margin-top: 9px;"></span>
-                            <span><strong>输出格式不正确</strong></span>
-                        </div>
-                        <div style="display: flex; gap: 10px; align-items: baseline;">
-                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #dc2626; margin-top: 9px;"></span>
-                            <span><strong>任务颗粒度失衡</strong> — 节点太大或太小，影响并行度和可复用性</span>
-                        </div>
-                        <div style="display: flex; gap: 10px; align-items: baseline;">
-                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #dc2626; margin-top: 9px;"></span>
-                            <span><strong>并行度不够</strong> — 未能充分利用 DAG 的并发能力</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 优化手段 -->
-                <div style="margin-bottom: 20px; padding: 20px 24px; background: #f8fafc; border-radius: 14px; border: 1px solid #e9edf4;">
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 16px;">优化手段</div>
-
-                    <div style="display: flex; flex-direction: column; gap: 14px; font-size: 14px; color: #475569; line-height: 1.8;">
-                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
-                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">① Prompt 层 — 说清楚要做什么 + 规则是什么</div>
-                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
-                                <li><strong>强制输出模板</strong> — JsonSchema 约束输出格式</li>
-                                <li><strong>拆解规则</strong> — 检索/工具操作必须在生成类节点之前；独立无依赖任务拆为并行节点</li>
-                                <li><strong>生成规则</strong> — 不存在循环依赖；所有边指向已定义节点；用户需求全部覆盖</li>
-                                <li><strong>颗粒度规则</strong> — 单次工具调用 = 1 个节点；单一独立目标 = 独立节点；禁止跨工具、跨目标合并节点</li>
-                            </ul>
-                        </div>
-
-                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
-                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">② FewShot 样本 — 举例说明</div>
-                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
-                                <li><strong>标准样本</strong> — 基础串行流程、多并行分支、带汇聚节点复杂拓扑</li>
-                                <li><strong>反例样本</strong> — 展示错误 DAG（反向依赖、环路反例）+ 修正后的正确 DAG，让 Plan 规避常见误区</li>
-                            </ul>
-                        </div>
-
-                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
-                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">③ 后置校验层 — 保证 DAG 无环 + 合法性检测</div>
-                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
-                                <li>环路检测</li>
-                                <li>引用合法性检测</li>
-                                <li>步骤完整性检测</li>
-                            </ul>
-                        </div>
-
-                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
-                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">④ 分级 Plan（解决长任务失效问题） <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:11px;background:#fef2f2;color:#dc2626;font-weight:600;vertical-align:middle;">待实现</span></div>
-                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
-                                <li>针对长任务先进行粗任务划分，再调用子 Plan 单独生成 DAG</li>
-                                <li>顶层 DAG 串联各个子流程，避免单次生成超大图导致输出截断、逻辑混乱</li>
-                            </ul>
-                        </div>
-
-                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4;">
-                            <div style="font-size: 13px; font-weight: 600; color: #059669; margin-bottom: 6px;">⑤ 双 Agent 评审</div>
-                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
-                                <li>引入评审 Agent，独立评审流程逻辑、依赖、环路、需求匹配度，输出修改意见</li>
-                            </ul>
-                        </div>
-
-                        <div style="background: #ffffff; border-radius: 10px; padding: 16px 20px; border: 1px solid #e9edf4; border-left: 3px solid #7c3aed;">
-                            <div style="font-size: 13px; font-weight: 600; color: #7c3aed; margin-bottom: 8px;">⑥ 迭代数据闭环优化 — 基于 Reflexion 的自改进机制</div>
-                            <div style="font-size: 12px; color: #94a3b8; margin-bottom: 10px; padding: 6px 10px; background: #f5f3ff; border-radius: 6px; display: inline-block;">
-                                参考 Reflexion (NeurIPS 2023)：通过语言反馈替代权重更新的强化学习范式
-                            </div>
-                            <ul style="margin: 0; padding-left: 18px; font-size: 13px; color: #475569; line-height: 1.7;">
-                                <li><strong>Actor → Evaluator 闭环：</strong>采集所有校验失败、执行失败的错误 DAG 和用户原始需求，作为 Evaluator 的负样本输入</li>
-                                <li><strong>Self-Reflection 错误归因：</strong>自动归类错误类型——环路、步骤遗漏、顺序颠倒、JSON 格式错误，提炼可复现的失败模式</li>
-                                <li><strong>Experience Replay 经验回放：</strong>将高频错误案例自动加入 FewShot 样本库，等价于 Reflexion 中将反思注入长期记忆，持续迭代 Plan 能力</li>
-                                <li><strong>LLM-as-Judge 量化评估：</strong>基于 LLM-as-Judge 量化 DAG 匹配得分，低分样本自动回流至 Prompt 优化流程，形成完整的 Verbal Reinforcement Learning 循环</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 测试维度 -->
-                <div>
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">测试维度</div>
-                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 12px 0;">
-                        测试的主要方向放在对比优化上，从以下维度评估：
-                    </p>
-                    <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: #475569; line-height: 1.8;">
-                        <div style="display: flex; gap: 10px; align-items: baseline;">
-                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #4f46e5; margin-top: 9px;"></span>
-                            <span><strong>Plan 能力</strong> — 任务分解、DAG 图构建（无环）、冗余步骤、多步连贯性、并发性</span>
-                        </div>
-                        <div style="display: flex; gap: 10px; align-items: baseline;">
-                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #4f46e5; margin-top: 9px;"></span>
-                            <span><strong>任务执行确定性</strong> — 重试次数、稳定性指数</span>
-                        </div>
-                        <div style="display: flex; gap: 10px; align-items: baseline;">
-                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #4f46e5; margin-top: 9px;"></span>
-                            <span><strong>成本效率</strong> — 总执行时间、Token 消耗量</span>
-                        </div>
-                        <div style="display: flex; gap: 10px; align-items: baseline;">
-                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #4f46e5; margin-top: 9px;"></span>
-                            <span><strong>无效 ReAct 循环占比下降</strong></span>
-                        </div>
-                        <div style="display: flex; gap: 10px; align-items: baseline;">
-                            <span style="flex-shrink: 0; width: 6px; height: 6px; border-radius: 50%; background: #4f46e5; margin-top: 9px;"></span>
-                            <span><strong>故障场景流程完整执行率</strong></span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Trace -->
-                <div style="margin-top: 24px; padding: 16px 20px; background: #f8fafc; border-radius: 10px;">
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">执行轨迹 Trace</div>
-                    <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">
-                        节点分开存储天然保留了每一次执行的完整 Trace（输入、输出、工具调用、耗时、Token），可直接用于 Plan 质量的评估。结合 Reflexion 闭环中的 LLM-as-Judge，Trace 数据为低分样本回流提供了基础。
-                    </p>
-                </div>
-            </div>
 
             <!-- 4. 测评结果 -->
             <div class="project-card" id="eval">
@@ -983,15 +988,15 @@
         var speechContent = document.getElementById('speechContent');
         var speechSections = [
             { id: 'workflow-v1', label: '前身 · Workflow 1.0', text: '（待填写）Workflow 1.0 的前身背景介绍' },
-            { id: 'arch', label: '核心能力架构', text: '由此也能够看出这个项目最核心的部分就是 Plan Agent 生成 DAG 图的这个步骤。因为你必须要生成一个好的 DAG 图，把这个任务规划好，才能够对这个任务有一个比较好的执行策略。\n\n在实现好这个 DAG 图之后，我就发现它的一些优势和它跟 LangGraph 不一样的地方。比如我能够通过这个 DAG 图实现更好的、更彻底的并行策略，让更多的任务并行执行，来缩短任务执行的时间。断点恢复的策略也跟 LangGraph 的 checkpoint 机制不太一样。还有就是我能够通过很多 Sub Agent 来分别执行不同的任务，让他们对这个任务更加专业，并且减少 Token 消耗。\n\n最后一点，这个项目成也是因为它的流程不能变化，让 Agent 不会跳过步骤；败也是因为它的流程不能变化——这也是它跟 Plan-and-Execute 架构最大的区别。Plan-and-Execute 可以在运行时动态修改执行计划，但这里因为是 DAG 图，所以不能修改。所以我就设计了三级的异常处理和条件分支来对这个 DAG 图任务执行的流程提供更多的可能性。' },
             { id: 'origin', label: '从问题到方案',
               text: '这个项目的起源是因为我发现使用 Agent 时，我已经给了非常明确的指令，但它就是会跳过或拒绝执行。比如让它先检索竞品资料再生成分析报告，结果它根本没去检索，因为它觉得自己知道。\n\n我调研了两种方式来强制 Agent 执行：Workflow 是限定整个流程，Hooks 是约束某一步前后要做什么。它们不在一个层级，我的需求属于前者。\n\n一般的 Workflow 是由人来定义（写代码或低代码平台），但是我联想到 Plan and Excute 的架构，由 AI 来帮 plan，于是我就想到把 DAG 图的构建交给大模型来完成。\n\n核心思想就是：Plan Agent 构建 DAG 图，将 DAG 图可视化展示给用户确认，再用执行引擎读取 DAG 图自动完成任务，确保规划了就一定会执行。' },
-            { id: 'node-io', label: '节点输入输出选型', text: '节点之间的信息传递我采用了动态 Schema + 压缩兜底的双层策略。主方案是让 Plan Agent 在生成 DAG 时为每个节点定义 output_schema，子 Agent 按 schema 输出结构化结果，下游节点可以直接通过字段名取数据。对于不适合结构化输出的节点，用压缩策略做兜底，用便宜的模型把完整对话历史压缩成摘要再传递。两种策略叠加，节点传递的信息量可以控制在原始输出的 10% 到 20% 左右。' },
-            { id: 'parallel', label: '双层并行执行引擎', text: '（待填写）双层并行的实现思路与效果' },
-            { id: 'rollback', label: '节点级断点恢复', text: '（待填写）断点恢复的设计与实现' },
-            { id: 'sub-agent', label: 'Sub Agent 与 Token 优化', text: '目前我设定了三类 Sub Agent：调研、审查和执行。这么设计的原因其实是因为我觉得 Agent 应该匹配到某一个领域里面才好设计，也就是说这个应该是交给使用者去定制的。比如我要写代码，那这个执行 Agent 的内容肯定就会针对代码场景做针对性的修改。我这里相当于只是打一个比方，暂时先设定了这三种。\n\n我分析过 Token 的构成占比，发现工具定义和 System Prompt 占了超过一半，是消耗最大的一块。单 Agent ReAct 一次调用需要加载所有工具的 Schema 和完整指令，大概 9K；但 Sub Agent 只需要加载自己相关的工具定义和角色指令，大概 3K 就够了。所以把职责拆开之后，每类 Agent 只关心自己该做的事，Token 消耗自然就降下来了。' },
-            { id: 'exception', label: '三级异常治理与条件分支', text: '因为这里是固定的 DAG 图，如果没有异常治理和条件分支路由的话，就会出现执行结果不如预期、流程进行不下去的情况。\n\n针对这个问题，我设计了三级的异常治理和分支路由两个策略。\n异常治理包括重试策略、超时控制和异常处理。异常处理又分三种方式：第一种是直接中断，适用于那些特别关键的节点，比如支付、扣款——这种节点如果执行失败，整个流程就没有意义了。第二种是通过错误码策略，遇到错误后标记失败，但拿出预先准备好的输出继续执行下去。第三种是失败条件分支，失败了就引导到失败的那条路径上面。\n\n而条件分支路由是为了解决有些情况 Plan Agent 不知道这一步的结果是什么，遇到不同的结果可能会有不同的路径。但这里就遇到一个问题：我们的并行策略是把一排节点拿来并行执行，但遇到条件分支的话，难道要同时执行两个分支吗？于是我就设计了 condition 字段——只有匹配条件的边才会被激活，来解决这个问题。' },
+            { id: 'arch', label: '核心能力架构', text: '由此也能够看出这个项目最核心的部分就是 Plan Agent 生成 DAG 图的这个步骤。因为你必须要生成一个好的 DAG 图，把这个任务规划好，才能够对这个任务有一个比较好的执行策略。\n\n在实现好这个 DAG 图之后，我就发现它的一些优势和它跟 LangGraph 不一样的地方。比如我能够通过这个 DAG 图实现更好的、更彻底的并行策略，让更多的任务并行执行，来缩短任务执行的时间。断点恢复的策略也跟 LangGraph 的 checkpoint 机制不太一样。还有就是我能够通过很多 Sub Agent 来分别执行不同的任务，让他们对这个任务更加专业，并且减少 Token 消耗。\n\n最后一点，这个项目成也是因为它的流程不能变化，让 Agent 不会跳过步骤；败也是因为它的流程不能变化——这也是它跟 Plan-and-Execute 架构最大的区别。Plan-and-Execute 可以在运行时动态修改执行计划，但这里因为是 DAG 图，所以不能修改。所以我就设计了三级的异常处理和条件分支来对这个 DAG 图任务执行的流程提供更多的可能性。' },
             { id: 'plan-opt', label: 'Plan 优化', text: '想要 Agent 能够帮你执行好一件事情，主要就是三个策略：第一个是给他说清楚你要做什么，第二个是列举清楚规则是什么，第三个是举一些例子。这就是 Prompt Engineering 里面最基本的操作。\n\n然后我为了保证这个 DAG 图它是没有环的，以及做一些其他的检测，我还设置了一个后置的校验层对它进行校验。\n\nPrompt + 样本 + 校验做到位了，DAG 质量有了基本保障。但模型会犯错，而且同样的错误可能反复出现——这就需要一套机制让 Plan 能力能自己不断变好。于是我就参考了 Reflexion 的思路，把每次执行失败的 DAG 当作负样本收集起来，自动分析失败原因，再把高频错误注入到 Prompt 和样本中。这样每次失败都变成一次教学，Plan 的能力就随着使用次数越来越多，形成一个持续改进的闭环。' },
+            { id: 'parallel', label: '并行执行引擎', text: '（待填写）双层并行的实现思路与效果' },
+            { id: 'node-io', label: '节点输入输出', text: '节点之间的信息传递我采用了动态 Schema + 压缩兜底的双层策略。主方案是让 Plan Agent 在生成 DAG 时为每个节点定义 output_schema，子 Agent 按 schema 输出结构化结果，下游节点可以直接通过字段名取数据。对于不适合结构化输出的节点，用压缩策略做兜底，用便宜的模型把完整对话历史压缩成摘要再传递。两种策略叠加，节点传递的信息量可以控制在原始输出的 10% 到 20% 左右。' },
+            { id: 'rollback', label: '断点恢复', text: '（待填写）断点恢复的设计与实现' },
+            { id: 'sub-agent', label: 'Sub Agent', text: '目前我设定了三类 Sub Agent：调研、审查和执行。这么设计的原因其实是因为我觉得 Agent 应该匹配到某一个领域里面才好设计，也就是说这个应该是交给使用者去定制的。比如我要写代码，那这个执行 Agent 的内容肯定就会针对代码场景做针对性的修改。我这里相当于只是打一个比方，暂时先设定了这三种。\n\n我分析过 Token 的构成占比，发现工具定义和 System Prompt 占了超过一半，是消耗最大的一块。单 Agent ReAct 一次调用需要加载所有工具的 Schema 和完整指令，大概 9K；但 Sub Agent 只需要加载自己相关的工具定义和角色指令，大概 3K 就够了。所以把职责拆开之后，每类 Agent 只关心自己该做的事，Token 消耗自然就降下来了。' },
+            { id: 'exception', label: '异常治理', text: '因为这里是固定的 DAG 图，如果没有异常治理和条件分支路由的话，就会出现执行结果不如预期、流程进行不下去的情况。\n\n针对这个问题，我设计了三级的异常治理和分支路由两个策略。\n异常治理包括重试策略、超时控制和异常处理。异常处理又分三种方式：第一种是直接中断，适用于那些特别关键的节点，比如支付、扣款——这种节点如果执行失败，整个流程就没有意义了。第二种是通过错误码策略，遇到错误后标记失败，但拿出预先准备好的输出继续执行下去。第三种是失败条件分支，失败了就引导到失败的那条路径上面。\n\n而条件分支路由是为了解决有些情况 Plan Agent 不知道这一步的结果是什么，遇到不同的结果可能会有不同的路径。但这里就遇到一个问题：我们的并行策略是把一排节点拿来并行执行，但遇到条件分支的话，难道要同时执行两个分支吗？于是我就设计了 condition 字段——只有匹配条件的边才会被激活，来解决这个问题。' },
             { id: 'eval', label: '测评结果', text: '测评分为结果和过程两个维度，结果维度包括需求完成度、耗时、Token 消耗，过程维度才是核心，包括工具调用链、无效 ReAct 循环、异常处理等。\n\n我设计了 200 个任务的测评集，覆盖常规流程、并行分支、复杂拓扑、边界样本和对抗样本。评分器分三层：确定性检查（代码自动判）、轨迹评分（循环调用、顺序合理性）、LLM-as-Judge（需求匹配度）。\n\n具体数据：DAG 构建正确率 97%、子 Agent 任务完成率 94%、并行执行时间缩短 23%、Token 消耗降低 14%。\n\n关于测评方法论的详细说明，请跳转至《Agent 测评思路》文章继续讲解。' }
         ];
 
