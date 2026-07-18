@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>方案 C · 卡片网格式</title>
+    <link rel="stylesheet" href="资源/css/style.css">
+    <style>
+        body { background: #f8f9fc; }
+        .main { max-width: 900px; margin: 0 auto; padding: 100px 40px 60px; }
+        section { margin-bottom: 50px; }
+
+        /* ===== 卡片网格 ===== */
+        .project-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .project-card-mini {
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; cursor: pointer;
+            transition: all 0.3s; position: relative; overflow: hidden;
+        }
+        .project-card-mini:hover { border-color: #c7d2fe; box-shadow: 0 6px 20px rgba(79,70,229,0.08); transform: translateY(-2px); }
+        .project-card-mini .icon { font-size: 28px; margin-bottom: 8px; display: block; }
+        .project-card-mini h3 { font-size: 16px; font-weight: 700; color: #0f172a; margin: 0 0 4px; }
+        .project-card-mini .tag { font-size: 11px; font-weight: 600; color: #4f46e5; background: #eef2ff; padding: 2px 8px; border-radius: 4px; display: inline-block; }
+        .project-card-mini .status { font-size: 11px; font-weight: 600; color: #d97706; background: #fef3c7; padding: 2px 8px; border-radius: 4px; display: inline-block; }
+        .project-card-mini .preview {
+            max-height: 0; overflow: hidden; transition: max-height 0.4s ease, margin 0.3s;
+            font-size: 13px; color: #475569; line-height: 1.7; margin: 0;
+        }
+        .project-card-mini.expanded { border-color: #4f46e5; box-shadow: 0 0 0 2px rgba(79,70,229,0.1); }
+        .project-card-mini.expanded .preview { max-height: 300px; margin-top: 12px; }
+        .project-card-mini .preview a { color: #4f46e5; text-decoration: underline; font-weight: 600; display: inline-block; margin-top: 6px; }
+
+        /* ===== 文章卡片 ===== */
+        .article-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .article-card {
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px 22px; text-decoration: none; color: inherit; transition: all 0.2s;
+        }
+        .article-card:hover { border-color: #c7d2fe; }
+        .article-card .tag { font-size: 11px; font-weight: 600; color: #4f46e5; background: #eef2ff; padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 6px; }
+        .article-card h4 { font-size: 15px; font-weight: 700; color: #0f172a; margin: 0 0 4px; }
+        .article-card p { font-size: 13px; color: #64748b; margin: 0; }
+
+        .demo-badge {
+            display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
+            background: #eef2ff; color: #4f46e5; margin-bottom: 20px;
+        }
+        .back-link { font-size: 13px; color: #4f46e5; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <span class="demo-badge">方案 C · 卡片网格式（点击展开）</span>
+            <a href="index.html" class="back-link">← 返回原首页</a>
+        </div>
+
+        <!-- Hero -->
+        <section id="hero">
+            <div class="greeting">面试官，您好</div>
+            <h1>我是 <span class="highlight">程愚瀚</span></h1>
+            <p class="school">🎓 电子科技大学 · 软件工程 · 28届本科</p>
+            <p style="color: #64748b; font-size: 14px; margin-top: 8px;">Java 后端 → AI Agent · 喜欢从零思考架构</p>
+        </section>
+
+        <!-- 技术栈 -->
+        <section id="skills">
+            <div class="section-label">Skills</div>
+            <h2 class="section-title">技术栈</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px 24px;">
+                    <h3 style="font-size: 15px; font-weight: 700; color: #0f172a; margin: 0 0 8px;">☕ Java 后端</h3>
+                    <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">JUC · JVM · MySQL · Redis · Spring 全家桶 · 并发编程 · 系统设计</p>
+                </div>
+                <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px 24px;">
+                    <h3 style="font-size: 15px; font-weight: 700; color: #0f172a; margin: 0 0 8px;">🤖 AI Agent</h3>
+                    <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">RAG · Workflow 编排 · 长期记忆 · Agent 框架 · 工具使用与源码阅读</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 项目（卡片网格，点击展开） -->
+        <section id="projects">
+            <div class="section-label">Projects</div>
+            <h2 class="section-title">项目（点击卡片展开详情）</h2>
+            <div class="project-grid">
+                <div class="project-card-mini" onclick="toggleCard(this)">
+                    <span class="icon">📎</span>
+                    <h3>Agentic RAG</h3>
+                    <span class="tag">RAG</span>
+                    <div class="preview">
+                        从零搭建企业级 RAG 系统，经历四个阶段：基础建设 → Agentic RAG 升级 → 建立测评体系 → 通过测评验证优化效果。<br>
+                        <a href="项目/rag.html">查看完整项目 →</a>
+                    </div>
+                </div>
+                <div class="project-card-mini" onclick="toggleCard(this)">
+                    <span class="icon">📎</span>
+                    <h3>可视化任务编排与执行系统</h3>
+                    <span class="tag">Workflow</span>
+                    <div class="preview">
+                        通过 DAG 规划与执行解耦，解决 Agent 跳步遗漏问题。核心：KAHN 并行执行、节点级断点恢复、Sub Agent 分发。<br>
+                        <a href="项目/workflow.html">查看完整项目 →</a>
+                    </div>
+                </div>
+                <div class="project-card-mini" onclick="toggleCard(this)">
+                    <span class="icon">📎</span>
+                    <h3>MyClaw</h3>
+                    <span class="tag">长期记忆</span>
+                    <div class="preview">
+                        长期对话 AI，通过 Hindsight 实现四维记忆系统，通过人生体系设计让 AI 拥有主动发起话题、时间感知等能力。<br>
+                        <a href="项目/myclaw.html">查看完整项目 →</a>
+                    </div>
+                </div>
+                <div class="project-card-mini" onclick="toggleCard(this)">
+                    <span class="icon">📎</span>
+                    <h3>Tree <span class="status">思路中</span></h3>
+                    <span class="tag">Workflow 3.0</span>
+                    <div class="preview">
+                        将 DAG 多层树结构应用于长链路 Agent 任务，解决上下文溢出、遗忘漂移等问题。目前仅为思路阶段。<br>
+                        <a href="项目/tree.html">查看思路详情 →</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 文章精选 -->
+        <section id="articles">
+            <div class="section-label">Articles</div>
+            <h2 class="section-title">文章精选</h2>
+            <div class="article-grid">
+                <a href="文章/posts/RAG检索优化.html" class="article-card">
+                    <span class="tag">RAG</span>
+                    <h4>RAG 检索优化：从 68% 到 81.2%</h4>
+                    <p>全链路优化与消融实验的完整记录</p>
+                </a>
+                <a href="文章/posts/从VibeCoding到SDD.html" class="article-card">
+                    <span class="tag">方法论</span>
+                    <h4>从 VibeCoding 到 SDD</h4>
+                    <p>AI 辅助编程的实践与思考</p>
+                </a>
+                <a href="文章/posts/读ClaudeCode源码我学到的五个设计.html" class="article-card">
+                    <span class="tag">源码</span>
+                    <h4>读 Claude Code 源码学到的五个设计</h4>
+                    <p>压缩策略、checkpoint 机制与记忆策略</p>
+                </a>
+                <a href="文章/posts/agent测试.html" class="article-card">
+                    <span class="tag">测试</span>
+                    <h4>Agent 测试心得</h4>
+                    <p>如何量化评估 Agent 的表现</p>
+                </a>
+            </div>
+            <div style="text-align: right; margin-top: 12px;">
+                <a href="文章/" style="font-size: 13px; color: #4f46e5; text-decoration: none; font-weight: 600;">查看全部文章 →</a>
+            </div>
+        </section>
+
+        <!-- 联系方式 -->
+        <section id="contact">
+            <div class="section-label">Contact</div>
+            <h2 class="section-title">联系方式</h2>
+            <div class="contact-links">
+                <a href="tel:+8618111083906">📞 (+86) 18111083906</a>
+                <a href="mailto:2952486829@qq.com">📧 2952486829@qq.com</a>
+                <a href="https://github.com/cyh6213" target="_blank">🐙 GitHub</a>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleCard(el) {
+            var isExpanded = el.classList.contains('expanded');
+            document.querySelectorAll('.project-card-mini').forEach(function(c) { c.classList.remove('expanded'); });
+            if (!isExpanded) el.classList.add('expanded');
+        }
+    </script>
+</body>
+</html>
