@@ -594,7 +594,7 @@
                         并行执行逻辑：入度为 0 的节点可以直接执行，每执行一个节点就将其指向的节点的入度减一，于是就会有新的可执行节点出现。将节点分为一批一批执行，实现更大程度的并行。
                     </div>
                     <div style="text-align: center; margin-bottom: 12px;">
-                        <img src="../资源/images/kahn.png" alt="KAHN 算法示意图" style="max-width: 100%; border-radius: 10px; border: 1px solid #c7d2fe;" />
+                        <img src="../资源/images/kahn.png" alt="KAHN 算法示意图" style="max-width: 100%; border-radius: 10px; border: 1px solid #c7d2fe; cursor: pointer;" onclick="openModal(this.src)" />
                     </div>
                     <div style="font-size: 14px; color: #475569; line-height: 1.8;">
                         <strong>环路检测：</strong>记录每个节点的入度，不断移除入度为 0 的节点并更新下游入度。如果执行完毕后仍有节点入度不为 0，说明存在环路。
@@ -1068,6 +1068,54 @@
             window.addEventListener('scroll', updateProjectNav);
             window.addEventListener('load', updateProjectNav);
             updateProjectNav();
+        });
+    </script>
+
+    <!-- ===== 图片弹窗 ===== -->
+    <style>
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.6); z-index: 9999;
+            display: none; align-items: center; justify-content: center;
+            cursor: pointer;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-box {
+            background: #fff; border-radius: 16px; padding: 24px;
+            max-width: 92vw; max-height: 92vh; cursor: default;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .modal-box img {
+            max-width: 100%; max-height: 85vh; border-radius: 10px;
+            display: block;
+        }
+        .modal-close {
+            position: absolute; top: -14px; right: -14px;
+            width: 36px; height: 36px; border-radius: 50%;
+            background: #fff; border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            font-size: 20px; cursor: pointer; display: flex;
+            align-items: center; justify-content: center;
+            color: #64748b; transition: all 0.2s;
+        }
+        .modal-close:hover { color: #0f172a; transform: scale(1.1); }
+    </style>
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <img id="modalImage" src="" alt="大图预览" />
+        </div>
+    </div>
+    <script>
+        function openModal(src) {
+            document.getElementById('modalImage').src = src;
+            document.getElementById('modalOverlay').classList.add('show');
+        }
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('show');
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
         });
     </script>
 </body>

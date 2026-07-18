@@ -90,7 +90,9 @@ function closeAnnotation() {
     footerEl.classList.remove('shrink');
 }
 
-panelClose.addEventListener('click', closeAnnotation);
+if (panelClose) {
+    panelClose.addEventListener('click', closeAnnotation);
+}
 
 document.addEventListener('click', function(e) {
     const annotate = e.target.closest('.annotate');
@@ -103,14 +105,16 @@ document.addEventListener('click', function(e) {
     }
 });
 
-document.addEventListener('click', function(e) {
-    if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.closest('.annotate')) {
-        closeAnnotation();
-    }
-});
+if (panel) {
+    document.addEventListener('click', function(e) {
+        if (panel.classList.contains('open') && !panel.contains(e.target) && !e.target.closest('.annotate')) {
+            closeAnnotation();
+        }
+    });
 
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && panel.classList.contains('open')) {
-        closeAnnotation();
-    }
-});
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && panel.classList.contains('open')) {
+            closeAnnotation();
+        }
+    });
+}
