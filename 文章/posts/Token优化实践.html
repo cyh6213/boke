@@ -47,14 +47,16 @@
         .sidebar-sub.active .dot { background: #4f46e5; }
         .sidebar-sub-group { margin: 2px 0 6px 20px; border-left: 2px solid #e2e8f0; padding-left: 6px; }
         [id] { scroll-margin-top: 120px; }
-        .main { margin-right: 350px; }
+        .main { margin-right: 430px; }
 
         /* Speech Bubble */
         .speech-fixed {
             position: fixed;
-            right: 24px;
+            right: 2%;
             bottom: 80px;
-            width: 320px;
+            width: 28%;
+            min-width: 280px;
+            max-width: 400px;
             z-index: 100;
             transition: opacity 0.3s, visibility 0.3s;
         }
@@ -67,13 +69,14 @@
             background: #eef2ff;
             border-left: 4px solid #7c3aed;
             border-radius: 12px;
-            padding: 16px 20px;
+            padding: 12px 16px;
             font-size: 14px;
             color: #334155;
             line-height: 1.8;
-            max-height: 60vh;
-            overflow-y: auto;
-            white-space: pre-line;
+            max-height: calc(100vh - 140px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
         .speech-fixed .speech-label {
             display: inline-flex;
@@ -83,7 +86,76 @@
             font-weight: 700;
             color: #7c3aed;
             margin-bottom: 8px;
+            flex-shrink: 0;
         }
+
+        /* ===== 话术框内左右布局 ===== */
+        .speech-layout {
+            display: flex;
+            gap: 8px;
+            flex: 1;
+            min-height: 0;
+        }
+        .speech-nav {
+            width: 30%;
+            flex-shrink: 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .speech-nav::-webkit-scrollbar {
+            width: 3px;
+        }
+        .speech-nav::-webkit-scrollbar-thumb {
+            background: #c4b5fd;
+            border-radius: 3px;
+        }
+        .speech-nav-btn {
+            padding: 7px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4f46e5;
+            cursor: pointer;
+            background: #f8f7ff;
+            border: 1px solid #d4d0f0;
+            text-align: left;
+            transition: all 0.15s;
+            line-height: 1.4;
+            flex-shrink: 0;
+        }
+        .speech-nav-btn:hover {
+            background: #eef2ff;
+        }
+        .speech-nav-btn.active {
+            background: #4f46e5;
+            color: #fff;
+            border-color: #4f46e5;
+        }
+        .speech-content-panel {
+            width: 70%;
+            flex-shrink: 0;
+            overflow-y: auto;
+            font-size: 13px;
+            color: #334155;
+            line-height: 1.8;
+            padding-right: 2px;
+        }
+        .speech-content-panel::-webkit-scrollbar {
+            width: 3px;
+        }
+        .speech-content-panel::-webkit-scrollbar-thumb {
+            background: #c4b5fd;
+            border-radius: 3px;
+        }
+        .speech-content-placeholder {
+            color: #94a3b8;
+            font-size: 12px;
+            text-align: center;
+            padding: 20px 0;
+        }
+
         .toggle-speech-btn {
             position: fixed;
             bottom: 24px;
@@ -102,15 +174,33 @@
         }
         .toggle-speech-btn:hover { background: #eef2ff; border-color: #4f46e5; }
         .toggle-speech-btn.hidden { background: #4f46e5; color: #fff; border-color: #4f46e5; }
+
+        @media (max-width: 1400px) {
+            .speech-fixed { width: 30%; }
+        }
+        @media (max-width: 1200px) {
+            .speech-fixed { width: 32%; font-size: 13px; }
+            .speech-fixed .speech-bubble { padding: 12px 14px; }
+        }
+        @media (max-width: 768px) {
+            section { padding: 40px 20px !important; }
+            .main { margin-right: 0 !important; }
+        }
     </style>
 </head>
 <body>
     <nav class="top-nav">
-        <a href="../../" class="nav-brand">程愚瀚</a>
-        <div class="nav-links">
-            <a href="../../">首页</a>
-            <a href="../" class="active">文章</a>
-            <a href="../../项目/">项目</a>
+        <div class="nav-left">
+            <a href="../../" class="nav-brand">程愚瀚</a>
+            <div class="nav-links">
+                <a href="../../">首页</a>
+                <a href="../../index4.html">自我介绍</a>
+                <a href="../" class="active">文章</a>
+                <a href="../../项目/">项目</a>
+            </div>
+        </div>
+        <div class="nav-right">
+            <a href="../../问答.html" class="nav-qa">问答</a>
         </div>
     </nav>
     <aside class="sidebar">
@@ -281,8 +371,13 @@
     <!-- Speech Bubble -->
     <div class="speech-fixed hidden" id="speechFixed">
         <div class="speech-bubble">
-            <div class="speech-label">🎤</div>
-            <div id="speechContent"></div>
+            <div class="speech-label">🎤 <span id="speechLabel"></span></div>
+            <div class="speech-layout">
+                <div class="speech-nav" id="speechNav"></div>
+                <div class="speech-content-panel" id="speechContentPanel">
+                    <div class="speech-content-placeholder">选择左侧段落查看内容</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -292,33 +387,87 @@
     <footer>&copy; 2026 程愚瀚 · Built with &hearts;</footer>
     <script src="../../资源/js/main.js"></script>
     <script>
-        var speechContent = document.getElementById('speechContent');
-        var speechSections = [
-            { id: 'context-composition', text: '要优化 Token，首先得搞清楚一个 Agent 每次调用时，上下文到底由哪些部分组成。\n\n以 Claude Code 为例，上下文主要由五部分组成：工具定义（~17.6K，最大的头）、System Prompt（~2.6K）、记忆/上下文（1-10K）、对话历史+工具结果（30-40%）、用户输入（<5%）。\n\n工具定义是最大的单一消耗者，所以优化重心应该放在工具定义和对话历史上。' },
-            { id: 's1', text: '工具定义是最大的头。我的做法是按 SubAgent 身份绑定工具，调研 Agent 只绑搜索工具，审查 Agent 只绑代码检查工具，执行 Agent 只绑执行命令工具。\n\n单 Agent ReAct 一次调用加载所有工具的 System Prompt 约 9K，Sub Agent 只加载自己相关的约 3K，单次调用降低约 67%。' },
-            { id: 's3', text: '对话历史层的优化我采用了动态 Schema 格式化输出。Plan Agent 在生成 DAG 时为每个节点定义 output_schema，子 Agent 按 schema 输出结构化结果。\n\n格式化输出砍掉了 60-80% 的冗余 token，叠加压缩策略可控制在原始输出的 10-20%。' },
-            { id: 's4', text: '架构层面，Workflow 的 SubAgent 方案带来了"天生如此"的优势。\n\n单 Agent 每次调用 9K，SubAgent 每次 3K。而且节点间上下文重置——SubAgent B 不会带着 SubAgent A 的历史重新开始。\n\n单次调用降低 67%，完整任务降低 41%。' }
-        ];
+        var speechData = {
+            'context-composition': {
+                label: '上下文构成',
+                sections: [{
+                    title: '上下文构成分析',
+                    content: '要优化 Token，首先得搞清楚一个 Agent 每次调用时，上下文到底由哪些部分组成。<br><br>以 Claude Code 为例，上下文主要由五部分组成：工具定义（~17.6K，最大的头）、System Prompt（~2.6K）、记忆/上下文（1-10K）、对话历史+工具结果（30-40%）、用户输入（<5%）。<br><br>工具定义是最大的单一消耗者，所以优化重心应该放在工具定义和对话历史上。'
+                }]
+            },
+            's1': {
+                label: '工具定义优化',
+                sections: [{
+                    title: '工具定义优化',
+                    content: '工具定义是最大的头。我的做法是按 SubAgent 身份绑定工具，调研 Agent 只绑搜索工具，审查 Agent 只绑代码检查工具，执行 Agent 只绑执行命令工具。<br><br>单 Agent ReAct 一次调用加载所有工具的 System Prompt 约 9K，Sub Agent 只加载自己相关的约 3K，单次调用降低约 67%。'
+                }]
+            },
+            's3': {
+                label: '对话历史优化',
+                sections: [{
+                    title: '对话历史优化',
+                    content: '对话历史层的优化我采用了动态 Schema 格式化输出。Plan Agent 在生成 DAG 时为每个节点定义 output_schema，子 Agent 按 schema 输出结构化结果。<br><br>格式化输出砍掉了 60-80% 的冗余 token，叠加压缩策略可控制在原始输出的 10-20%。'
+                }]
+            },
+            's4': {
+                label: '架构层面优势',
+                sections: [{
+                    title: '架构层面优势',
+                    content: '架构层面，Workflow 的 SubAgent 方案带来了"天生如此"的优势。<br><br>单 Agent 每次调用 9K，SubAgent 每次 3K。而且节点间上下文重置——SubAgent B 不会带着 SubAgent A 的历史重新开始。<br><br>单次调用降低 67%，完整任务降低 41%。'
+                }]
+            }
+        };
+
+        var speechNav = document.getElementById('speechNav');
+        var speechContentPanel = document.getElementById('speechContentPanel');
+        var speechLabel = document.getElementById('speechLabel');
+        var currentSectionKey = '';
+
+        function renderSections(sections) {
+            var navHtml = '';
+            var contentHtml = '';
+            for (var i = 0; i < sections.length; i++) {
+                var activeClass = i === 0 ? ' active' : '';
+                navHtml += '<div class="speech-nav-btn' + activeClass + '" onclick="selectSection(' + i + ')">' + sections[i].title + '</div>';
+                contentHtml += '<div class="speech-section-content" data-index="' + i + '" style="display:' + (i === 0 ? 'block' : 'none') + '">' + sections[i].content + '</div>';
+            }
+            speechNav.innerHTML = navHtml;
+            speechContentPanel.innerHTML = contentHtml || '<div class="speech-content-placeholder">选择左侧段落查看内容</div>';
+        }
+
+        function selectSection(index) {
+            var btns = document.querySelectorAll('.speech-nav-btn');
+            var contents = document.querySelectorAll('.speech-section-content');
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].classList.toggle('active', i === index);
+                if (contents[i]) contents[i].style.display = i === index ? 'block' : 'none';
+            }
+        }
+
+        function switchTo(key) {
+            if (key === currentSectionKey) return;
+            currentSectionKey = key;
+            var data = speechData[key];
+            if (speechLabel) speechLabel.innerHTML = data.label;
+            renderSections(data.sections);
+        }
 
         function updateSpeechOnScroll() {
             var scrollY = window.scrollY + 180;
             var current = '';
             if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100) {
-                current = speechSections[speechSections.length - 1];
+                current = 's4';
             } else {
-                for (var i = 0; i < speechSections.length; i++) {
-                    var el = document.getElementById(speechSections[i].id);
+                var keys = ['context-composition', 's1', 's3', 's4'];
+                for (var i = 0; i < keys.length; i++) {
+                    var el = document.getElementById(keys[i]);
                     if (el && el.offsetTop <= scrollY) {
-                        current = speechSections[i];
+                        current = keys[i];
                     }
                 }
-                if (!current && speechSections.length > 0) {
-                    current = speechSections[0];
-                }
+                if (!current) current = keys[0];
             }
-            if (current && speechContent) {
-                speechContent.innerHTML = '<strong style="font-size:13px;color:#4f46e5;display:block;margin-bottom:6px;">' + current.id + '</strong>' + current.text.replace(/\n/g, '<br>');
-            }
+            if (current) switchTo(current);
         }
 
         window.addEventListener('scroll', updateSpeechOnScroll);

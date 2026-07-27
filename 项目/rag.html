@@ -22,9 +22,11 @@
         /* Speech Bubble */
         .speech-fixed {
             position: fixed;
-            right: 24px;
+            right: 2%;
             bottom: 80px;
-            width: 320px;
+            width: 28%;
+            min-width: 280px;
+            max-width: 400px;
             z-index: 100;
             transition: opacity 0.3s, visibility 0.3s;
         }
@@ -37,12 +39,14 @@
             background: #eef2ff;
             border-left: 4px solid #7c3aed;
             border-radius: 12px;
-            padding: 16px 20px;
+            padding: 12px 16px;
             font-size: 14px;
             color: #334155;
             line-height: 1.8;
-            max-height: 60vh;
-            overflow-y: auto;
+            max-height: calc(100vh - 140px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
         .speech-fixed .speech-label {
             display: inline-flex;
@@ -52,7 +56,76 @@
             font-weight: 700;
             color: #7c3aed;
             margin-bottom: 8px;
+            flex-shrink: 0;
         }
+
+        /* ===== 话术框内左右布局 ===== */
+        .speech-layout {
+            display: flex;
+            gap: 8px;
+            flex: 1;
+            min-height: 0;
+        }
+        .speech-nav {
+            width: 30%;
+            flex-shrink: 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .speech-nav::-webkit-scrollbar {
+            width: 3px;
+        }
+        .speech-nav::-webkit-scrollbar-thumb {
+            background: #c4b5fd;
+            border-radius: 3px;
+        }
+        .speech-nav-btn {
+            padding: 7px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4f46e5;
+            cursor: pointer;
+            background: #f8f7ff;
+            border: 1px solid #d4d0f0;
+            text-align: left;
+            transition: all 0.15s;
+            line-height: 1.4;
+            flex-shrink: 0;
+        }
+        .speech-nav-btn:hover {
+            background: #eef2ff;
+        }
+        .speech-nav-btn.active {
+            background: #4f46e5;
+            color: #fff;
+            border-color: #4f46e5;
+        }
+        .speech-content-panel {
+            width: 70%;
+            flex-shrink: 0;
+            overflow-y: auto;
+            font-size: 13px;
+            color: #334155;
+            line-height: 1.8;
+            padding-right: 2px;
+        }
+        .speech-content-panel::-webkit-scrollbar {
+            width: 3px;
+        }
+        .speech-content-panel::-webkit-scrollbar-thumb {
+            background: #c4b5fd;
+            border-radius: 3px;
+        }
+        .speech-content-placeholder {
+            color: #94a3b8;
+            font-size: 12px;
+            text-align: center;
+            padding: 20px 0;
+        }
+
         .toggle-speech-btn {
             position: fixed;
             bottom: 24px;
@@ -71,17 +144,36 @@
         }
         .toggle-speech-btn:hover { background: #eef2ff; border-color: #4f46e5; }
         .toggle-speech-btn.hidden { background: #4f46e5; color: #fff; border-color: #4f46e5; }
-        .main { margin-right: 350px; }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 1400px) {
+            .speech-fixed { width: 30%; }
+        }
+        @media (max-width: 1200px) {
+            .speech-fixed { width: 32%; font-size: 13px; }
+            .speech-fixed .speech-bubble { padding: 12px 14px; }
+        }
+        @media (max-width: 768px) {
+            section { padding: 40px 20px !important; }
+            .main { margin-right: 0 !important; }
+        }
+        .main { margin-right: 32%; }
     </style>
 </head>
 <body>
 
     <nav class="top-nav">
-        <a href="../" class="nav-brand">程愚瀚</a>
-        <div class="nav-links">
-            <a href="../">首页</a>
-            <a href="../文章/">文章</a>
-            <a href="./" class="active">项目</a>
+        <div class="nav-left">
+            <a href="../" class="nav-brand">程愚瀚</a>
+            <div class="nav-links">
+                <a href="../">首页</a>
+                <a href="../index4.html">自我介绍</a>
+                <a href="../文章/">文章</a>
+                <a href="./" class="active">项目</a>
+            </div>
+        </div>
+        <div class="nav-right">
+            <a href="../问答.html" class="nav-qa">问答</a>
         </div>
     </nav>
 
@@ -931,8 +1023,13 @@
         <!-- Speech Bubble -->
         <div class="speech-fixed hidden" id="speechFixed">
             <div class="speech-bubble">
-                <div class="speech-label">🎤</div>
-                <div id="speechContent"></div>
+                <div class="speech-label">🎤 <span id="speechLabel"></span></div>
+                <div class="speech-layout">
+                    <div class="speech-nav" id="speechNav"></div>
+                    <div class="speech-content-panel" id="speechContentPanel">
+                        <div class="speech-content-placeholder">选择左侧段落查看内容</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -946,14 +1043,95 @@
 
     <script src="../资源/js/main.js"></script>
     <script>
-        // Speech bubble scroll switching
-        var speechContent = document.getElementById('speechContent');
-        var speechSections = [
-            { id: 'origin', text: '这个项目主要有两个亮点，第一点就是针对召回率和幻觉率的优化，每一个优化过程都进行了测试，确保优化的策略是有效的。第二亮点是智能路由，首先分离出不需要向量检索、可以直接回答的问题，在一定程度上可以减少耗时。其次这个智能路由解决的问题就是针对复杂问题，提供了一些个性化的检索策略。' }
-        ];
+        // ===== 提示词数据 =====
+        var speechData = {
+            origin: {
+                label: '🎤 项目概述',
+                sections: [
+                    { title: '项目介绍（三个阶段）', content: '关于 企业知识库RAG 项目，这个项目主要分为了三个阶段。<br><br>第一阶段主要围绕企业知识库这个场景，搭建 RAG 的基础链路，学习各种策略来提升召回率、降低幻觉率。同时基于企业知识库的实际需求，做了文档上传优化、权限控制等工程化的工作。<br><br>第二阶段是将 RAG 变成了一个 Agentic RAG，主要做了两件事情，一个是智能路由，尝试对简单问题进行分流，减少不必要的向量检索；另一个是针对不同任务设计针对性的检索策略，比如需要多次检索的问题、对比类的问题等。<br><br>前两个阶段我其实没有系统的测评过，所有的优化都是"看起来有提升就觉得有效"，但实际提升了多少我并不清楚。所以在阶段三，我系统性地搭建了测评体系，对检索和生成两个环节分别做了多轮消融实验，让每一次优化都能看到具体的数据变化。也就是在这里我发现了一个问题，学到的最关键的一点就是，不是看起来合理的优化策略就真的有效，要基于实际数据做评估。' }
+                ]
+            },
+            'recall-opt': {
+                label: '🎤 召回率优化',
+                sections: [
+                    { title: 'RAG 基础链路', content: 'RAG主要分为三部，包括上传、检索、排序，如果再加上生成就是四步。<br><br><strong>上传阶段</strong>，主要就是文件的解析和分块策略。我的项目中实现的是两级四层的语义分块策略，我也了解其他的策略，但成本都比较高。我还做了并发上传和异步的文件解析，来减少上传时间，提升用户体验。<br><br><strong>检索阶段</strong>，主要是问题改写、召回策略。问题改写在智能路由那里针对不同的问题有不同的改写策略。召回策略我使用的是Milvus数据库，BAAI/bge-m3的向量模型，使用稠密向量 + 稀疏向量作为召回策略。在这一步将 recall_cap@5 提升到了76.66%。<br><br><strong>排序阶段</strong>，主要有三种排序方式，包括根据两种召回按照权重排序，按照排名进行排序，以及通过Rerank重排序。最后选择的是Rerank重排序将recall_cap@5 最终提升到了81.2%。<br><br><strong>生成阶段</strong>，我主要通过Prompt优化、结构化输出约束、低分拒答、幻觉检测机制、调低temperature、top-p等五个策略来减低他的幻觉率。最后使用了RAGAS框架，对忠实度、答案相关性等参数进行了测评。' }
+                ]
+            },
+            router: {
+                label: '🎤 智能路由',
+                sections: [
+                    { title: '智能路由', content: '智能路由主要有两个目的，一方面是希望能过滤出不需要向量检索的问题，以此来减少查询API的调用和缩短流程时间；另一方面是通过对不同类型的问题制定针对性的检索策略，以此提高检索出来内容和回答的质量。<br><br>而要实现这两个目标，需要做两件事情，第一件是问题分类，第二件是问题处理。<br><br><strong>问题分类</strong>我设计了两层机制，包括通过关键词和正则匹配快速过滤简单（闲聊、纯计算）问题，通过模型来对问题进行分类。<br><br><strong>针对第一个目标</strong>，实际测评下来发现这个方案有三个问题，第一检索管线只占总耗时的一小部分，第二简单问题的占比也不高，第三如果通过规则进行问题分类的准确度较低，会让不是简单问题的问题跳过检索，而如果使用模型来进行分类，虽然可以提高分类的准确率，但是耗时增加大于缩短，得不偿失。所以让我意识到：优化不是看起来合理就行，需要有测试数据验证。<br><br><strong>针对第二个目标</strong>，不同类型查询的处理差异主要体现在检索策略、改写深度、上下文组装方式和生成策略四个维度。我举个例子：比如问题是产品A和B的区别是什么？就会执行两次独立检索分别放入A池和B池。单边缺失标注信息不足，禁止用模型知识填补空白。输出按维度对比表格。再比如假如问题是程愚瀚和鲁迅的关系是什么，就需要执行多次向量检索，每步基于前序结论动态构建新查询——程愚瀚是电子科大的学生，然后电子科大又有什么人才，然后就可以和鲁迅联系上了。在检索使用较低阈值（0.6）做宽召回。在生成时要求标注推理步骤。当然，开启之后耗时就会长很多。' },
+                    { title: '案例：智能路由的教训', content: '在智能路由这里，我原本想通过关键词匹配拦截简单问题来跳过向量检索，从而节约时间。但实际测评下来发现这个方案有三个问题，<br><br>第一，检索管线只占总耗时的一小部分；<br><br>第二，简单问题的占比也不高；<br><br>第三，如果通过规则进行问题分类的准确度较低，会让不是简单问题的问题跳过检索，而如果使用模型来进行分类，虽然可以提高分类的准确率，但是耗时增加大于缩短，得不偿失。<br><br>所以让我意识到：<strong>优化不是看起来合理就行，需要有测试数据验证。</strong>' }
+                ]
+            },
+            permission: {
+                label: '🎤 权限控制',
+                sections: [
+                    { title: '权限控制', content: '权限控制主要分为三个方面，登录控制、角色控制、标签控制。<br><br><strong>登录控制</strong>主要是通过Access Token作为核心通行证，有效期1小时，减小泄漏风险，通过Refresh Token作为长期凭证，有效期7天，泄漏也无法直接调用接口，可通过Redis快速吊销。<br><br><strong>角色控制</strong>则是通过Spring Security，校验用户角色是否有权访问当前接口。<br><br><strong>标签控制</strong>则是在访问文件时，通过查看用户标签和文章标签有交集，来判断用户是否有权访问文件。' }
+                ]
+            },
+            mcp: {
+                label: '🎤 MCP',
+                sections: [
+                    { title: 'MCP', content: '这里主要有两个部分，为什么要实现mcp化，和怎么实现mcp化。<br><br><strong>为什么要实现mcp化</strong>：公司员工比如程序员他在写代码的时候，会使用各类agent来辅助，所以实现mcp化之后，这些agent访问企业内部的私域知识时，就不需要员工手动检索，agent可以自己去检索。<br><br><strong>至于怎么将他MCP化</strong>其实非常简单，只需要项目中增加一个spring-ai-mcp-server-webmvc依赖即可。项目启动后自动暴露一个MCP端点，对外提供两个标准方法：listTools（告知客户端有哪些可用工具）和callTool（执行实际检索）。员工在Agent端的MCP配置文件中填入本服务的地址（如http://公司内网IP:8080/mcp），Agent就能自动发现searchKnowledge工具并调用。' }
+                ]
+            }
+        };
+
+        var speechNav = document.getElementById('speechNav');
+        var speechContentPanel = document.getElementById('speechContentPanel');
+        var speechLabel = document.getElementById('speechLabel');
+        var currentSectionKey = 'origin';
+
+        // 渲染导航按钮 + 内容面板
+        function renderSections(sections) {
+            var navHtml = '';
+            var contentHtml = '';
+            for (var i = 0; i < sections.length; i++) {
+                var activeClass = i === 0 ? ' active' : '';
+                navHtml += '<div class="speech-nav-btn' + activeClass + '" onclick="selectSection(' + i + ')">' + sections[i].title + '</div>';
+                contentHtml += '<div class="speech-section-content" data-index="' + i + '" style="display:' + (i === 0 ? 'block' : 'none') + '">' + sections[i].content + '</div>';
+            }
+            speechNav.innerHTML = navHtml;
+            speechContentPanel.innerHTML = contentHtml || '<div class="speech-content-placeholder">选择左侧段落查看内容</div>';
+        }
+
+        // 选择某个段落
+        function selectSection(index) {
+            var btns = document.querySelectorAll('.speech-nav-btn');
+            var contents = document.querySelectorAll('.speech-section-content');
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].classList.toggle('active', i === index);
+                if (contents[i]) contents[i].style.display = i === index ? 'block' : 'none';
+            }
+        }
+
+        // 切换到某组提示词
+        function switchTo(key) {
+            if (key === currentSectionKey) return;
+            currentSectionKey = key;
+            var data = speechData[key];
+            if (speechLabel) speechLabel.innerHTML = data.label;
+            renderSections(data.sections);
+        }
+
+        // 初始显示
+        renderSections(speechData.origin.sections);
+        if (speechLabel) {
+            speechLabel.innerHTML = speechData.origin.label;
+        }
+
+        // 滚动切换
         function updateSpeechOnScroll() {
             var current = null;
             var scrollY = window.scrollY;
+            var speechSections = [
+                { id: 'origin', key: 'origin' },
+                { id: 'recall-opt', key: 'recall-opt' },
+                { id: 'router', key: 'router' },
+                { id: 'permission', key: 'permission' },
+                { id: 'mcp', key: 'mcp' }
+            ];
             for (var i = 0; i < speechSections.length; i++) {
                 var el = document.getElementById(speechSections[i].id);
                 if (el) {
@@ -965,10 +1143,8 @@
                     }
                 }
             }
-            if (current && speechContent) {
-                speechContent.textContent = current.text;
-            } else if (speechContent) {
-                speechContent.textContent = '';
+            if (current) {
+                switchTo(current.key);
             }
         }
         window.addEventListener('scroll', updateSpeechOnScroll);

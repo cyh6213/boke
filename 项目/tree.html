@@ -34,31 +34,35 @@
         .sidebar-sub.active .dot { background: #4f46e5; }
         .sidebar-sub-group { margin: 2px 0 6px 20px; border-left: 2px solid #e2e8f0; padding-left: 6px; }
         [id] { scroll-margin-top: 120px; }
-        .main { margin-right: 350px; }
+        .main { margin-right: 430px; }
 
-        .speech-bubble-wrap {
+        .speech-fixed {
             position: fixed;
-            right: 24px;
-            top: 80px;
-            width: 320px;
+            right: 2%;
+            bottom: 80px;
+            width: 28%;
+            min-width: 280px;
+            max-width: 400px;
+            z-index: 100;
             transition: opacity 0.3s, visibility 0.3s;
-            z-index: 50;
         }
-        .speech-bubble-wrap.hidden {
+        .speech-fixed.hidden {
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
         }
-        .speech-bubble {
+        .speech-fixed .speech-bubble {
             background: #eef2ff;
             border-left: 4px solid #7c3aed;
             border-radius: 12px;
-            padding: 20px 24px;
+            padding: 12px 16px;
             font-size: 14px;
             color: #334155;
             line-height: 1.8;
-            position: sticky;
-            top: 80px;
+            max-height: calc(100vh - 140px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
         .speech-bubble .speech-label {
             display: inline-flex;
@@ -95,30 +99,100 @@
             border-color: #4f46e5;
         }
 
-        @media (max-width: 1600px) {
-            .speech-bubble-wrap { width: 260px; }
+        /* ===== 话术框内左右布局 ===== */
+        .speech-layout {
+            display: flex;
+            gap: 8px;
+            flex: 1;
+            min-height: 0;
         }
+        .speech-nav {
+            width: 30%;
+            flex-shrink: 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .speech-nav::-webkit-scrollbar {
+            width: 3px;
+        }
+        .speech-nav::-webkit-scrollbar-thumb {
+            background: #c4b5fd;
+            border-radius: 3px;
+        }
+        .speech-nav-btn {
+            padding: 7px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4f46e5;
+            cursor: pointer;
+            background: #f8f7ff;
+            border: 1px solid #d4d0f0;
+            text-align: left;
+            transition: all 0.15s;
+            line-height: 1.4;
+            flex-shrink: 0;
+        }
+        .speech-nav-btn:hover {
+            background: #eef2ff;
+        }
+        .speech-nav-btn.active {
+            background: #4f46e5;
+            color: #fff;
+            border-color: #4f46e5;
+        }
+        .speech-content-panel {
+            width: 70%;
+            flex-shrink: 0;
+            overflow-y: auto;
+            font-size: 13px;
+            color: #334155;
+            line-height: 1.8;
+            padding-right: 2px;
+        }
+        .speech-content-panel::-webkit-scrollbar {
+            width: 3px;
+        }
+        .speech-content-panel::-webkit-scrollbar-thumb {
+            background: #c4b5fd;
+            border-radius: 3px;
+        }
+        .speech-content-placeholder {
+            color: #94a3b8;
+            font-size: 12px;
+            text-align: center;
+            padding: 20px 0;
+        }
+
         @media (max-width: 1400px) {
-            .speech-bubble-wrap { width: 200px; font-size: 13px; }
-            .speech-bubble-wrap .speech-bubble { padding: 14px 16px; }
+            .speech-fixed { width: 30%; }
         }
         @media (max-width: 1200px) {
-            .speech-bubble-wrap { width: 160px; font-size: 12px; }
-            .speech-bubble-wrap .speech-bubble { padding: 10px 12px; line-height: 1.6; }
+            .speech-fixed { width: 32%; font-size: 13px; }
+            .speech-fixed .speech-bubble { padding: 12px 14px; }
         }
-        @media (max-width: 900px) {
-            .speech-bubble-wrap { display: none; }
+        @media (max-width: 768px) {
+            section { padding: 40px 20px !important; }
+            .main { margin-right: 0 !important; }
         }
     </style>
 </head>
 <body>
 
     <nav class="top-nav">
-        <a href="../" class="nav-brand">程愚瀚</a>
-        <div class="nav-links">
-            <a href="../">首页</a>
-            <a href="../文章/">文章</a>
-            <a href="./" class="active">项目</a>
+        <div class="nav-left">
+            <a href="../" class="nav-brand">程愚瀚</a>
+            <div class="nav-links">
+                <a href="../">首页</a>
+                <a href="../index4.html">自我介绍</a>
+                <a href="../文章/">文章</a>
+                <a href="./" class="active">项目</a>
+            </div>
+        </div>
+        <div class="nav-right">
+            <a href="../问答.html" class="nav-qa">问答</a>
         </div>
     </nav>
 
@@ -439,10 +513,17 @@
         </div>
 
         <!-- Speech Bubble -->
-        <div class="speech-bubble-wrap hidden" id="speechWrap">
+        <div class="speech-fixed hidden" id="speechWrap">
             <div class="speech-bubble">
-                <div class="speech-label">🎤</div>
-                <div id="speechContent">滚动到各个章节查看对应话术</div>
+                <div class="speech-bubble-header">
+                    <div class="speech-label">🎤 <span id="speechLabel"></span></div>
+                </div>
+                <div class="speech-layout">
+                    <div class="speech-nav" id="speechNav"></div>
+                    <div class="speech-content-panel" id="speechContentPanel">
+                        <div class="speech-content-placeholder">选择左侧段落查看内容</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -456,40 +537,99 @@
 
     <script src="../资源/js/main.js"></script>
     <script>
-        var speechContent = document.getElementById('speechContent');
-        var speechSections = [
-            { id: 'origin', label: '项目来源', text: '之前做过代码智能体、浏览器操作智能体、深度调研类智能体，发现长链路 Agent 普遍有推理漂移、任务遗忘的问题。我忽然想到 Workflow 的 DAG 图结构是不是可以改造成长链路 Agent 的底层框架——按节点独立存储，外层做摘要、内层保留细节，正好解决"上下文太长导致关键信息被淹没"这个核心问题。' },
-            { id: 'problem', label: '长链路智能体的问题', text: '长链路智能体面临的核心问题：上下文溢出、遗忘衰减、推理漂移——这些都是"上下文太长"导致的同类问题。此外还有错误累计、循环冗余检索、异常不可自愈等。我的判断是：DAG 图的按节点存储 + 分层摘要正好可以解决这类问题。' },
-            { id: 'solution', label: '多层 DAG 树', text: '核心思路是多层 DAG 树：外层 DAG 是 Agent 能看到的完整任务结构，每个节点是一个抽象的任务块；点击展开后是内层子 DAG，记录了这个任务块的所有细节操作。最底层是叶子节点，记录某一步具体做了什么。这样既保证了任务初心始终可见，又保留了完整可审计的执行轨迹。另外还有两个创新：运行时错误标记（错误在运行时实时标记而不是事后扫描）、固定主干+动态分支（遇到问题时产生分支切换路径）。' },
-            { id: 'advantage', label: '核心优势', text: '多层 DAG 树天然符合渐进式输出，Agent 始终能看到任务全貌；节点独立存储解决上下文溢出问题，出现异常时可以从任意节点回溯；决策点可见让执行过程完全可审计，复盘时查看分支就能定位问题点；运行时错误标记可以精确知道"哪一步执行了什么、因为什么失败"。' },
-            { id: 'deepsearch', label: '场景：Deep Search', text: '选 Deep Search 作为第一个验证场景，因为它对 Agent 自身执行能力要求不高，但对长链路稳定性要求很高。具体来看，通用长链路问题在 Deep Search 下会变成：目标漂移→搜索方向偏离主题、上下文衰减→早期结果被淹没、错误累积→一次错误导致全错等。' },
-            { id: 'compare', label: '与现有方案对比', text: '调研了几个主流方案：dzhng/deep-research 用 depth/breadth 参数解决深度/广度权衡；DeerFlow v1 用多角色分工解决上下文衰减；ODS 用推理模型本身的能力解决方向选择。Tree 的差异化是不依赖特定模型能力，通过 DAG 树结构本身解决问题——"用结构保证稳定性"，而且过程完全透明可审计。' },
-            { id: 'future', label: '未来方向', text: '短期先完成多层 DAG 树的数据结构设计和 Deep Search Demo，实现运行时错误标记。中期做固定主干+动态分支的执行引擎和决策分支可视化。长期来看，希望能从失败路径自动学习优化策略，最终把 Tree 做成一个开源的长链路 Agent 底层框架。' }
-        ];
+        // ===== 提示词数据（可折叠段落） =====
+        var speechData = {
+            'origin': { label: '🎤 项目来源', sections: [
+                { title: '项目来源', content: '之前做过代码智能体、浏览器操作智能体、深度调研类智能体，发现长链路 Agent 普遍有推理漂移、任务遗忘的问题。我忽然想到 Workflow 的 DAG 图结构是不是可以改造成长链路 Agent 的底层框架——按节点独立存储，外层做摘要、内层保留细节，正好解决"上下文太长导致关键信息被淹没"这个核心问题。' }
+            ]},
+            'problem': { label: '🎤 长链路智能体的问题', sections: [
+                { title: '长链路智能体的问题', content: '长链路智能体面临的核心问题：上下文溢出、遗忘衰减、推理漂移——这些都是"上下文太长"导致的同类问题。此外还有错误累计、循环冗余检索、异常不可自愈等。我的判断是：DAG 图的按节点存储 + 分层摘要正好可以解决这类问题。' }
+            ]},
+            'solution': { label: '🎤 多层 DAG 树', sections: [
+                { title: '多层 DAG 树', content: '核心思路是多层 DAG 树：外层 DAG 是 Agent 能看到的完整任务结构，每个节点是一个抽象的任务块；点击展开后是内层子 DAG，记录了这个任务块的所有细节操作。最底层是叶子节点，记录某一步具体做了什么。这样既保证了任务初心始终可见，又保留了完整可审计的执行轨迹。另外还有两个创新：运行时错误标记（错误在运行时实时标记而不是事后扫描）、固定主干+动态分支（遇到问题时产生分支切换路径）。' }
+            ]},
+            'advantage': { label: '🎤 核心优势', sections: [
+                { title: '核心优势', content: '多层 DAG 树天然符合渐进式输出，Agent 始终能看到任务全貌；节点独立存储解决上下文溢出问题，出现异常时可以从任意节点回溯；决策点可见让执行过程完全可审计，复盘时查看分支就能定位问题点；运行时错误标记可以精确知道"哪一步执行了什么、因为什么失败"。' }
+            ]},
+            'deepsearch': { label: '🎤 场景：Deep Search', sections: [
+                { title: '场景：Deep Search', content: '选 Deep Search 作为第一个验证场景，因为它对 Agent 自身执行能力要求不高，但对长链路稳定性要求很高。具体来看，通用长链路问题在 Deep Search 下会变成：目标漂移→搜索方向偏离主题、上下文衰减→早期结果被淹没、错误累积→一次错误导致全错等。' }
+            ]},
+            'compare': { label: '🎤 与现有方案对比', sections: [
+                { title: '与现有方案对比', content: '调研了几个主流方案：dzhng/deep-research 用 depth/breadth 参数解决深度/广度权衡；DeerFlow v1 用多角色分工解决上下文衰减；ODS 用推理模型本身的能力解决方向选择。Tree 的差异化是不依赖特定模型能力，通过 DAG 树结构本身解决问题——"用结构保证稳定性"，而且过程完全透明可审计。' }
+            ]},
+            'future': { label: '🎤 未来方向', sections: [
+                { title: '未来方向', content: '短期先完成多层 DAG 树的数据结构设计和 Deep Search Demo，实现运行时错误标记。中期做固定主干+动态分支的执行引擎和决策分支可视化。长期来看，希望能从失败路径自动学习优化策略，最终把 Tree 做成一个开源的长链路 Agent 底层框架。' }
+            ]}
+        };
+
+        var speechNav = document.getElementById('speechNav');
+        var speechContentPanel = document.getElementById('speechContentPanel');
+        var speechLabel = document.getElementById('speechLabel');
+        var currentSectionKey = '';
+
+        function renderSections(sections) {
+            var navHtml = '';
+            var contentHtml = '';
+            for (var i = 0; i < sections.length; i++) {
+                var activeClass = i === 0 ? ' active' : '';
+                navHtml += '<div class="speech-nav-btn' + activeClass + '" onclick="selectSection(' + i + ')">' + sections[i].title + '</div>';
+                contentHtml += '<div class="speech-section-content" data-index="' + i + '" style="display:' + (i === 0 ? 'block' : 'none') + '">' + sections[i].content + '</div>';
+            }
+            speechNav.innerHTML = navHtml;
+            speechContentPanel.innerHTML = contentHtml || '<div class="speech-content-placeholder">选择左侧段落查看内容</div>';
+        }
+
+        function selectSection(index) {
+            var btns = document.querySelectorAll('.speech-nav-btn');
+            var contents = document.querySelectorAll('.speech-section-content');
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].classList.toggle('active', i === index);
+                if (contents[i]) contents[i].style.display = i === index ? 'block' : 'none';
+            }
+        }
+
+        function switchTo(key) {
+            if (key === currentSectionKey) return;
+            currentSectionKey = key;
+            var data = speechData[key];
+            if (speechLabel) speechLabel.innerHTML = data.label;
+            renderSections(data.sections);
+        }
+
+        // 初始显示第一个章节
+        if (speechData && speechData['origin']) {
+            var firstData = speechData['origin'];
+            if (speechLabel) speechLabel.innerHTML = firstData.label;
+            renderSections(firstData.sections);
+        }
+
+        var keys = ['origin', 'problem', 'solution', 'advantage', 'deepsearch', 'compare', 'future'];
 
         function updateSpeechOnScroll() {
             var scrollY = window.scrollY + 180;
-            var current = '';
+            var currentKey = '';
             if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100) {
-                current = speechSections[speechSections.length - 1];
+                currentKey = keys[keys.length - 1];
             } else {
-                for (var i = 0; i < speechSections.length; i++) {
-                    var el = document.getElementById(speechSections[i].id);
+                for (var i = 0; i < keys.length; i++) {
+                    var el = document.getElementById(keys[i]);
                     if (el && el.offsetTop <= scrollY) {
-                        current = speechSections[i];
+                        currentKey = keys[i];
                     }
                 }
-                if (!current && speechSections.length > 0) {
-                    current = speechSections[0];
+                if (!currentKey && keys.length > 0) {
+                    currentKey = keys[0];
                 }
             }
-            if (current && speechContent) {
-                speechContent.innerHTML = '<strong style="font-size:13px;color:#4f46e5;display:block;margin-bottom:6px;">' + current.label + '</strong>' + current.text.replace(/\n/g, '<br>');
+            if (currentKey) {
+                switchTo(currentKey);
             }
         }
+
         window.addEventListener('scroll', updateSpeechOnScroll);
         window.addEventListener('load', updateSpeechOnScroll);
 
+        // Toggle
         var toggleBtn = document.getElementById('toggleSpeechBtn');
         var speechWrap = document.getElementById('speechWrap');
         if (toggleBtn && speechWrap) {

@@ -37,29 +37,33 @@
         .sidebar-sub-group { margin: 2px 0 6px 20px; border-left: 2px solid #e2e8f0; padding-left: 6px; }
         [id] { scroll-margin-top: 120px; }
         /* ===== Speech Bubble ===== */
-        .speech-bubble-wrap {
+        .speech-fixed {
             position: fixed;
-            right: 24px;
-            top: 80px;
-            width: 320px;
+            right: 2%;
+            bottom: 80px;
+            width: 28%;
+            min-width: 280px;
+            max-width: 400px;
+            z-index: 100;
             transition: opacity 0.3s, visibility 0.3s;
-            z-index: 50;
         }
-        .speech-bubble-wrap.hidden {
+        .speech-fixed.hidden {
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
         }
-        .speech-bubble {
+        .speech-fixed .speech-bubble {
             background: #eef2ff;
             border-left: 4px solid #7c3aed;
             border-radius: 12px;
-            padding: 20px 24px;
+            padding: 12px 16px;
             font-size: 14px;
             color: #334155;
             line-height: 1.8;
-            position: sticky;
-            top: 80px;
+            max-height: calc(100vh - 140px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
         .speech-bubble .speech-label {
             display: inline-flex;
@@ -96,46 +100,101 @@
             border-color: #4f46e5;
         }
 
-        @media (max-width: 1600px) {
-            .speech-bubble-wrap {
-                width: 260px;
-            }
+        /* ===== 话术框内左右布局 ===== */
+        .speech-layout {
+            display: flex;
+            gap: 8px;
+            flex: 1;
+            min-height: 0;
         }
+        .speech-nav {
+            width: 30%;
+            flex-shrink: 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .speech-nav::-webkit-scrollbar {
+            width: 3px;
+        }
+        .speech-nav::-webkit-scrollbar-thumb {
+            background: #c4b5fd;
+            border-radius: 3px;
+        }
+        .speech-nav-btn {
+            padding: 7px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4f46e5;
+            cursor: pointer;
+            background: #f8f7ff;
+            border: 1px solid #d4d0f0;
+            text-align: left;
+            transition: all 0.15s;
+            line-height: 1.4;
+            flex-shrink: 0;
+        }
+        .speech-nav-btn:hover {
+            background: #eef2ff;
+        }
+        .speech-nav-btn.active {
+            background: #4f46e5;
+            color: #fff;
+            border-color: #4f46e5;
+        }
+        .speech-content-panel {
+            width: 70%;
+            flex-shrink: 0;
+            overflow-y: auto;
+            font-size: 13px;
+            color: #334155;
+            line-height: 1.8;
+            padding-right: 2px;
+        }
+        .speech-content-panel::-webkit-scrollbar {
+            width: 3px;
+        }
+        .speech-content-panel::-webkit-scrollbar-thumb {
+            background: #c4b5fd;
+            border-radius: 3px;
+        }
+        .speech-content-placeholder {
+            color: #94a3b8;
+            font-size: 12px;
+            text-align: center;
+            padding: 20px 0;
+        }
+
         @media (max-width: 1400px) {
-            .speech-bubble-wrap {
-                width: 200px;
-                font-size: 13px;
-            }
-            .speech-bubble-wrap .speech-bubble {
-                padding: 14px 16px;
-            }
+            .speech-fixed { width: 30%; }
         }
         @media (max-width: 1200px) {
-            .speech-bubble-wrap {
-                width: 160px;
-                font-size: 12px;
-            }
-            .speech-bubble-wrap .speech-bubble {
-                padding: 10px 12px;
-                line-height: 1.6;
-            }
+            .speech-fixed { width: 32%; font-size: 13px; }
+            .speech-fixed .speech-bubble { padding: 12px 14px; }
         }
-        @media (max-width: 900px) {
-            .speech-bubble-wrap {
-                display: none;
-            }
+        @media (max-width: 768px) {
+            section { padding: 40px 20px !important; }
+            .main { margin-right: 0 !important; }
         }
-        .main { margin-right: 350px; }
+        .main { margin-right: 32%; }
     </style>
 </head>
 <body>
 
     <nav class="top-nav">
-        <a href="../" class="nav-brand">程愚瀚</a>
-        <div class="nav-links">
-            <a href="../">首页</a>
-            <a href="../文章/">文章</a>
-            <a href="./" class="active">项目</a>
+        <div class="nav-left">
+            <a href="../" class="nav-brand">程愚瀚</a>
+            <div class="nav-links">
+                <a href="../">首页</a>
+                <a href="../index4.html">自我介绍</a>
+                <a href="../文章/">文章</a>
+                <a href="./" class="active">项目</a>
+            </div>
+        </div>
+        <div class="nav-right">
+            <a href="../问答.html" class="nav-qa">问答</a>
         </div>
     </nav>
 
@@ -967,10 +1026,17 @@
         </div>
 
         <!-- Speech Bubble -->
-        <div class="speech-bubble-wrap" id="speechWrap">
+        <div class="speech-fixed hidden" id="speechWrap">
             <div class="speech-bubble">
-                <div class="speech-label">🎤</div>
-                <div id="speechContent">滚动到各个章节查看对应话术</div>
+                <div class="speech-bubble-header">
+                    <div class="speech-label">🎤 <span id="speechLabel"></span></div>
+                </div>
+                <div class="speech-layout">
+                    <div class="speech-nav" id="speechNav"></div>
+                    <div class="speech-content-panel" id="speechContentPanel">
+                        <div class="speech-content-placeholder">选择左侧段落查看内容</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -984,48 +1050,112 @@
 
     <script src="../资源/js/main.js"></script>
     <script>
-        // ===== Speech bubble: scroll-based content switching =====
-        var speechContent = document.getElementById('speechContent');
-        var speechSections = [
-            { id: 'workflow-v1', label: '前身 · Workflow 1.0', text: '（待填写）Workflow 1.0 的前身背景介绍' },
-            { id: 'origin', label: '从问题到方案',
-              text: '这个项目的起源是因为我发现使用 Agent 时，我已经给了非常明确的指令，但它就是会跳过或拒绝执行。比如让它先检索竞品资料再生成分析报告，结果它根本没去检索，因为它觉得自己知道。\n\n我调研了两种方式来强制 Agent 执行：Workflow 是限定整个流程，Hooks 是约束某一步前后要做什么。它们不在一个层级，我的需求属于前者。\n\n一般的 Workflow 是由人来定义（写代码或低代码平台），但是我联想到 Plan and Excute 的架构，由 AI 来帮 plan，于是我就想到把 DAG 图的构建交给大模型来完成。\n\n核心思想就是：Plan Agent 构建 DAG 图，将 DAG 图可视化展示给用户确认，再用执行引擎读取 DAG 图自动完成任务，确保规划了就一定会执行。' },
-            { id: 'arch', label: '核心能力架构', text: '由此也能够看出这个项目最核心的部分就是 Plan Agent 生成 DAG 图的这个步骤。因为你必须要生成一个好的 DAG 图，把这个任务规划好，才能够对这个任务有一个比较好的执行策略。\n\n在实现好这个 DAG 图之后，我就发现它的一些优势和它跟 LangGraph 不一样的地方。比如我能够通过这个 DAG 图实现更好的、更彻底的并行策略，让更多的任务并行执行，来缩短任务执行的时间。断点恢复的策略也跟 LangGraph 的 checkpoint 机制不太一样。还有就是我能够通过很多 Sub Agent 来分别执行不同的任务，让他们对这个任务更加专业，并且减少 Token 消耗。\n\n最后一点，这个项目成也是因为它的流程不能变化，让 Agent 不会跳过步骤；败也是因为它的流程不能变化——这也是它跟 Plan-and-Execute 架构最大的区别。Plan-and-Execute 可以在运行时动态修改执行计划，但这里因为是 DAG 图，所以不能修改。所以我就设计了三级的异常处理和条件分支来对这个 DAG 图任务执行的流程提供更多的可能性。' },
-            { id: 'plan-opt', label: 'Plan 优化', text: '想要 Agent 能够帮你执行好一件事情，主要就是三个策略：第一个是给他说清楚你要做什么，第二个是列举清楚规则是什么，第三个是举一些例子。这就是 Prompt Engineering 里面最基本的操作。\n\n然后我为了保证这个 DAG 图它是没有环的，以及做一些其他的检测，我还设置了一个后置的校验层对它进行校验。\n\nPrompt + 样本 + 校验做到位了，DAG 质量有了基本保障。但模型会犯错，而且同样的错误可能反复出现——这就需要一套机制让 Plan 能力能自己不断变好。于是我就参考了 Reflexion 的思路，把每次执行失败的 DAG 当作负样本收集起来，自动分析失败原因，再把高频错误注入到 Prompt 和样本中。这样每次失败都变成一次教学，Plan 的能力就随着使用次数越来越多，形成一个持续改进的闭环。' },
-            { id: 'node-io', label: '节点输入输出', text: '节点之间的信息传递我采用了动态 Schema + 压缩兜底的双层策略。主方案是让 Plan Agent 在生成 DAG 时为每个节点定义 output_schema，子 Agent 按 schema 输出结构化结果，下游节点可以直接通过字段名取数据。对于不适合结构化输出的节点，用压缩策略做兜底，用便宜的模型把完整对话历史压缩成摘要再传递。两种策略叠加，节点传递的信息量可以控制在原始输出的 10% 到 20% 左右。' },
-            { id: 'parallel', label: '并行执行引擎', text: '（待填写）双层并行的实现思路与效果' },
-            { id: 'rollback', label: '断点恢复', text: '（待填写）断点恢复的设计与实现' },
-            { id: 'sub-agent', label: 'Sub Agent', text: '目前我设定了三类 Sub Agent：调研、审查和执行。这么设计的原因其实是因为我觉得 Agent 应该匹配到某一个领域里面才好设计，也就是说这个应该是交给使用者去定制的。比如我要写代码，那这个执行 Agent 的内容肯定就会针对代码场景做针对性的修改。我这里相当于只是打一个比方，暂时先设定了这三种。\n\n我分析过 Token 的构成占比，发现工具定义和 System Prompt 占了超过一半，是消耗最大的一块。单 Agent ReAct 一次调用需要加载所有工具的 Schema 和完整指令，大概 9K；但 Sub Agent 只需要加载自己相关的工具定义和角色指令，大概 3K 就够了。所以把职责拆开之后，每类 Agent 只关心自己该做的事，Token 消耗自然就降下来了。' },
-            { id: 'exception', label: '异常治理', text: '因为这里是固定的 DAG 图，如果没有异常治理和条件分支路由的话，就会出现执行结果不如预期、流程进行不下去的情况。\n\n针对这个问题，我设计了三级的异常治理和分支路由两个策略。\n异常治理包括重试策略、超时控制和异常处理。异常处理又分三种方式：第一种是直接中断，适用于那些特别关键的节点，比如支付、扣款——这种节点如果执行失败，整个流程就没有意义了。第二种是通过错误码策略，遇到错误后标记失败，但拿出预先准备好的输出继续执行下去。第三种是失败条件分支，失败了就引导到失败的那条路径上面。\n\n而条件分支路由是为了解决有些情况 Plan Agent 不知道这一步的结果是什么，遇到不同的结果可能会有不同的路径。但这里就遇到一个问题：我们的并行策略是把一排节点拿来并行执行，但遇到条件分支的话，难道要同时执行两个分支吗？于是我就设计了 condition 字段——只有匹配条件的边才会被激活，来解决这个问题。' },
-            { id: 'eval', label: '测评结果', text: '测评分为结果和过程两个维度，结果维度包括需求完成度、耗时、Token 消耗，过程维度才是核心，包括工具调用链、无效 ReAct 循环、异常处理等。\n\n我设计了 200 个任务的测评集，覆盖常规流程、并行分支、复杂拓扑、边界样本和对抗样本。评分器分三层：确定性检查（代码自动判）、轨迹评分（循环调用、顺序合理性）、LLM-as-Judge（需求匹配度）。\n\n具体数据：DAG 构建正确率 97%、子 Agent 任务完成率 94%、并行执行时间缩短 23%、Token 消耗降低 14%。\n\n关于测评方法论的详细说明，请跳转至《Agent 测评思路》文章继续讲解。' }
-        ];
+        // ===== 提示词数据（可折叠段落） =====
+        var speechData = {
+            'workflow-v1': { label: '🎤 前身 · Workflow 1.0', sections: [
+                { title: '前身 · Workflow 1.0', content: '（待填写）Workflow 1.0 的前身背景介绍' }
+            ]},
+            'origin': { label: '🎤 从问题到方案', sections: [
+                { title: '从问题到方案', content: '这个项目的起源是因为我发现使用 Agent 时，我已经给了非常明确的指令，但它就是会跳过或拒绝执行。比如让它先检索竞品资料再生成分析报告，结果它根本没去检索，因为它觉得自己知道。<br><br>我调研了两种方式来强制 Agent 执行：Workflow 是限定整个流程，Hooks 是约束某一步前后要做什么。它们不在一个层级，我的需求属于前者。<br><br>一般的 Workflow 是由人来定义（写代码或低代码平台），但是我联想到 Plan and Excute 的架构，由 AI 来帮 plan，于是我就想到把 DAG 图的构建交给大模型来完成。<br><br>核心思想就是：Plan Agent 构建 DAG 图，将 DAG 图可视化展示给用户确认，再用执行引擎读取 DAG 图自动完成任务，确保规划了就一定会执行。<br><br>然后再做这个项目的过程中，我发现单纯说解决跳步遗漏这个问题，DAG这个策略也没有那么好。比如相较于PAE，实现起来比较复杂，PAE在粗颗粒的任务上做的比较好（比如检索在生成），但是在细颗粒度的做的比较差，比如要求测试30条数据可能只测试了10条。相较于claudecode的dinamic workflow来说，他是通过写JavaScript脚本控制流程，所以相对来说，他的控制更加细致，会更加灵活。他想解决的问题是单个agent在长链路任务中懒惰、目标漂移的问题。' }
+            ]},
+            'arch': { label: '🎤 核心能力架构', sections: [
+                { title: '核心能力架构', content: '由此也能够看出这个项目最核心的部分就是 Plan Agent 生成 DAG 图的这个步骤。因为你必须要生成一个好的 DAG 图，把这个任务规划好，才能够对这个任务有一个比较好的执行策略。<br><br>在实现好这个 DAG 图之后，我就发现它的一些优势和它跟 LangGraph 不一样的地方。比如我能够通过这个 DAG 图实现更好的、更彻底的并行策略，让更多的任务并行执行，来缩短任务执行的时间。断点恢复的策略也跟 LangGraph 的 checkpoint 机制不太一样。还有就是我能够通过很多 Sub Agent 来分别执行不同的任务，让他们对这个任务更加专业，并且减少 Token 消耗。<br><br>最后一点，这个项目成也是因为它的流程不能变化，让 Agent 不会跳过步骤；败也是因为它的流程不能变化——这也是它跟 Plan-and-Execute 架构最大的区别。Plan-and-Execute 可以在运行时动态修改执行计划，但这里因为是 DAG 图，所以不能修改。所以我就设计了三级的异常处理和条件分支来对这个 DAG 图任务执行的流程提供更多的可能性。' }
+            ]},
+            'plan-opt': { label: '🎤 Plan 优化', sections: [
+                { title: 'Plan 优化', content: '想要 Agent 能够帮你执行好一件事情，主要就是三个策略：第一个是给他说清楚你要做什么，第二个是列举清楚规则是什么，第三个是举一些例子。这就是 Prompt Engineering 里面最基本的操作。<br><br>然后我为了保证这个 DAG 图它是没有环的，以及做一些其他的检测，我还设置了一个后置的校验层对它进行校验。<br><br>Prompt + 样本 + 校验做到位了，DAG 质量有了基本保障。但模型会犯错，而且同样的错误可能反复出现——这就需要一套机制让 Plan 能力能自己不断变好。于是我就参考了 Reflexion 的思路，把每次执行失败的 DAG 当作负样本收集起来，自动分析失败原因，再把高频错误注入到 Prompt 和样本中。这样每次失败都变成一次教学，Plan 的能力就随着使用次数越来越多，形成一个持续改进的闭环。' }
+            ]},
+            'node-io': { label: '🎤 节点输入输出', sections: [
+                { title: '节点输入输出', content: '关于这个问题我可以按照STAR法则来讲。<br><br><strong>Situation — 背景</strong>：节点之间有明确的先后依赖关系，后面的节点需要拿到前面节点的输出才能执行。原本的做法直接把子Agent的完整对话历史——包括system prompt、工具调用、工具返回结果、中间推理过程——全部传给下一个节点。然后就会遇到一个问题，多个节点串联后，下游Agent的context窗口很快被占满。<br><br><strong>Task — 目标</strong>：需要确定每个节点的输出应该包含什么内容、以什么格式输出，下游节点能拿到什么内容。来实现下游节点只拿到它真正需要的信息，控制上下文占用。<br><br><strong>Action — 方案与权衡</strong>：关于以什么格式输出这一点，我想出来了两个策略，第一个是压缩，把完整的对话历史压缩成摘要，再传给下一个节点。但问题在于压缩本身也是一次模型调用，会额外消耗token，而且压缩后的摘要可能会丢失细节。于是我选择了借鉴Dynamic Workflow的动态Schema格式化输出，在生成DAG图的时候，就确定好他需要输出什么内容。关于下游节点能拿到什么内容，不再是拿到这一条链路的全部输出，而是只拿到前一个节点的输出。<br><br><strong>Result — 效果</strong>：节点传递的信息量被控制在原始输出的10%到20%左右，也不再有上下文堆积的问题。' }
+            ]},
+            'parallel': { label: '🎤 并行执行引擎', sections: [
+                { title: '并行执行引擎', content: '第一层是通过图来实现并行，入度（In-Degree）指一个节点被多少条边指向，入度为0表示该节点没有任何前置依赖，可以直接执行。每执行一个节点就将其指向的节点的入度减一，于是就会有新的可执行节点出现。直到将所有节点执行完毕。<br><br>第二层是在agent的react模式，支持他同格式调用多个工具，比如同时读取多个文件。' }
+            ]},
+            'rollback': { label: '🎤 断点恢复', sections: [
+                { title: '断点恢复', content: '设计了三张表来记录一个DAG图的执行。<br><br>一张表存DAG拓扑结构，第二张存每个节点的输入输出和状态，第三张存整次执行的全局汇总。（运行时的数据传递纯走内存HashMap，节点执行完顺手把快照同步写入MySQL，但不从数据库读。）<br><br>当断点继续触发时，就会从第二张表读出快照恢复到内存，结合第一张表重新解析的DAG图确定从哪个失败节点开始，跳过已成功的，接着往下跑。最后把第三张的状态从FAILED改回RUNNING，执行完再更新。' }
+            ]},
+            'sub-agent': { label: '🎤 Sub Agent 与 Token 优化', sections: [
+                { title: 'Sub Agent 分发执行', content: '做出将子任务交给子agent是水到渠成的，首先是设计到并行执行，所以不能是一个agent。其次是我总结出了三个优点。<br><br>第一点是每个agent只需要负责他们自己的任务，放在长链路的任务中，可以解决目标偏移的问题；<br><br>第二点是我们可以针对每一个agent的身份，控制他们能调用的skill或者tool，来实现权限控制和提高他们调用skill、tool的正确率；<br><br>第三点是我们减少了默认的、不必要的skill、tool注入，也就减少了单次的token消耗。并且由于我对子agent之间的信息传递做了格式化输出，所以不会出现上下文堆积的情况，也就进一步减少了token消耗。' },
+                { title: 'Token 优化', content: '包括三点。<br><br>第一点由于我们设计了不同类型的子agent，所以针对性的设计了他可以调用的skill、tool，也就减少了默认的、不必要的skill、tool注入，也就减少了单次的token消耗。<br><br>第二点是，由于我对子agent之间的信息传递做了格式化输出，抹去了大量的工具调用等信息，以此减少了下一个节点的输入。<br><br>第三点是，控制当前节点只会获取前一个节点的输出，而不是这一条链路的输出，所以不会出现上下文堆积，也就是后一个节点的上下文包含前面所有节点的输出的情况，也就进一步减少了token消耗。' }
+            ]},
+            'exception': { label: '🎤 异常治理', sections: [
+                { title: '异常治理', content: '因为这个项目采用固定DAG执行，相比PAE架构可根据前一步结果动态修改下一步计划的方式，丧失了执行中调整流程的能力。而三级异常治理就是为了弥补这一限制而设计的。<br><br>首先是在顶层设计了while循环，在第二层设计了超时策略，在最底层设计了异常捕获，又分为三种处理方式：<br><br>① 直接中断 — 关键节点失败后整体进入失败状态。适用于支付、扣款、核心写操作等。<br><br>② 错误码策略 — 按预配置的错误码或默认值继续执行。适用于辅助查询、非核心推荐等。<br><br>③ 失败条件分支策略 — 引导到异常处理分支，用于告警、补偿、回滚或特定兜底逻辑。' }
+            ]},
+            'branch': { label: '🎤 条件分支路由', sections: [
+                { title: '条件分支路由', content: '条件分支路由是为了解决有些情况Plan Agent不知道这一步的结果是什么，遇到不同的结果可能会有不同的路径。但这里就遇到一个问题：我们的并行策略是把一排节点拿来并行执行，但遇到条件分支的话，难道要同时执行两个分支吗？于是我就设计了condition字段——只有匹配条件的边才会被激活，来解决这个问题。' }
+            ]},
+            'eval': { label: '🎤 测评结果', sections: [
+                { title: '测评结果', content: '我觉得首先是要明确测什么，包括两个方面，结果和过程。结果维度包括需求完成度、耗时、Token消耗，过程维度包括工具调用链、无效ReAct循环、异常处理等。然后针对不同的Agent场景也需要有不同的测评，比如我们这里的DAG构建正确率，或者说CodingAgent的代码质量等。<br><br>然后是怎么测，主要分为了三个方面，包括设计测评集、设计评分器、选择测试方法。<br><br>首先是测评集的设计，要注意质量比数量更重要。我这里因为人手的原因，我是先让Agent帮我设计了一批样本，覆盖常规流程、并行分支、复杂拓扑、边界样本和对抗样本，我再去挑选和修改。<br><br>然后是设计评分器，包括两种，确定性评分器和LLM-as-Judge。非常清楚的可以看出来当需要理解的部分就需要调用大模型，其他时候更适合使用确定性评分器，因为大模型的评分不稳定，使用确定性评分器能够更直观的看出来改进。比如在测试DAG图构建率时，就是使用的确定性评分器，通过查看有没有环的出现来得出分数。<br><br>最后就是选择测评方法，比如基准测试（在标准数据集上跑分，与基线版本或竞品横向对比）、回归测试、AB测试等。我觉得在agent测试中，回归测试比较重要。因为对prompt的修改指不定就破坏了已有能力，所以需要做回归测试去确保新改动不破坏已有能力。' }
+            ]}
+        };
+
+        var speechNav = document.getElementById('speechNav');
+        var speechContentPanel = document.getElementById('speechContentPanel');
+        var speechLabel = document.getElementById('speechLabel');
+        var currentSectionKey = '';
+
+        function renderSections(sections) {
+            var navHtml = '';
+            var contentHtml = '';
+            for (var i = 0; i < sections.length; i++) {
+                var activeClass = i === 0 ? ' active' : '';
+                navHtml += '<div class="speech-nav-btn' + activeClass + '" onclick="selectSection(' + i + ')">' + sections[i].title + '</div>';
+                contentHtml += '<div class="speech-section-content" data-index="' + i + '" style="display:' + (i === 0 ? 'block' : 'none') + '">' + sections[i].content + '</div>';
+            }
+            speechNav.innerHTML = navHtml;
+            speechContentPanel.innerHTML = contentHtml || '<div class="speech-content-placeholder">选择左侧段落查看内容</div>';
+        }
+
+        function selectSection(index) {
+            var btns = document.querySelectorAll('.speech-nav-btn');
+            var contents = document.querySelectorAll('.speech-section-content');
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].classList.toggle('active', i === index);
+                if (contents[i]) contents[i].style.display = i === index ? 'block' : 'none';
+            }
+        }
+
+        function switchTo(key) {
+            if (key === currentSectionKey) return;
+            currentSectionKey = key;
+            var data = speechData[key];
+            if (speechLabel) speechLabel.innerHTML = data.label;
+            renderSections(data.sections);
+        }
+
+        // 初始显示第一个章节
+        if (speechData && speechData['workflow-v1']) {
+            var firstData = speechData['workflow-v1'];
+            if (speechLabel) speechLabel.innerHTML = firstData.label;
+            renderSections(firstData.sections);
+        }
+
+        var keys = ['workflow-v1', 'origin', 'arch', 'plan-opt', 'node-io', 'parallel', 'rollback', 'sub-agent', 'exception', 'branch', 'eval'];
 
         function updateSpeechOnScroll() {
             var scrollY = window.scrollY + 180;
-            var current = '';
-            // If at the bottom of the page, show the last section (eval)
+            var currentKey = '';
             if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100) {
-                current = speechSections[speechSections.length - 1];
+                currentKey = keys[keys.length - 1];
             } else {
-                // Find the last section whose top has been scrolled past
-                for (var i = 0; i < speechSections.length; i++) {
-                    var el = document.getElementById(speechSections[i].id);
+                for (var i = 0; i < keys.length; i++) {
+                    var el = document.getElementById(keys[i]);
                     if (el && el.offsetTop <= scrollY) {
-                        current = speechSections[i];
+                        currentKey = keys[i];
                     }
                 }
-                if (!current && speechSections.length > 0) {
-                    current = speechSections[0];
+                if (!currentKey && keys.length > 0) {
+                    currentKey = keys[0];
                 }
             }
-            if (current && speechContent) {
-                speechContent.innerHTML = '<strong style="font-size:13px;color:#4f46e5;display:block;margin-bottom:6px;">' + current.label + '</strong>' + current.text.replace(/\n/g, '<br>');
+            if (currentKey) {
+                switchTo(currentKey);
             }
         }
+
         window.addEventListener('scroll', updateSpeechOnScroll);
         window.addEventListener('load', updateSpeechOnScroll);
 
-        // Toggle speech bubble
+        // Toggle
         var toggleBtn = document.getElementById('toggleSpeechBtn');
         var speechWrap = document.getElementById('speechWrap');
         if (toggleBtn && speechWrap) {

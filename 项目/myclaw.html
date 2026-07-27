@@ -19,9 +19,11 @@
         /* Speech Bubble */
         .speech-fixed {
             position: fixed;
-            right: 24px;
+            right: 2%;
             bottom: 80px;
-            width: 320px;
+            width: 28%;
+            min-width: 280px;
+            max-width: 400px;
             z-index: 100;
             transition: opacity 0.3s, visibility 0.3s;
         }
@@ -34,13 +36,14 @@
             background: #eef2ff;
             border-left: 4px solid #7c3aed;
             border-radius: 12px;
-            padding: 16px 20px;
+            padding: 12px 16px;
             font-size: 14px;
             color: #334155;
             line-height: 1.8;
-            max-height: 60vh;
-            overflow-y: auto;
-            white-space: pre-line;
+            max-height: calc(100vh - 140px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
         .speech-fixed .speech-label {
             display: inline-flex;
@@ -50,7 +53,76 @@
             font-weight: 700;
             color: #7c3aed;
             margin-bottom: 8px;
+            flex-shrink: 0;
         }
+
+        /* ===== 话术框内左右布局 ===== */
+        .speech-layout {
+            display: flex;
+            gap: 8px;
+            flex: 1;
+            min-height: 0;
+        }
+        .speech-nav {
+            width: 30%;
+            flex-shrink: 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .speech-nav::-webkit-scrollbar {
+            width: 3px;
+        }
+        .speech-nav::-webkit-scrollbar-thumb {
+            background: #c4b5fd;
+            border-radius: 3px;
+        }
+        .speech-nav-btn {
+            padding: 7px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4f46e5;
+            cursor: pointer;
+            background: #f8f7ff;
+            border: 1px solid #d4d0f0;
+            text-align: left;
+            transition: all 0.15s;
+            line-height: 1.4;
+            flex-shrink: 0;
+        }
+        .speech-nav-btn:hover {
+            background: #eef2ff;
+        }
+        .speech-nav-btn.active {
+            background: #4f46e5;
+            color: #fff;
+            border-color: #4f46e5;
+        }
+        .speech-content-panel {
+            width: 70%;
+            flex-shrink: 0;
+            overflow-y: auto;
+            font-size: 13px;
+            color: #334155;
+            line-height: 1.8;
+            padding-right: 2px;
+        }
+        .speech-content-panel::-webkit-scrollbar {
+            width: 3px;
+        }
+        .speech-content-panel::-webkit-scrollbar-thumb {
+            background: #c4b5fd;
+            border-radius: 3px;
+        }
+        .speech-content-placeholder {
+            color: #94a3b8;
+            font-size: 12px;
+            text-align: center;
+            padding: 20px 0;
+        }
+
         .toggle-speech-btn {
             position: fixed;
             bottom: 24px;
@@ -69,17 +141,36 @@
         }
         .toggle-speech-btn:hover { background: #eef2ff; border-color: #4f46e5; }
         .toggle-speech-btn.hidden { background: #4f46e5; color: #fff; border-color: #4f46e5; }
-        .main { margin-right: 350px; }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 1400px) {
+            .speech-fixed { width: 30%; }
+        }
+        @media (max-width: 1200px) {
+            .speech-fixed { width: 32%; font-size: 13px; }
+            .speech-fixed .speech-bubble { padding: 12px 14px; }
+        }
+        @media (max-width: 768px) {
+            section { padding: 40px 20px !important; }
+            .main { margin-right: 0 !important; }
+        }
+        .main { margin-right: 32%; }
     </style>
 </head>
 <body>
 
     <nav class="top-nav">
-        <a href="../" class="nav-brand">程愚瀚</a>
-        <div class="nav-links">
-            <a href="../">首页</a>
-            <a href="../文章/">文章</a>
-            <a href="./" class="active">项目</a>
+        <div class="nav-left">
+            <a href="../" class="nav-brand">程愚瀚</a>
+            <div class="nav-links">
+                <a href="../">首页</a>
+                <a href="../index4.html">自我介绍</a>
+                <a href="../文章/">文章</a>
+                <a href="./" class="active">项目</a>
+            </div>
+        </div>
+        <div class="nav-right">
+            <a href="../问答.html" class="nav-qa">问答</a>
         </div>
     </nav>
 
@@ -477,8 +568,13 @@ Life Plan（人生阶段：败光家产前 → 败光家产后 → 给龙二打�
     <!-- Speech Bubble -->
     <div class="speech-fixed hidden" id="speechFixed">
         <div class="speech-bubble">
-            <div class="speech-label">🎤</div>
-            <div id="speechContent"></div>
+            <div class="speech-label">🎤 <span id="speechLabel"></span></div>
+            <div class="speech-layout">
+                <div class="speech-nav" id="speechNav"></div>
+                <div class="speech-content-panel" id="speechContentPanel">
+                    <div class="speech-content-placeholder">选择左侧段落查看内容</div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -491,16 +587,80 @@ Life Plan（人生阶段：败光家产前 → 败光家产后 → 给龙二打�
 
     <script src="../资源/js/main.js"></script>
     <script>
-        // Speech bubble scroll switching
-        var speechContent = document.getElementById('speechContent');
-        var speechSections = [
-            { id: 'origin', text: '做这个项目主要有两个原因，第一是我在使用 OpenClaw 的时候对他的长期记忆实现不是很满意，我也对长期记忆的实现机制比较感兴趣，想通过这个项目学习一下相关内容。第二点是这个项目的定位，我想要做一个更加真实的对话 Agent，他有自己的人生，能够像你在异地的朋友一样和你在微信聊天。' },
-            { id: 'core', text: '为了给这个项目选择一个合适的长期记忆实现，我综合测评了纯大模型窗口、RAG 检索和 Hindsight 三种实现，最终选择了 Hindsight 方案。Hindsight 通过四路召回（向量、关键词、图、时间）、四种记忆分类、置信度演化机制和时间元数据，在 LongMemEval 基准测试的四个维度上全面领先，平均准确率 90.8%，远超其他方案（52.5%）。' },
-            { id: 'design', text: '为了是这个项目的核心目标：更像人，我总结了现有的对话 Agent 和我们在微信和朋友聊天的区别：\n\n首先就是，微信朋友是会主动发送消息的，想要让 Agent 主动发消息是一个非常简单的事情，重要的是消息的内容是什么，以及在什么时间发送消息。\n\n而回想我们的微信好友会在什么时间发送消息？取决于他今天干了什么，比如他在工作那她就不会发消息，他在玩游戏他可能就会发一条消息来叫我。\n\n所以我想到的解决办法就是给 Agent 一个人生，通过每天的定时任务像写小说一样规划他第二天的时间线。按照时间线的颗粒度，还可以分为他的这个人生阶段是在工作，这个月是在准备驾照，这周在干什么，这一天的几点在干什么。\n\n而我实践下来遇到的第一个问题就是，Agent 的时间感知没有设定。他和比如 CodingAgent 的区别是 CodingAgent 你隔几天和他对话任务不会变化，但是在我们和朋友交流的过程中，往往隔半个小时，我们的话题就已经发生变化了。所以为了让他具备时间的感知能力，我专门强调了每一个对话的时间间隔，并且由于这个 Agent 是有日程的，就可以随着时间变化，导致他的状态不一样，进一步强化他的时间观念。\n\n最后就是我发现虚拟一个任务其实需要用户做不少工作，那干脆提供一个选项从小说中提取某一个人物的经历，在按照一定比例映射到现实世界中，达到你可能今天发现这个孙悟空还在石头地下，隔几天就在取经路上了。' }
-        ];
+        // ===== 提示词数据 =====
+        var speechData = {
+            origin: {
+                label: '🎤 项目来源',
+                sections: [
+                    { title: '项目来源', content: '做这个项目主要有两个原因，第一是我在使用 OpenClaw 的时候对他的长期记忆实现不是很满意，我也对长期记忆的实现机制比较感兴趣，想通过这个项目学习一下相关内容。第二点是这个项目的定位，我想要做一个更加真实的对话 Agent，他有自己的人生，能够像你在异地的朋友一样和你在微信聊天。' }
+                ]
+            },
+            core: {
+                label: '🎤 记忆方案选型',
+                sections: [
+                    { title: '记忆方案选型', content: '为了给这个项目选择一个合适的长期记忆实现，我综合测评了纯大模型窗口、RAG 检索和 Hindsight 三种实现，最终选择了 Hindsight 方案。Hindsight 通过四路召回（向量、关键词、图、时间）、四种记忆分类、置信度演化机制和时间元数据，在 LongMemEval 基准测试的四个维度上全面领先，平均准确率 90.8%，远超其他方案（52.5%）。' }
+                ]
+            },
+            design: {
+                label: '🎤 设计理念',
+                sections: [
+                    { title: '设计理念', content: '为了是这个项目的核心目标：更像人，我总结了现有的对话 Agent 和我们在微信和朋友聊天的区别：<br><br>首先就是，微信朋友是会主动发送消息的，想要让 Agent 主动发消息是一个非常简单的事情，重要的是消息的内容是什么，以及在什么时间发送消息。<br><br>而回想我们的微信好友会在什么时间发送消息？取决于他今天干了什么，比如他在工作那她就 不会发消息，他在玩游戏他可能就会发一条消息来叫我。<br><br>所以我想到的解决办法就是给 Agent 一个人生，通过每天的定时任务像写小说一样规划他第二天的时间线。按照时间线的颗粒度，还可以分为他的这个人生阶段是在工作，这个月是在准备驾照，这周在干什么，这一天的几点在干什么。<br><br>而我实践下来遇到的第一个问题就是，Agent 的时间感知没有设定。他和比如 CodingAgent 的区别是 CodingAgent 你隔几天和他对话任务不会变化，但是在我们和朋友交流的过程中，往往隔半个小时，我们的话题就已经发生变化了。所以为了让他具备时间的感知能力，我专门强调了每一个对话的时间间隔，并且由于这个 Agent 是有日程的，就可以随着时间变化，导致他的状态不一样，进一步强化他的时间观念。<br><br>最后就是我发现虚拟一个任务其实需要用户做不少工作，那干脆提供一个选项从小说中提取某一个人物的经历，在按照一定比例映射到现实世界中，达到你可能今天发现这个孙悟空还在石头地下，隔几天就在取经路上了。' }
+                ]
+            }
+        };
+
+        var speechNav = document.getElementById('speechNav');
+        var speechContentPanel = document.getElementById('speechContentPanel');
+        var speechLabel = document.getElementById('speechLabel');
+        var currentSectionKey = 'origin';
+
+        // 渲染导航按钮 + 内容面板
+        function renderSections(sections) {
+            var navHtml = '';
+            var contentHtml = '';
+            for (var i = 0; i < sections.length; i++) {
+                var activeClass = i === 0 ? ' active' : '';
+                navHtml += '<div class="speech-nav-btn' + activeClass + '" onclick="selectSection(' + i + ')">' + sections[i].title + '</div>';
+                contentHtml += '<div class="speech-section-content" data-index="' + i + '" style="display:' + (i === 0 ? 'block' : 'none') + '">' + sections[i].content + '</div>';
+            }
+            speechNav.innerHTML = navHtml;
+            speechContentPanel.innerHTML = contentHtml || '<div class="speech-content-placeholder">选择左侧段落查看内容</div>';
+        }
+
+        // 选择某个段落
+        function selectSection(index) {
+            var btns = document.querySelectorAll('.speech-nav-btn');
+            var contents = document.querySelectorAll('.speech-section-content');
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].classList.toggle('active', i === index);
+                if (contents[i]) contents[i].style.display = i === index ? 'block' : 'none';
+            }
+        }
+
+        // 切换到某组提示词
+        function switchTo(key) {
+            if (key === currentSectionKey) return;
+            currentSectionKey = key;
+            var data = speechData[key];
+            if (speechLabel) speechLabel.innerHTML = data.label;
+            renderSections(data.sections);
+        }
+
+        // 初始显示项目来源
+        renderSections(speechData.origin.sections);
+        if (speechLabel) {
+            speechLabel.innerHTML = speechData.origin.label;
+        }
+
+        // 滚动切换
         function updateSpeechOnScroll() {
             var current = null;
             var scrollY = window.scrollY;
+            var speechSections = [
+                { id: 'origin', key: 'origin' },
+                { id: 'core', key: 'core' },
+                { id: 'design', key: 'design' }
+            ];
             for (var i = 0; i < speechSections.length; i++) {
                 var el = document.getElementById(speechSections[i].id);
                 if (el) {
@@ -512,10 +672,17 @@ Life Plan（人生阶段：败光家产前 → 败光家产后 → 给龙二打�
                     }
                 }
             }
-            if (current && speechContent) {
-                speechContent.textContent = current.text;
-            } else if (speechContent) {
-                speechContent.textContent = '';
+            // Fallback: before first section
+            if (!current && speechSections.length > 0) {
+                var firstEl = document.getElementById(speechSections[0].id);
+                if (firstEl && scrollY < firstEl.offsetTop - 150) {
+                    current = speechSections[0];
+                } else {
+                    current = speechSections[speechSections.length - 1];
+                }
+            }
+            if (current) {
+                switchTo(current.key);
             }
         }
         window.addEventListener('scroll', updateSpeechOnScroll);

@@ -18,9 +18,11 @@
         /* ===== 固定话术框 ===== */
         .speech-fixed {
             position: fixed;
-            right: 24px;
+            right: 2%;
             bottom: 80px;
-            width: 320px;
+            width: 28%;
+            min-width: 280px;
+            max-width: 400px;
             z-index: 100;
             transition: opacity 0.3s, visibility 0.3s;
         }
@@ -33,12 +35,14 @@
             background: #eef2ff;
             border-left: 4px solid #7c3aed;
             border-radius: 12px;
-            padding: 16px 20px;
+            padding: 12px 16px;
             font-size: 14px;
             color: #334155;
             line-height: 1.8;
             max-height: calc(100vh - 140px);
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
         .speech-fixed .speech-label {
             display: inline-flex;
@@ -47,7 +51,103 @@
             font-size: 12px;
             font-weight: 700;
             color: #7c3aed;
+            flex-shrink: 0;
+        }
+        .speech-bubble-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-bottom: 8px;
+            flex-shrink: 0;
+        }
+        .concepts-toggle-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #f8f7ff;
+            border: 1px solid #d4d0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .concepts-toggle-btn:hover {
+            background: #eef2ff;
+            border-color: #7c3aed;
+        }
+        .concepts-toggle-btn.active {
+            background: #7c3aed;
+            border-color: #7c3aed;
+        }
+
+        /* ===== 话术框内左右布局 ===== */
+        .speech-layout {
+            display: flex;
+            gap: 8px;
+            flex: 1;
+            min-height: 0;
+        }
+        .speech-nav {
+            width: 30%;
+            flex-shrink: 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .speech-nav::-webkit-scrollbar {
+            width: 3px;
+        }
+        .speech-nav::-webkit-scrollbar-thumb {
+            background: #c4b5fd;
+            border-radius: 3px;
+        }
+        .speech-nav-btn {
+            padding: 7px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4f46e5;
+            cursor: pointer;
+            background: #f8f7ff;
+            border: 1px solid #d4d0f0;
+            text-align: left;
+            transition: all 0.15s;
+            line-height: 1.4;
+            flex-shrink: 0;
+        }
+        .speech-nav-btn:hover {
+            background: #eef2ff;
+        }
+        .speech-nav-btn.active {
+            background: #4f46e5;
+            color: #fff;
+            border-color: #4f46e5;
+        }
+        .speech-content-panel {
+            width: 70%;
+            flex-shrink: 0;
+            overflow-y: auto;
+            font-size: 13px;
+            color: #334155;
+            line-height: 1.8;
+            padding-right: 2px;
+        }
+        .speech-content-panel::-webkit-scrollbar {
+            width: 3px;
+        }
+        .speech-content-panel::-webkit-scrollbar-thumb {
+            background: #c4b5fd;
+            border-radius: 3px;
+        }
+        .speech-content-placeholder {
+            color: #94a3b8;
+            font-size: 12px;
+            text-align: center;
+            padding: 20px 0;
         }
 
         /* ===== Toggle 按钮 ===== */
@@ -79,28 +179,34 @@
 
         /* ===== 响应式 ===== */
         @media (max-width: 1400px) {
-            .speech-fixed { width: 260px; }
+            .speech-fixed { width: 30%; }
         }
         @media (max-width: 1200px) {
-            .speech-fixed { width: 220px; font-size: 13px; }
+            .speech-fixed { width: 32%; font-size: 13px; }
             .speech-fixed .speech-bubble { padding: 12px 14px; }
         }
         @media (max-width: 768px) {
             section { padding: 40px 20px !important; }
+            .main { margin-right: 0 !important; }
         }
-        .main { margin-right: 350px; }
+        .main { margin-right: 32%; }
     </style>
 </head>
 <body>
 
     <!-- ===== 顶部导航 ===== -->
     <nav class="top-nav">
-        <a href="index4.html" class="nav-brand">程愚瀚</a>
-        <div class="nav-links">
-            <a href="index4.html" class="active">自我介绍</a>
-            <a href="index.html">博客首页</a>
-            <a href="文章/">文章</a>
-            <a href="项目/">项目</a>
+        <div class="nav-left">
+            <a href="index4.html" class="nav-brand">程愚瀚</a>
+            <div class="nav-links">
+                <a href="index.html">首页</a>
+                <a href="index4.html" class="active">自我介绍</a>
+                <a href="文章/">文章</a>
+                <a href="项目/">项目</a>
+            </div>
+        </div>
+        <div class="nav-right">
+            <a href="问答.html" class="nav-qa">问答</a>
         </div>
     </nav>
 
@@ -295,8 +401,16 @@
         <!-- ===== 固定话术框 ===== -->
         <div class="speech-fixed hidden" id="speechFixed">
             <div class="speech-bubble">
-                <div class="speech-label">🎤</div>
-                <div id="speechContent"></div>
+                <div class="speech-bubble-header">
+                    <div class="speech-label">🎤 <span id="speechLabel"></span></div>
+                    <div class="concepts-toggle-btn" id="conceptsToggleBtn" title="通用概念">📚</div>
+                </div>
+                <div class="speech-layout">
+                    <div class="speech-nav" id="speechNav"></div>
+                    <div class="speech-content-panel" id="speechContentPanel">
+                        <div class="speech-content-placeholder">选择左侧段落查看内容</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -312,13 +426,238 @@
 
     <script src="资源/js/main.js"></script>
     <script>
-        // ===== Speech bubble =====
-        var speechContent = document.getElementById('speechContent');
-        var speechText = '面试官您好，我是程愚瀚，电子科技大学软件工程专业 28 届本科生。我之前一直在学习 Java 后端开发的内容，然后从今年 2 月份开始学习 AI 相关的内容，做了多个相关项目，包括简历上的企业知识库RAG项目、可视化任务编排项目，也包括自己的一些探索学习项目，比如这里的myclaw 和 tree（workflow的3.0）。<br><br>关于 企业知识库RAG 项目，我熟悉 RAG 的完整流程、优化、测评，并针对其企业知识库的场景做了一些功能。我在 RAG 这个项目中学习到最关键的一点就是，不是看起来合理的优化策略就真的有效，要基于实际数据做评估。<br><br>然后是 可视化任务编排 或者说 workflow 这个项目，这是我花了最多心思的一个项目。我觉得在 AI 时代，发现问题和提供新解决方案的能力比单纯实现更重要。所以这个项目算是我的一个创新，初衷是解决 Agent 执行路径不可控（跳步遗漏）这个问题，然后自己设计了一套针对性的解决方案。我在这个项目中学到了包括prompt调优、Agent测评、token优化等知识。<br><br>我觉得我和这个岗位是比较适配的，我既拥有 Java 后端开发的经验，也熟悉 AI 相关的内容。我愿意不断地学习新知识，以满足这个岗位的需求。希望能和老师多多交流，也希望能有幸通过这次面试。';
+        // ===== 提示词数据（可折叠段落） =====
+        var speechData = {
+            hero: {
+                label: '🎤 自我介绍',
+                sections: [
+                    {
+                        title: '自我介绍',
+                        content: '面试官您好，我是程愚瀚，电子科技大学软件工程专业 28 届本科生。我之前一直在学习 Java 后端开发的内容，然后从今年 2 月份开始学习 AI 相关的内容，做了多个相关项目，包括简历上的企业知识库RAG项目、可视化任务编排项目，也包括自己的一些探索学习项目，比如这里的myclaw 和 tree（workflow的3.0）。<br><br>关于 企业知识库RAG 项目，我熟悉 RAG 的完整流程、优化、测评，并针对其企业知识库的场景做了一些功能。我在 RAG 这个项目中学习到最关键的一点就是，不是看起来合理的优化策略就真的有效，要基于实际数据做评估。<br><br>然后是 可视化任务编排 或者说 workflow 这个项目，这是我花了最多心思的一个项目。我觉得在 AI 时代，发现问题和提供新解决方案的能力比单纯实现更重要。所以这个项目算是我的一个创新，初衷是解决 Agent 执行路径不可控（跳步遗漏）这个问题，然后自己设计了一套针对性的解决方案。我在这个项目中学到了包括prompt调优、Agent测评、token优化等知识。<br><br>我觉得我和这个岗位是比较适配的，我既拥有 Java 后端开发的经验，也熟悉 AI 相关的内容。我愿意不断地学习新知识，以满足这个岗位的需求。希望能和老师多多交流，也希望能有幸通过这次面试。'
+                    },
+                    {
+                        title: '为什么转向学习AI？',
+                        content: '<strong>问：为什么转向学习AI？</strong><br><br>主要有四个原因，<br><br>第一点是 AI 是一个热点，这方面的岗位比较多。<br><br>第二点是就算从事后端开发，学习 AI 相关的内容也是必要的。<br><br>第三点是我觉得可能 Agent 开发上限会更高，如果说终有一天程序员都会被替代的话，我觉得 Agent 开发被替代的时间会比后端开发晚一点。<br><br>第四点是我的个人原因，我个人觉得 AI 方向会更有意思一点，每天都能接触到新内容。'
+                    },
+                    {
+                        title: '你的后端经验在这个岗位有什么作用？',
+                        content: '<strong>问：你的后端经验在这个岗位有什么作用？</strong><br><br>我觉得主要可以分为三个方面。<br><br>第一点就是落地经验，Agent 除了 harness，还需要我们将其封装，后端经验可以帮我完成前后端联调、服务部署，完成 Agent 从原型到可运行服务的全流程。<br><br>然后就是稳定性与运维的思维，后端开发习惯考虑异常捕获、日志埋点、接口限流、监控告警，在开发 Agent 的时候，我就使用了三层异常处理机制来稳定我的 agent 任务执行，以及输出调用链路日志，避免线上 Agent 频繁报错、资源浪费，产出企业可用的稳定智能系统。<br><br>在我的项目中，也涉及到登录验证、并发文件上传的偏向后端的工作。<br><br>总的来说：Agent、Harness 的经验负责效果，后端工程负责落地，我同时具备两者能力。'
+                    }
+                ]
+            },
+            rag: {
+                label: '🎤 RAG 项目介绍',
+                sections: [
+                    {
+                        title: 'RAG 项目介绍（三个阶段）',
+                        content: '关于 企业知识库RAG 项目，这个项目主要分为了三个阶段。<br><br>第一阶段主要围绕企业知识库这个场景，搭建 RAG 的基础链路，学习各种策略来提升召回率、降低幻觉率。同时基于企业知识库的实际需求，做了文档上传优化、权限控制等工程化的工作。<br><br>第二阶段是将 RAG 变成了一个 Agentic RAG，主要做了两件事情，一个是智能路由，尝试对简单问题进行分流，减少不必要的向量检索；另一个是针对不同任务设计针对性的检索策略，比如需要多次检索的问题、对比类的问题等。<br><br>前两个阶段我其实没有系统的测评过，所有的优化都是"看起来有提升就觉得有效"，但实际提升了多少我并不清楚。所以在阶段三，我系统性地搭建了测评体系，对检索和生成两个环节分别做了多轮消融实验，让每一次优化都能看到具体的数据变化。也就是在这里我发现了一个问题，学到的最关键的一点就是，不是看起来合理的优化策略就真的有效，要基于实际数据做评估。'
+                    },
+                    {
+                        title: '召回率优化：RAG 基础链路',
+                        content: 'RAG主要分为三部，包括上传、检索、排序，如果再加上生成就是四步。<br><br><strong>上传阶段</strong>，主要就是文件的解析和分块策略。我的项目中实现的是两级四层的语义分块策略，我也了解其他的策略，但成本都比较高。我还做了并发上传和异步的文件解析，来减少上传时间，提升用户体验。<br><br><strong>检索阶段</strong>，主要是问题改写、召回策略。问题改写在智能路由那里针对不同的问题有不同的改写策略。召回策略我使用的是Milvus数据库，BAAI/bge-m3的向量模型，使用稠密向量 + 稀疏向量作为召回策略。在这一步将 recall_cap@5 提升到了76.66%。<br><br><strong>排序阶段</strong>，主要有三种排序方式，包括根据两种召回按照权重排序，按照排名进行排序，以及通过Rerank重排序。最后选择的是Rerank重排序将recall_cap@5 最终提升到了81.2%。<br><br><strong>生成阶段</strong>，我主要通过Prompt优化、结构化输出约束、低分拒答、幻觉检测机制、调低temperature、top-p等五个策略来减低他的幻觉率。最后使用了RAGAS框架，对忠实度、答案相关性等参数进行了测评。'
+                    },
+                    {
+                        title: '智能路由',
+                        content: '智能路由主要有两个目的，一方面是希望能过滤出不需要向量检索的问题，以此来减少查询API的调用和缩短流程时间；另一方面是通过对不同类型的问题制定针对性的检索策略，以此提高检索出来内容和回答的质量。<br><br>而要实现这两个目标，需要做两件事情，第一件是问题分类，第二件是问题处理。<br><br><strong>问题分类</strong>我设计了两层机制，包括通过关键词和正则匹配快速过滤简单（闲聊、纯计算）问题，通过模型来对问题进行分类。<br><br><strong>针对第一个目标</strong>，实际测评下来发现这个方案有三个问题，第一检索管线只占总耗时的一小部分，第二简单问题的占比也不高，第三如果通过规则进行问题分类的准确度较低，会让不是简单问题的问题跳过检索，而如果使用模型来进行分类，虽然可以提高分类的准确率，但是耗时增加大于缩短，得不偿失。所以让我意识到：优化不是看起来合理就行，需要有测试数据验证。<br><br><strong>针对第二个目标</strong>，不同类型查询的处理差异主要体现在检索策略、改写深度、上下文组装方式和生成策略四个维度。我举个例子：比如问题是产品A和B的区别是什么？就会执行两次独立检索分别放入A池和B池。单边缺失标注信息不足，禁止用模型知识填补空白。输出按维度对比表格。再比如假如问题是程愚瀚和鲁迅的关系是什么，就需要执行多次向量检索，每步基于前序结论动态构建新查询——程愚瀚是电子科大的学生，然后电子科大又有什么人才，然后就可以和鲁迅联系上了。在检索使用较低阈值（0.6）做宽召回。在生成时要求标注推理步骤。当然，开启之后耗时就会长很多。'
+                    },
+                    {
+                        title: '案例：智能路由的教训',
+                        content: '在智能路由这里，我原本想通过关键词匹配拦截简单问题来跳过向量检索，从而节约时间。但实际测评下来发现这个方案有三个问题，<br><br>第一，检索管线只占总耗时的一小部分；<br><br>第二，简单问题的占比也不高；<br><br>第三，如果通过规则进行问题分类的准确度较低，会让不是简单问题的问题跳过检索，而如果使用模型来进行分类，虽然可以提高分类的准确率，但是耗时增加大于缩短，得不偿失。<br><br>所以让我意识到：<strong>优化不是看起来合理就行，需要有测试数据验证。</strong>'
+                    },
+                    {
+                        title: '权限控制',
+                        content: '权限控制主要分为三个方面，登录控制、角色控制、标签控制。<br><br><strong>登录控制</strong>主要是通过Access Token作为核心通行证，有效期1小时，减小泄漏风险，通过Refresh Token作为长期凭证，有效期7天，泄漏也无法直接调用接口，可通过Redis快速吊销。<br><br><strong>角色控制</strong>则是通过Spring Security，校验用户角色是否有权访问当前接口。<br><br><strong>标签控制</strong>则是在访问文件时，通过查看用户标签和文章标签有交集，来判断用户是否有权访问文件。'
+                    },
+                    {
+                        title: 'MCP',
+                        content: '这里主要有两个部分，为什么要实现mcp化，和怎么实现mcp化。<br><br><strong>为什么要实现mcp化</strong>：公司员工比如程序员他在写代码的时候，会使用各类agent来辅助，所以实现mcp化之后，这些agent访问企业内部的私域知识时，就不需要员工手动检索，agent可以自己去检索。<br><br><strong>至于怎么将他MCP化</strong>其实非常简单，只需要项目中增加一个spring-ai-mcp-server-webmvc依赖即可。项目启动后自动暴露一个MCP端点，对外提供两个标准方法：listTools（告知客户端有哪些可用工具）和callTool（执行实际检索）。员工在Agent端的MCP配置文件中填入本服务的地址（如http://公司内网IP:8080/mcp），Agent就能自动发现searchKnowledge工具并调用。'
+                    }
+                ]
+            },
+            workflow: {
+                label: '🎤 Workflow 项目介绍',
+                sections: [
+                    {
+                        title: '项目起源与方案对比',
+                        content: '这个项目的起源是因为我发现使用 Agent 时，我已经给了非常明确的指令，但它就是会跳过或拒绝执行。比如让它先检索竞品资料再生成分析报告，结果它根本没去检索，因为它觉得自己知道。<br><br>我调研了两种方式来强制 Agent 执行：Workflow 是限定整个流程，Hooks 是约束某一步前后要做什么。它们不在一个层级，我的需求属于前者。<br><br>一般的 Workflow 是由人来定义（写代码或低代码平台），但是我联想到 Plan and Excute 的架构，由 AI 来帮 plan，于是我就想到把 DAG 图的构建交给大模型来完成。<br><br>核心思想就是：Plan Agent 构建 DAG 图，将 DAG 图可视化展示给用户确认，再用执行引擎读取 DAG 图自动完成任务，确保规划了就一定会执行。<br><br>然后再做这个项目的过程中，我发现单纯说解决跳步遗漏这个问题，DAG这个策略也没有那么好。比如相较于PAE，实现起来比较复杂，PAE在粗颗粒的任务上做的比较好（比如检索在生成），但是在细颗粒度的做的比较差，比如要求测试30条数据可能只测试了10条。相较于claudecode的dinamic workflow来说，他是通过写JavaScript脚本控制流程，所以相对来说，他的控制更加细致，会更加灵活。他想解决的问题是单个agent在长链路任务中懒惰、目标漂移的问题。<br><br>但是这个项目还有一些其他的优点，比如可以使用到长链路任务的场景，解决目标偏移的问题；并且基于DAG图还可以实现更高效的并行执行策略、断点恢复、harness这三个优点。'
+                    },
+                    {
+                        title: '双层并行执行引擎',
+                        content: '第一层是通过图来实现并行，入度（In-Degree）指一个节点被多少条边指向，入度为0表示该节点没有任何前置依赖，可以直接执行。每执行一个节点就将其指向的节点的入度减一，于是就会有新的可执行节点出现。直到将所有节点执行完毕。<br><br>第二层是在agent的react模式，支持他同格式调用多个工具，比如同时读取多个文件。'
+                    },
+                    {
+                        title: '节点级断点恢复',
+                        content: '设计了三张表来记录一个DAG图的执行。<br><br>一张表存DAG拓扑结构，第二张存每个节点的输入输出和状态，第三张存整次执行的全局汇总。（运行时的数据传递纯走内存HashMap，节点执行完顺手把快照同步写入MySQL，但不从数据库读。）<br><br>当断点继续触发时，就会从第二张表读出快照恢复到内存，结合第一张表重新解析的DAG图确定从哪个失败节点开始，跳过已成功的，接着往下跑。最后把第三张的状态从FAILED改回RUNNING，执行完再更新。'
+                    },
+                    {
+                        title: 'Sub Agent 分发执行',
+                        content: '做出将子任务交给子agent是水到渠成的，首先是设计到并行执行，所以不能是一个agent。其次是我总结出了三个优点。<br><br>第一点是每个agent只需要负责他们自己的任务，放在长链路的任务中，可以解决目标偏移的问题；<br><br>第二点是我们可以针对每一个agent的身份，控制他们能调用的skill或者tool，来实现权限控制和提高他们调用skill、tool的正确率；<br><br>第三点是我们减少了默认的、不必要的skill、tool注入，也就减少了单次的token消耗。并且由于我对子agent之间的信息传递做了格式化输出，所以不会出现上下文堆积的情况，也就进一步减少了token消耗。'
+                    },
+                    {
+                        title: 'Token 优化',
+                        content: '包括三点。<br><br>第一点由于我们设计了不同类型的子agent，所以针对性的设计了他可以调用的skill、tool，也就减少了默认的、不必要的skill、tool注入，也就减少了单次的token消耗。<br><br>第二点是，由于我对子agent之间的信息传递做了格式化输出，抹去了大量的工具调用等信息，以此减少了下一个节点的输入。<br><br>第三点是，控制当前节点只会获取前一个节点的输出，而不是这一条链路的输出，所以不会出现上下文堆积，也就是后一个节点的上下文包含前面所有节点的输出的情况，也就进一步减少了token消耗。'
+                    },
+                    {
+                        title: '节点输入输出（STAR法则）',
+                        content: '关于这个问题我可以按照STAR法则来讲。<br><br><strong>Situation — 背景</strong>：节点之间有明确的先后依赖关系，后面的节点需要拿到前面节点的输出才能执行。原本的做法直接把子Agent的完整对话历史——包括system prompt、工具调用、工具返回结果、中间推理过程——全部传给下一个节点。然后就会遇到一个问题，多个节点串联后，下游Agent的context窗口很快被占满。<br><br><strong>Task — 目标</strong>：需要确定每个节点的输出应该包含什么内容、以什么格式输出，下游节点能拿到什么内容。来实现下游节点只拿到它真正需要的信息，控制上下文占用。<br><br><strong>Action — 方案与权衡</strong>：关于以什么格式输出这一点，我想出来了两个策略，第一个是压缩，把完整的对话历史压缩成摘要，再传给下一个节点。但问题在于压缩本身也是一次模型调用，会额外消耗token，而且压缩后的摘要可能会丢失细节。于是我选择了借鉴Dynamic Workflow的动态Schema格式化输出，在生成DAG图的时候，就确定好他需要输出什么内容。关于下游节点能拿到什么内容，不再是拿到这一条链路的全部输出，而是只拿到前一个节点的输出。<br><br><strong>Result — 效果</strong>：节点传递的信息量被控制在原始输出的10%到20%左右，也不再有上下文堆积的问题。'
+                    },
+                    {
+                        title: 'Plan 优化',
+                        content: '想要Agent能够帮你执行好一件事情，主要就是三个策略：第一个是给他说清楚你要做什么，第二个是列举清楚规则是什么，第三个是举一些例子。这就是Prompt Engineering里面最基本的操作。<br><br>然后我为了保证这个DAG图它是没有环的，以及做一些其他的检测，我还设置了一个后置的校验层对它进行校验。<br><br>Prompt + 样本 + 校验做到位了，DAG质量有了基本保障。但模型会犯错，而且同样的错误可能反复出现——这就需要一套机制让Plan能力能自己不断变好。于是我就参考了Reflexion的思路，把每次执行失败的DAG当作负样本收集起来，自动分析失败原因，再把高频错误注入到Prompt和样本中。这样每次失败都变成一次教学，Plan的能力就随着使用次数越来越多，形成一个持续改进的闭环。'
+                    },
+                    {
+                        title: 'Agent 测评',
+                        content: '我觉得首先是要明确测什么，包括两个方面，结果和过程。结果维度包括需求完成度、耗时、Token消耗，过程维度包括工具调用链、无效ReAct循环、异常处理等。然后针对不同的Agent场景也需要有不同的测评，比如我们这里的DAG构建正确率，或者说CodingAgent的代码质量等。<br><br>然后是怎么测，主要分为了三个方面，包括设计测评集、设计评分器、选择测试方法。<br><br>首先是测评集的设计，要注意质量比数量更重要。我这里因为人手的原因，我是先让Agent帮我设计了一批样本，覆盖常规流程、并行分支、复杂拓扑、边界样本和对抗样本，我再去挑选和修改。<br><br>然后是设计评分器，包括两种，确定性评分器和LLM-as-Judge。非常清楚的可以看出来当需要理解的部分就需要调用大模型，其他时候更适合使用确定性评分器，因为大模型的评分不稳定，使用确定性评分器能够更直观的看出来改进。比如在测试DAG图构建率时，就是使用的确定性评分器，通过查看有没有环的出现来得出分数。<br><br>最后就是选择测评方法，比如基准测试（在标准数据集上跑分，与基线版本或竞品横向对比）、回归测试、AB测试等。我觉得在agent测试中，回归测试比较重要。因为对prompt的修改指不定就破坏了已有能力，所以需要做回归测试去确保新改动不破坏已有能力。'
+                    },
+                    {
+                        title: '异常治理',
+                        content: '因为这个项目采用固定DAG执行，相比PAE架构可根据前一步结果动态修改下一步计划的方式，丧失了执行中调整流程的能力。而三级异常治理就是为了弥补这一限制而设计的。<br><br>首先是在顶层设计了while循环，在第二层设计了超时策略，在最底层设计了异常捕获，又分为三种处理方式：<br><br>① 直接中断 — 关键节点失败后整体进入失败状态。适用于支付、扣款、核心写操作等。<br><br>② 错误码策略 — 按预配置的错误码或默认值继续执行。适用于辅助查询、非核心推荐等。<br><br>③ 失败条件分支策略 — 引导到异常处理分支，用于告警、补偿、回滚或特定兜底逻辑。'
+                    },
+                    {
+                        title: '条件分支路由',
+                        content: '条件分支路由是为了解决有些情况Plan Agent不知道这一步的结果是什么，遇到不同的结果可能会有不同的路径。但这里就遇到一个问题：我们的并行策略是把一排节点拿来并行执行，但遇到条件分支的话，难道要同时执行两个分支吗？于是我就设计了condition字段——只有匹配条件的边才会被激活，来解决这个问题。'
+                    }
+                ]
+            },
+            concepts: {
+                label: '🎤 通用概念',
+                sections: [
+                    {
+                        title: 'MCP 是什么？',
+                        content: '我理解的 MCP 它就是一个 agent 到 tool 之间的一个协议，它能够让 agent 调用这个 tool，避免每一个 agent 对接每接一个新工具都要单独写适配代码。<br><br>底层基于 JSON-RPC 2.0 实现有状态双向通信，支持本地 stdio、HTTP-SSE、流式 HTTP 多种传输方式。<br><br>有三部分：Host、Client、Server。Host 就是支持 MCP 协议的应用程序，也就是我们配置大模型的地方。Client 在 Host 内部运行，负责与 MCP Server 建立连接。Server 可以理解为一个软件，我们将他提供的原子性的能力称之为 Tool，一个 Server 可以提供多个 Tool。<br><br>当我们配置并启动我们需要的 Server 后，会获取其包含的 Tool 列表，用户提问后，Host 将问题与 Tool 列表一同传给模型；模型判断需调用的 Tool 及参数，反馈给 Client；Client 转发调用请求至 MCP Server，Server 执行 Tool 后返回结果；Client 将结果回传给模型，模型整理后给出最终答案并反馈给用户。<br><br>然后包括我的这个 RAG 项目，我也把它实现成了一个 MCP。我当时想象的场景就是说，我是一个程序员，我肯定不会使用我公司开发的 RAG 来帮我执行一些任务。但是我使用其他如 Claude Code 来执行任务的时候，我又需要获取我公司的资源，怎么办？那我可能就通过公司的 RAG 的 MCP 的一个工具来获取一些资料，然后让 agent 能够更好的帮我完成这个任务。'
+                    },
+                    {
+                        title: '如何让大模型格式化输出？',
+                        content: '有三种方式：<br><br><strong>① 原始阶段（Prompt）</strong>：通过 prompt 写清楚 JSON Schema 的例子，但是 prompt 的约束不稳定。<br><br><strong>② 指令微调 SFT</strong>：在 SFT 阶段喂了大量"问题-答案"对，让模型学会识别什么时候需要调用工具、按固定格式输出函数名+参数、不乱说废话，直接吐结构化数据。<br><br><strong>③ 输出时的强约束机制</strong>：模型是根据概率生成字符，通过微调仍然可能输出不符合规范的内容，这时候就可以通过 JSON Schema、正则、状态机过滤，将不符合规范的字符概率设置为 0。<br><br>具体在 Spring AI Alibaba 提供了两种方式：直接定义我们需要他返回的类，然后在 outputType 里面输入这个类，他就会自动将这个类转化为 JSON Schema；第二种就是我们自己将这个类转化为 json，然后放进 outputType。'
+                    },
+                    {
+                        title: '格式化输出 2.0（约束解码）',
+                        content: '约束解码：大模型生成文本是一个 token 一个 token 往外蹦的。正常情况下，每一步模型会算出一个概率分布，然后从所有 token 里选一个。但结构化输出做了一件事：在每一步生成之前，先根据 JSON Schema 算出一个"当前合法的 token 集合"，然后把不合法的 token 的概率全部置为零，模型只能在合法集合里选。<br><br>但是好像国产模型不支持，而是通过微调实现的。我检索了一下说是成本问题：约束解码需要在模型推理的时候，每生成一个 token 都跑一遍状态机，检查当前 token 是否合法。这个状态机本身不贵，但它会破坏推理的批处理（batching）。大模型厂商为了降成本，会把多个用户的请求拼成一个 batch 一起算，这样 GPU 利用率高。但约束解码意味着每个请求的合法 token 集合不一样——你的 Schema 是 {name, age}，别人的 Schema 是 {city, temperature}，两个请求的合法 token 集合不同，就没法拼在一起算了。要么只能单独算（降低吞吐），要么用更复杂的调度策略（增加工程成本）。'
+                    },
+                    {
+                        title: 'Skill 是什么？（和 MCP 的关系）',
+                        content: 'Skill 可以理解为解决特定任务的固定规则，是一种知识的沉淀，来实现策略的复用和传播。它可以是一个资源文件、一些 rules、一个解决什么任务的流程，甚至有的时候比较常用的 prompt 我也会将其封装为一个 skill，在解决特定任务时调用。<br><br>整体采用渐进式披露机制：第一层元数据始终加载，包括名称和描述，让模型决定使用哪一个 skill；第二层流程层，描述怎么做（流程、规则、约束条件，以及使用哪一个 tool，加载哪一个材料）；第三层资源层，是进一步的按需加载，包括资源、示例、脚本、甚至其他的 skill 等。<br><br>MCP 负责提供模型调用外部工具的能力，Skill 给了模型处理一个问题的标准答案，除了提供参考文本之外，还可以提供可直接执行的脚本，这也就是二者功能重叠的部分。Skill 适合轻量脚本，MCP 安全性与稳定性更强，实际场景可结合使用。'
+                    },
+                    {
+                        title: 'Harness Engineering 是什么？',
+                        content: 'Harness 这个概念本质上是在回答一个问题：为什么同样一个模型，在不同的产品里表现天差地别？答案就是 Agent 等于模型加 Harness，模型提供的是智能引擎，而 Harness 是让这份智能真正落地的那套系统。<br><br>一个裸模型本质上只是一个文本输入输出的函数，它记不住上下文、执行不了代码、访问不了实时数据。Harness 就是围绕这个函数搭建的一整套基础设施，包括文件系统让它能持久化存储、沙箱让它能安全执行代码、记忆系统让它能跨会话学习、压缩机制防止它在长任务中性能衰减。<br><br>这些东西的设计原则是从期望的 Agent 行为逆向推导的，你想要 Agent 能做什么，就在 Harness 里给它搭什么能力。所以 Harness Engineering 本质上是一种系统工程思维，它承认模型的智能是不完美的，但通过设计好的环境、工具和反馈循环，可以让任何模型在特定任务上发挥出远超其本身的能力。'
+                    },
+                    {
+                        title: 'Loop Engineering',
+                        content: 'Loop Engineering 到底改变了什么？之前的工作模式是我写 prompt、Agent 干活、我检查结果、再写下一个 prompt，我才是那个驱动循环的人。有了 Loop Engineering 之后，我设计好目标、评估标准和工具集，然后一个循环系统自动去驱动 Agent，我只在最后看结果。<br><br>但这里有一个关键的前提：Loop Engineering 真正适用的场景，是那些停止条件可以被明确验证的任务。比如"让所有测试通过"或者"构建成功"，这些条件 Agent 自己能判断。但对于"做一个好的 PPT"这种任务，什么是好本身就很模糊，你还是需要在循环中介入判断。所以 Loop Engineering 解决的是重复执行的自动化，而不是判断好坏的自动化，这个边界很重要。<br><br>Loop Engineering 和 Reflection 的对比：Reflection 是 Agent 内部的一次推理过程中自我反思的机制，本质上是模型在生成回答之前的内部循环。而 Loop Engineering 完全不同，它是外部的、跨多次 Agent 调用的编排框架，解决的是让 Agent 能够稳定地长时间自主运行的问题，比如无限循环、任务中断、资源超额消耗这些在实际落地中才会遇到的坑。所以它和 Reflection 不在一个层次上，Reflection 解决的是单次推理的质量，Loop Engineering 解决的是整个任务执行的可靠性。'
+                    },
+                    {
+                        title: 'RAG 是什么？解决了什么问题？',
+                        content: 'RAG（检索增强生成）是为了解决大模型的三大问题：<br><br>首先是知识的时效性，在训练好的那一刻就固定了；其次是专业性不足或者说不知道私有知识；最后是幻觉问题，他没有说不知道的能力，只能瞎编。<br><br>RAG 就是在调用大模型前，先从知识库里检索相关内容，塞到 Prompt 里，让大模型"看着资料回答"。可以让新知识随时入库解决知识时效性的问题；公司文档入库解决私有的问题；让 LLM 有参考内容、可溯源，解决幻觉的问题。'
+                    },
+                    {
+                        title: '什么是幻觉？如何避免？',
+                        content: '<strong>本质</strong>：模型在生成过程中，过度自信地"编造"了信息。<br><br><strong>原因</strong>：大模型生成本质是根据概率输出，所以天然会偏；Decoder 逐词生成，一旦某一步注意力权重偏了，后续全在这个错误上堆叠；并且向量没有"我不知道"这个状态，遇到知识盲区模型不会沉默，而是用最流畅的语法硬编一个错答案。<br><br><strong>类型</strong>：<br>① 训练数据没有包含、检索没有召回到相关内容，导致 LLM 没有可用的上下文，靠自身知识在编造答案。<br>② 检索内容召回了但 LLM 没有严格遵循，在文档内容的基础上加了自己的推断。<br><br><strong>解决</strong>：<br>针对没有找回到相关内容，首先是 prompt 约束，让他没有的就说不知道；其次是如果混合检索或者 Rerank 得出来的分数过低，就直接回复没有资料，而不是让大模型对着不相干的内容硬编。<br><br>针对 LLM 添加私货的情况，首先是可以把 temperature、top-p 等参数调低，让他回答的更严谨，避免跑偏。其次是可以让 LLM 输出结构化的结论，每个结论都必须填写来自哪条参考资料。其次可以是生成后再调用一次 LLM 核查或者使用 RAGAS 来做核查，来检查忠实性、答案相关性。'
+                    }
+                ]
+            }
+        };
 
-        if (speechContent) {
-            speechContent.innerHTML = speechText;
+        var speechNav = document.getElementById('speechNav');
+        var speechContentPanel = document.getElementById('speechContentPanel');
+        var speechLabel = document.getElementById('speechLabel');
+        var currentSectionKey = 'hero';
+
+        // 渲染导航按钮 + 内容面板
+        function renderSections(sections) {
+            var navHtml = '';
+            var contentHtml = '';
+            for (var i = 0; i < sections.length; i++) {
+                var activeClass = i === 0 ? ' active' : '';
+                navHtml += '<div class="speech-nav-btn' + activeClass + '" onclick="selectSection(' + i + ')">' + sections[i].title + '</div>';
+                contentHtml += '<div class="speech-section-content" data-index="' + i + '" style="display:' + (i === 0 ? 'block' : 'none') + '">' + sections[i].content + '</div>';
+            }
+            speechNav.innerHTML = navHtml;
+            speechContentPanel.innerHTML = contentHtml || '<div class="speech-content-placeholder">选择左侧段落查看内容</div>';
         }
+
+        // 选择某个段落
+        function selectSection(index) {
+            var btns = document.querySelectorAll('.speech-nav-btn');
+            var contents = document.querySelectorAll('.speech-section-content');
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].classList.toggle('active', i === index);
+                if (contents[i]) contents[i].style.display = i === index ? 'block' : 'none';
+            }
+        }
+
+        // 切换到某组提示词
+        function switchTo(key) {
+            if (key === currentSectionKey) return;
+            currentSectionKey = key;
+            var data = speechData[key];
+            if (speechLabel) speechLabel.innerHTML = data.label;
+            renderSections(data.sections);
+        }
+
+        // 初始显示自我介绍
+        renderSections(speechData.hero.sections);
+        if (speechLabel) {
+            speechLabel.innerHTML = speechData.hero.label;
+        }
+
+        // 通用概念模式
+        var isConceptsMode = false;
+        var conceptsBtn = document.getElementById('conceptsToggleBtn');
+
+        if (conceptsBtn) {
+            conceptsBtn.addEventListener('click', function() {
+                isConceptsMode = !isConceptsMode;
+                if (isConceptsMode) {
+                    conceptsBtn.classList.add('active');
+                    currentSectionKey = 'concepts'; // 标记当前为概念模式
+                    var data = speechData.concepts;
+                    if (speechLabel) speechLabel.innerHTML = data.label;
+                    renderSections(data.sections);
+                } else {
+                    conceptsBtn.classList.remove('active');
+                    // 恢复滚动位置对应的内容
+                    updateSpeechOnScroll();
+                }
+            });
+        }
+
+        // 滚动切换（通用概念模式下暂停）
+        function updateSpeechOnScroll() {
+            if (isConceptsMode) return;
+
+            var sections = [
+                { id: 'hero', key: 'hero' },
+                { id: 'project-rag', key: 'rag' },
+                { id: 'project-workflow', key: 'workflow' }
+            ];
+
+            var scrollY = window.scrollY;
+
+            // 到底部时强制显示 workflow 提示词
+            if (window.innerHeight + scrollY >= document.documentElement.scrollHeight - 100) {
+                switchTo('workflow');
+                return;
+            }
+
+            var current = sections[0];
+
+            for (var i = 0; i < sections.length; i++) {
+                var el = document.getElementById(sections[i].id);
+                if (el) {
+                    var offset = el.offsetTop;
+                    var height = el.offsetHeight;
+                    if (scrollY >= offset - 200 && scrollY < offset + height - 200) {
+                        current = sections[i];
+                        break;
+                    }
+                }
+            }
+
+            switchTo(current.key);
+        }
+
+        window.addEventListener('scroll', updateSpeechOnScroll);
 
         // Toggle
         var toggleBtn = document.getElementById('toggleSpeechBtn');

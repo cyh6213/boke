@@ -21,7 +21,7 @@
             position: fixed;
             right: 24px;
             bottom: 80px;
-            width: 320px;
+            width: 400px;
             z-index: 100;
             transition: opacity 0.3s, visibility 0.3s;
         }
@@ -34,12 +34,14 @@
             background: #eef2ff;
             border-left: 4px solid #7c3aed;
             border-radius: 12px;
-            padding: 16px 20px;
+            padding: 12px 16px;
             font-size: 14px;
             color: #334155;
             line-height: 1.8;
             max-height: calc(100vh - 140px);
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
         .speech-fixed .speech-label {
             display: inline-flex;
@@ -49,6 +51,74 @@
             font-weight: 700;
             color: #7c3aed;
             margin-bottom: 8px;
+            flex-shrink: 0;
+        }
+
+        /* ===== 话术框内左右布局 ===== */
+        .speech-layout {
+            display: flex;
+            gap: 8px;
+            flex: 1;
+            min-height: 0;
+        }
+        .speech-nav {
+            width: 30%;
+            flex-shrink: 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .speech-nav::-webkit-scrollbar {
+            width: 3px;
+        }
+        .speech-nav::-webkit-scrollbar-thumb {
+            background: #c4b5fd;
+            border-radius: 3px;
+        }
+        .speech-nav-btn {
+            padding: 7px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4f46e5;
+            cursor: pointer;
+            background: #f8f7ff;
+            border: 1px solid #d4d0f0;
+            text-align: left;
+            transition: all 0.15s;
+            line-height: 1.4;
+            flex-shrink: 0;
+        }
+        .speech-nav-btn:hover {
+            background: #eef2ff;
+        }
+        .speech-nav-btn.active {
+            background: #4f46e5;
+            color: #fff;
+            border-color: #4f46e5;
+        }
+        .speech-content-panel {
+            width: 70%;
+            flex-shrink: 0;
+            overflow-y: auto;
+            font-size: 13px;
+            color: #334155;
+            line-height: 1.8;
+            padding-right: 2px;
+        }
+        .speech-content-panel::-webkit-scrollbar {
+            width: 3px;
+        }
+        .speech-content-panel::-webkit-scrollbar-thumb {
+            background: #c4b5fd;
+            border-radius: 3px;
+        }
+        .speech-content-placeholder {
+            color: #94a3b8;
+            font-size: 12px;
+            text-align: center;
+            padding: 20px 0;
         }
 
         /* ===== 问题反例 ===== */
@@ -336,11 +406,11 @@
 
         /* ===== 响应式 ===== */
         @media (max-width: 1400px) {
-            .speech-fixed { width: 260px; }
+            .speech-fixed { width: 340px; }
             .cost-grid { grid-template-columns: 1fr 1fr; }
         }
         @media (max-width: 1200px) {
-            .speech-fixed { width: 220px; font-size: 13px; }
+            .speech-fixed { width: 280px; font-size: 13px; }
             .speech-fixed .speech-bubble { padding: 12px 14px; }
         }
         @media (max-width: 768px) {
@@ -348,19 +418,24 @@
             .cost-grid { grid-template-columns: 1fr; }
             .data-grid-2 { grid-template-columns: 1fr; }
         }
-        .main { margin-right: 350px; }
+        .main { margin-right: 430px; }
     </style>
 </head>
 <body>
 
     <!-- ===== 顶部导航 ===== -->
     <nav class="top-nav">
-        <a href="index4.html" class="nav-brand">程愚瀚</a>
-        <div class="nav-links">
-            <a href="index4.html">自我介绍</a>
-            <a href="index.html">博客首页</a>
-            <a href="文章/">文章</a>
-            <a href="项目/">项目</a>
+        <div class="nav-left">
+            <a href="index4.html" class="nav-brand">程愚瀚</a>
+            <div class="nav-links">
+                <a href="index.html">首页</a>
+                <a href="index4.html">自我介绍</a>
+                <a href="文章/">文章</a>
+                <a href="项目/">项目</a>
+            </div>
+        </div>
+        <div class="nav-right">
+            <a href="问答.html" class="nav-qa">问答</a>
         </div>
     </nav>
 
@@ -740,8 +815,13 @@
         <!-- ===== 固定话术框 ===== -->
         <div class="speech-fixed hidden" id="speechFixed">
             <div class="speech-bubble">
-                <div class="speech-label">🎤</div>
-                <div id="speechContent"></div>
+                <div class="speech-label">🎤 <span id="speechLabel"></span></div>
+                <div class="speech-layout">
+                    <div class="speech-nav" id="speechNav"></div>
+                    <div class="speech-content-panel" id="speechContentPanel">
+                        <div class="speech-content-placeholder">选择左侧段落查看内容</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -786,18 +866,87 @@
 
     <script src="资源/js/main.js"></script>
     <script>
-        // ===== Speech bubble: scroll-based content switching =====
-        var speechContent = document.getElementById('speechContent');
-        var speechSections = [
-            { id: 'hero', text: '面试官您好，我是程愚瀚，电子科技大学软件工程专业 28 届本科生。我之前一直在学习 Java 后端开发的内容，然后从今年 2 月份开始学习 AI 相关的内容，做了三个项目，包括简历上面的 RAG 项目、workflow 项目，然后出于个人兴趣做了 MyClaw 这个项目。最近在做的事情就是 tree 这个项目，它也就是 workflow 的 3.0。<br><br>关于 RAG 项目，我了解 RAG 的完整流程、优化策略、测评策略，最关键的是我在 RAG 这个项目中学习到，不是看起来合理的优化策略就真的有效，要基于实际数据做评估。<a href="项目/rag.html#router" style="color: #4f46e5; text-decoration: underline;">→ 查看智能路由详情</a><br><br>然后是 workflow 这个项目是我花了最多心思的一个项目。我一直觉得在 AI 时代，发现问题和定义问题的能力比单纯实现更重要。所以我没有选择基于别人的项目去做，而是自己先想清楚 Agent 执行路径不可控（跳步遗漏）这个问题的根源，然后自己设计了一套针对性的解决方案。<br><br>然后 MyClaw 这个项目主要是为了了解长期记忆的相关实现。<br><br>Tree 是 workflow 的 3.0。做 workflow 2.0 的时候我发现，长链路 Agent 的核心问题是上下文太长导致遗忘和漂移，而 DAG 按节点独立存储的思路天然适合解决这个问题，所以就想着把 DAG 这套方案扩展到长链路场景。' },
-            { id: 'skills', text: '我的技术栈主要分为两块：Java 后端和 AI Agent。在后端方面，我对 JUC、JVM、MySQL、Redis 的底层原理和数据结构比较了解，也做过一个后端社区平台项目。在 AI 方面，我对基于 SDD 的 AI 辅助编程比较熟练，简历上的项目 99% 都是 vibecoding 出来的；同时我也深度使用过 OpenClaw、Claude Code 等工具，阅读过源码并从中学习策略，应用到了自己的项目中。' },
-            { id: 'cost', text: '我在做项目的时候有比较强的成本意识。对这几个项目都实现了针对性的优化策略：比如 Workflow 通过 Sub Agent 职责拆分降低了 41% 的 Token 消耗；RAG 通过智能路由减少了 Embedding API 调用；并行执行也缩短了整体耗时。不过在 RAG 的智能路由那里我也踩过坑——原本想通过关键词匹配拦截简单问题来节约时间，但实际测评下来这类问题占比很低，优化效果非常有限。这个经历让我深刻意识到，优化不是简单堆砌策略，而是要基于实际数据做决策。' },
-            { id: 'methodology', text: '我对每个项目都进行了量化测评和消融实验，让每一次优化都能看到具体的数据提升：RAG 做了 4 轮检索消融和 3 轮生成消融，recall_cap@5 从 68% 提升到 81%，忠实度从 72% 提升到 96%；可视化任务编排的 Plan 能力经过六层递进优化，DAG 构建正确率达到 97%；MyClaw 则是对比了 4 种长期记忆方案在 4 个维度的表现后才最终选型 Hindsight。最近在做的 Tree 也就是 workflow 3.0，是我在做 2.0 的时候一直在思考的问题：DAG 图这套方法是否可以进一步应用到更长链路的任务当中？' }
-        ];
+        // ===== 提示词数据 =====
+        var speechData = {
+            hero: {
+                label: '🎤 自我介绍',
+                sections: [
+                    { title: '自我介绍', content: '面试官您好，我是程愚瀚，电子科技大学软件工程专业 28 届本科生。我之前一直在学习 Java 后端开发的内容，然后从今年 2 月份开始学习 AI 相关的内容，做了三个项目，包括简历上面的 RAG 项目、workflow 项目，然后出于个人兴趣做了 MyClaw 这个项目。最近在做的事情就是 tree 这个项目，它也就是 workflow 的 3.0。<br><br>关于 RAG 项目，我了解 RAG 的完整流程、优化策略、测评策略，最关键的是我在 RAG 这个项目中学习到，不是看起来合理的优化策略就真的有效，要基于实际数据做评估。<a href="项目/rag.html#router" style="color: #4f46e5; text-decoration: underline;">→ 查看智能路由详情</a><br><br>然后是 workflow 这个项目是我花了最多心思的一个项目。我一直觉得在 AI 时代，发现问题和定义问题的能力比单纯实现更重要。所以我没有选择基于别人的项目去做，而是自己先想清楚 Agent 执行路径不可控（跳步遗漏）这个问题的根源，然后自己设计了一套针对性的解决方案。<br><br>然后 MyClaw 这个项目主要是为了了解长期记忆的相关实现。<br><br>Tree 是 workflow 的 3.0。做 workflow 2.0 的时候我发现，长链路 Agent 的核心问题是上下文太长导致遗忘和漂移，而 DAG 按节点独立存储的思路天然适合解决这个问题，所以就想着把 DAG 这套方案扩展到长链路场景。' }
+                ]
+            },
+            skills: {
+                label: '🎤 技术栈',
+                sections: [
+                    { title: '技术栈', content: '我的技术栈主要分为两块：Java 后端和 AI Agent。在后端方面，我对 JUC、JVM、MySQL、Redis 的底层原理和数据结构比较了解，也做过一个后端社区平台项目。在 AI 方面，我对基于 SDD 的 AI 辅助编程比较熟练，简历上的项目 99% 都是 vibecoding 出来的；同时我也深度使用过 OpenClaw、Claude Code 等工具，阅读过源码并从中学习策略，应用到了自己的项目中。' }
+                ]
+            },
+            cost: {
+                label: '🎤 成本意识',
+                sections: [
+                    { title: '成本意识', content: '我在做项目的时候有比较强的成本意识。对这几个项目都实现了针对性的优化策略：比如 Workflow 通过 Sub Agent 职责拆分降低了 41% 的 Token 消耗；RAG 通过智能路由减少了 Embedding API 调用；并行执行也缩短了整体耗时。不过在 RAG 的智能路由那里我也踩过坑——原本想通过关键词匹配拦截简单问题来节约时间，但实际测评下来这类问题占比很低，优化效果非常有限。这个经历让我深刻意识到，优化不是简单堆砌策略，而是要基于实际数据做决策。' }
+                ]
+            },
+            methodology: {
+                label: '🎤 测评方法论',
+                sections: [
+                    { title: '测评方法论', content: '我对每个项目都进行了量化测评和消融实验，让每一次优化都能看到具体的数据提升：RAG 做了 4 轮检索消融和 3 轮生成消融，recall_cap@5 从 68% 提升到 81%，忠实度从 72% 提升到 96%；可视化任务编排的 Plan 能力经过六层递进优化，DAG 构建正确率达到 97%；MyClaw 则是对比了 4 种长期记忆方案在 4 个维度的表现后才最终选型 Hindsight。最近在做的 Tree 也就是 workflow 3.0，是我在做 2.0 的时候一直在思考的问题：DAG 图这套方法是否可以进一步应用到更长链路的任务当中？' }
+                ]
+            }
+        };
 
+        var speechNav = document.getElementById('speechNav');
+        var speechContentPanel = document.getElementById('speechContentPanel');
+        var speechLabel = document.getElementById('speechLabel');
+        var currentSectionKey = 'hero';
+
+        // 渲染导航按钮 + 内容面板
+        function renderSections(sections) {
+            var navHtml = '';
+            var contentHtml = '';
+            for (var i = 0; i < sections.length; i++) {
+                var activeClass = i === 0 ? ' active' : '';
+                navHtml += '<div class="speech-nav-btn' + activeClass + '" onclick="selectSection(' + i + ')">' + sections[i].title + '</div>';
+                contentHtml += '<div class="speech-section-content" data-index="' + i + '" style="display:' + (i === 0 ? 'block' : 'none') + '">' + sections[i].content + '</div>';
+            }
+            speechNav.innerHTML = navHtml;
+            speechContentPanel.innerHTML = contentHtml || '<div class="speech-content-placeholder">选择左侧段落查看内容</div>';
+        }
+
+        // 选择某个段落
+        function selectSection(index) {
+            var btns = document.querySelectorAll('.speech-nav-btn');
+            var contents = document.querySelectorAll('.speech-section-content');
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].classList.toggle('active', i === index);
+                if (contents[i]) contents[i].style.display = i === index ? 'block' : 'none';
+            }
+        }
+
+        // 切换到某组提示词
+        function switchTo(key) {
+            if (key === currentSectionKey) return;
+            currentSectionKey = key;
+            var data = speechData[key];
+            if (speechLabel) speechLabel.innerHTML = data.label;
+            renderSections(data.sections);
+        }
+
+        // 初始显示自我介绍
+        renderSections(speechData.hero.sections);
+        if (speechLabel) {
+            speechLabel.innerHTML = speechData.hero.label;
+        }
+
+        // 滚动切换
         function updateSpeechOnScroll() {
             var current = null;
             var scrollY = window.scrollY;
+            var speechSections = [
+                { id: 'hero', key: 'hero' },
+                { id: 'skills', key: 'skills' },
+                { id: 'cost', key: 'cost' },
+                { id: 'methodology', key: 'methodology' }
+            ];
             for (var i = 0; i < speechSections.length; i++) {
                 var el = document.getElementById(speechSections[i].id);
                 if (el) {
@@ -818,8 +967,8 @@
                     current = speechSections[speechSections.length - 1];
                 }
             }
-            if (current && speechContent) {
-                speechContent.innerHTML = current.text;
+            if (current) {
+                switchTo(current.key);
             }
         }
         window.addEventListener('scroll', updateSpeechOnScroll);
