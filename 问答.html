@@ -1,4 +1,4 @@
-                                                                                                       <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8" />
@@ -134,6 +134,7 @@
 
         /* ===== 右侧答案展示 (50%) ===== */
         .qa-content {
+            position: relative;
             width: 50%;
             padding: 20px 30px;
             overflow-y: auto;
@@ -281,6 +282,58 @@
             width: 100%;
             border: none;
         }
+
+        /* ===== 微型目录（导航栏右侧，纵向排列，向下延伸） ===== */
+        .mini-nav {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 100px;
+            z-index: 301;
+            font-size: 11px;
+            line-height: 16px;
+            color: #94a3b8;
+            padding: 2px 0;
+            max-width: 160px;
+            min-width: 80px;
+            background: rgba(255,255,255,0.96);
+            border-radius: 0 0 6px 6px;
+            border: 1px solid #f1f4f9;
+            border-top: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            pointer-events: none;
+        }
+        .mini-nav.show {
+            display: block;
+        }
+        .mini-nav-item {
+            padding: 1px 10px;
+            cursor: pointer;
+            color: #94a3b8;
+            transition: color 0.15s, background 0.15s;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            pointer-events: auto;
+        }
+        .mini-nav-item:hover {
+            color: #4f46e5;
+            background: rgba(79,70,229,0.04);
+        }
+        .mini-nav-item.active {
+            color: #4f46e5;
+            font-weight: 700;
+        }
+        .mini-nav-item.dim {
+            color: #cbd5e1;
+        }
+        .mini-nav-item.ellipsis {
+            color: #cbd5e1;
+            cursor: default;
+            padding: 1px 10px;
+            letter-spacing: 1px;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -295,10 +348,10 @@
                 <a href="项目/">项目</a>
             </div>
         </div>
-        <div class="nav-right">
-            <a href="问答.html" class="nav-qa active">问答</a>
-        </div>
+        <a href="问答.html" class="nav-qa active">问答</a>
     </nav>
+
+    <div class="mini-nav" id="miniNav"></div>
 
     <div class="qa-main">
         <!-- 左侧统一导航区域 (50%) -->
@@ -454,6 +507,7 @@
         var categoryTag = document.getElementById('categoryTag');
         var questionTitle = document.getElementById('questionTitle');
         var answerContent = document.getElementById('answerContent');
+        var miniNav = document.getElementById('miniNav');
 
         // ===== 渲染导航（支持层级结构和折叠展开）=====
         function renderNav() {
@@ -564,9 +618,83 @@
             return html;
         }
 
+        // ===== 微型目录更新 =====
+        function updateMiniNav() {
+            var idx = allButtons.indexOf(currentQuestionId);
+            if (idx === -1 || allButtons.length === 0) {
+                miniNav.classList.remove('show');
+                miniNav.innerHTML = '';
+                return;
+            }
+            
+            var range = 2; // 当前项上下各显示 2 个，共 5 项
+            var html = '';
+            
+            // 前面的省略号
+            if (idx - range > 0) {
+                html += '<div class="mini-nav-item ellipsis">···</div>';
+            }
+            
+            // 当前项上面的项（上面的先显示，所以 i 从大到小）
+            for (var i = Math.max(0, idx - range); i < idx; i++) {
+                var item = findItemById(allButtons[i]);
+                if (item) {
+                    html += '<div class="mini-nav-item dim" data-id="' + item.id + '">' + item.title + '</div>';
+                }
+            }
+            
+            // 当前项
+            var currentItem = findItemById(allButtons[idx]);
+            if (currentItem) {
+                html += '<div class="mini-nav-item active" data-id="' + currentItem.id + '">' + currentItem.title + '</div>';
+            }
+            
+            // 当前项下面的项
+            for (var i = idx + 1; i <= Math.min(allButtons.length - 1, idx + range); i++) {
+                var item = findItemById(allButtons[i]);
+                if (item) {
+                    html += '<div class="mini-nav-item dim" data-id="' + item.id + '">' + item.title + '</div>';
+                }
+            }
+            
+            // 后面的省略号
+            if (idx + range < allButtons.length - 1) {
+                html += '<div class="mini-nav-item ellipsis">···</div>';
+            }
+            
+            miniNav.innerHTML = html;
+            miniNav.classList.add('show');
+        }
+
+        // 微型目录点击导航
+        miniNav.addEventListener('click', function(e) {
+            var target = e.target.closest('.mini-nav-item');
+            if (!target || !target.dataset.id || target.classList.contains('ellipsis')) return;
+            
+            var id = target.dataset.id;
+            var categoryKey = null;
+            
+            for (var ck in qaData) {
+                if (findParent(qaData[ck].items, id)) {
+                    categoryKey = ck;
+                    break;
+                }
+            }
+            
+            if (categoryKey) {
+                var item = findItem(qaData[categoryKey].items, id);
+                if (item) {
+                    showAnswer(item, categoryKey, id);
+                }
+            }
+        });
+
         // ===== 显示答案（展开整个父节点） =====
         function showAnswer(item, categoryKey, scrollToId) {
             if (!item) return;
+            
+            // 清除待处理的滚动同步，防止快速切换时导航闪烁
+            clearTimeout(scrollTimeout);
             
             isScrolling = true;
             
@@ -622,16 +750,18 @@
                 if (scrollToId && scrollToId !== parentItem.id) {
                     var targetBlock = answerContent.querySelector('[data-id="' + scrollToId + '"]');
                     if (targetBlock) {
-                        contentArea.scrollTo({ top: targetBlock.offsetTop - 20, behavior: 'smooth' });
+                        contentArea.scrollTo({ top: targetBlock.offsetTop - 20, behavior: 'instant' });
                     }
                 } else {
-                    contentArea.scrollTo({ top: 0, behavior: 'smooth' });
+                    contentArea.scrollTo({ top: 0, behavior: 'instant' });
                 }
                 
                 setTimeout(function() {
                     isScrolling = false;
                 }, 500);
             }, 50);
+            
+            updateMiniNav();
         }
 
         // ===== 项目详情面板 =====
@@ -686,8 +816,26 @@
             
             if (e.key === 'ArrowRight') {
                 e.preventDefault();
-                if (isProjectPanelOpen) {
-                    closeProjectPanel();
+                
+                // 切换到下一个项目分类
+                var categoryOrder = ['hero', 'rag', 'workflow', 'concepts'];
+                var currentCategory = null;
+                for (var ck in qaData) {
+                    var found = findParent(qaData[ck].items, currentQuestionId);
+                    if (found) { currentCategory = ck; break; }
+                }
+                
+                if (currentCategory) {
+                    var currentIdx = categoryOrder.indexOf(currentCategory);
+                    var nextIdx = (currentIdx + 1) % categoryOrder.length;
+                    var nextCategory = categoryOrder[nextIdx];
+                    var firstItem = qaData[nextCategory].items[0];
+                    if (firstItem) {
+                        if (isProjectPanelOpen) {
+                            closeProjectPanel();
+                        }
+                        showAnswer(firstItem, nextCategory, firstItem.id);
+                    }
                 }
                 return;
             }
@@ -695,6 +843,7 @@
             if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
                 e.preventDefault();
                 
+                lastKeyboardNav = Date.now();
                 isScrolling = true;
                 
                 var currentIndex = allButtons.indexOf(currentQuestionId);
@@ -737,13 +886,13 @@
                     if (targetBlock) {
                         document.querySelector('.qa-content').scrollTo({ 
                             top: targetBlock.offsetTop - 20, 
-                            behavior: 'smooth' 
+                            behavior: 'instant' 
                         });
                     }
                     
                     var btn = qaNav.querySelector('[data-id="' + newId + '"]');
                     if (btn) {
-                        btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        btn.scrollIntoView({ behavior: 'instant', block: 'center' });
                     }
                     
                     if (isProjectPanelOpen) {
@@ -754,6 +903,8 @@
                             closeProjectPanel();
                         }
                     }
+                    
+                    updateMiniNav();
                     
                     setTimeout(function() {
                         isScrolling = false;
@@ -816,9 +967,12 @@
         // ===== 滚动同步：内容滚动时左侧目录对应高亮 =====
         var isScrolling = false;
         var scrollTimeout = null;
+        var lastKeyboardNav = 0;
 
         function handleContentScroll() {
             if (isScrolling) return;
+            // 最近有键盘导航则跳过（600ms内）
+            if (Date.now() - lastKeyboardNav < 600) return;
             
             clearTimeout(scrollTimeout);
             scrollTimeout = setTimeout(function() {
@@ -856,6 +1010,8 @@
                     if (targetBtn) {
                         targetBtn.classList.add('active');
                     }
+                    
+                    updateMiniNav();
                 }
             }, 50);
         }
