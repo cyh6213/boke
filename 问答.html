@@ -445,6 +445,10 @@
                     ] },
                     { id: 'wf-plan-opt', title: 'Plan 优化', projectSection: '项目/workflow.html#plan-opt', content: '想要Agent能够帮你执行好一件事情，主要就是三个策略：第一个是给他说清楚你要做什么，第二个是列举清楚规则是什么，第三个是举一些例子。这就是Prompt Engineering里面最基本的操作。<br><br>然后我为了保证这个DAG图它是没有环的，以及做一些其他的检测，我还设置了一个后置的校验层对它进行校验。<br><br>Prompt + 样本 + 校验做到位了，DAG质量有了基本保障。但模型会犯错，而且同样的错误可能反复出现——这就需要一套机制让Plan能力能自己不断变好。于是我就参考了Reflexion的思路，把每次执行失败的DAG当作负样本收集起来，自动分析失败原因，再把高频错误注入到Prompt和样本中。这样每次失败都变成一次教学，Plan的能力就随着使用次数越来越多，形成一个持续改进的闭环。' },
                     { id: 'wf-node-io', title: '节点输入输出（STAR法则）', projectSection: '项目/workflow.html#node-io', content: '关于这个问题我可以按照STAR法则来讲。<br><br><strong>Situation — 背景</strong>：节点之间有明确的先后依赖关系，后面的节点需要拿到前面节点的输出才能执行。原本的做法直接把子Agent的完整对话历史——包括system prompt、工具调用、工具返回结果、中间推理过程——全部传给下一个节点。然后就会遇到一个问题，多个节点串联后，下游Agent的context窗口很快被占满。<br><br><strong>Task — 目标</strong>：需要确定每个节点的输出应该包含什么内容、以什么格式输出，下游节点能拿到什么内容。来实现下游节点只拿到它真正需要的信息，控制上下文占用。<br><br><strong>Action — 方案与权衡</strong>：关于以什么格式输出这一点，我想出来了两个策略，第一个是压缩，把完整的对话历史压缩成摘要，再传给下一个节点。但问题在于压缩本身也是一次模型调用，会额外消耗token，而且压缩后的摘要可能会丢失细节。于是我选择了借鉴Dynamic Workflow的动态Schema格式化输出，在生成DAG图的时候，就确定好他需要输出什么内容。关于下游节点能拿到什么内容，不再是拿到这一条链路的全部输出，而是只拿到前一个节点的输出。<br><br><strong>Result — 效果</strong>：节点传递的信息量被控制在原始输出的10%到20%左右，也不再有上下文堆积的问题。' },
+                    { id: 'wf-harness', title: 'Harness', hasChildren: true, content: '<strong>为什么要设计 Harness？（问题 + 方案 + 好处）</strong><br><br><strong>问题：</strong><br>一轮任务执行不是简单的"Plan Agent 丢给 Sub Agent"就完事。它前面有 DAG 生成和校验，中间有拓扑解析、Sub Agent 分发、上下文动态构建和节点调度，后面有结果收集、状态持久化、Trace 记录和流式输出。如果把这些逻辑都塞在 Plan Agent 或者调用方里，DAG 校验、AI 推理、数据库、Trace 记录和状态管理会混在一起，后面换 Plan 模型或改执行策略都会很难维护。<br><br><strong>方案：</strong><br>我把 Harness 当成一轮任务执行的业务外壳。调用方只负责发起请求和执行结果接收，Plan Agent 只负责 DAG 生成，Sub Agent 只负责单个节点的执行，而 Harness 统一负责 DAG 校验、拓扑解析、Sub Agent 分发与上下文构建、状态持久化和 Trace 记录。<br><br><strong>好处有三点：</strong><br>第一，把不稳定的模型行为和确定的执行逻辑分开。Plan Agent 的输出是不确定的——不同模型可能生成不同的 DAG，不同 prompt 可能产生不同的拓扑。但 Harness 的校验规则、调度逻辑和异常处理都是确定的代码。换模型不影响执行层，改执行策略不需要动规划层。<br><br>第二，让每一层职责单一。调用方不关心 DAG 怎么解析，Plan Agent 不关心节点怎么调度，Sub Agent 不关心自己处在 DAG 的什么位置。Harness 作为中间的编排者，把跨切面逻辑集中起来，而不是散落在每一层。<br><br>第三，可测试性。我可以单独用 Harness 执行一组预设的 DAG 数据来测并行调度是否正确、异常分支是否走对了、Trace 是否完整记录，不需要启动完整的 Plan Agent 和前端界面。', children: [
+                        { id: 'wf-harness-trace', title: 'Run Trace', content: '<strong>Trace</strong><br><br>Run Trace 保存的是一条执行链路从开始到结束的完整运行轨迹，而非最终结果。它记录 Plan Agent 产出的 DAG 原始拓扑、校验环节是否检测到环路及修复过程、每批并行拆分的节点列表、每个 Sub Agent 执行时的输入输出和状态、异常触发时的策略和重试次数、条件分支的选中路径。这些数据在节点执行过程中逐条追加，等全部执行完毕再统一落库——即使流式输出环节出错，Trace 已经保留了"执行阶段走到了哪一步"。<br><br>它的作用在于让排查和复盘不再依赖"猜"。没有 Trace，排查只能看到"节点 A 失败"；有了 Trace，可以追问：Plan Agent 为什么这么规划 DAG、校验层有没有发现问题、异常触发时用了什么策略、重试了几次、条件分支为什么选了这条路。管理员和开发者看到的不是一句"执行完毕"，而是每一步的动作、输入、输出和采纳理由。' },
+                        { id: 'wf-harness-storage', title: '为什么 Redis 和 MySQL 都要用', content: '<strong>存储：为什么 Redis 和 MySQL 都要用</strong><br><br>Redis 负责短期上下文。每轮对话需要快速读取最近会话窗口——历史消息、记忆摘要、当前 session 状态。这些数据读写频繁、结构简单、单条体积小，Redis 的 TTL 机制天然适合控制短期记忆的无限增长。<br><br>业务数据库负责完整留痕。完整的会话记录、心理报告、Trace、工具任务、管理员审计记录需要有可靠持久化。Redis 有淘汰策略，可能被清理，不适合承担审计和风控留档。数据库提供结构化查询和关联追溯的能力。<br><br>两者配合：每轮优先从 Redis 取短期上下文，读写快；Redis miss 时从数据库回填。写入时双写——短期上下文的变更刷入 Redis，完整的业务记录落数据库。这样既保证了响应速度，也不丢失长期留痕。' }
+                    ] },
                     { id: 'wf-parallel', title: '双层并行执行引擎', projectSection: '项目/workflow.html#parallel', content: '第一层是通过图来实现并行，入度（In-Degree）指一个节点被多少条边指向，入度为0表示该节点没有任何前置依赖，可以直接执行。每执行一个节点就将其指向的节点的入度减一，于是就会有新的可执行节点出现。直到将所有节点执行完毕。<br><br>第二层是在agent的react模式，支持他同格式调用多个工具，比如同时读取多个文件。' },
                     { id: 'wf-rollback', title: '节点级断点恢复', projectSection: '项目/workflow.html#rollback', content: '设计了三张表来记录一个DAG图的执行。<br><br>一张表存DAG拓扑结构，第二张存每个节点的输入输出和状态，第三张存整次执行的全局汇总。（运行时的数据传递纯走内存HashMap，节点执行完顺手把快照同步写入MySQL，但不从数据库读。）<br><br>当断点继续触发时，就会从第二张表读出快照恢复到内存，结合第一张表重新解析的DAG图确定从哪个失败节点开始，跳过已成功的，接着往下跑。最后把第三张的状态从FAILED改回RUNNING，执行完再更新。' },
                     { id: 'wf-sub-agent', title: 'Sub Agent 分发执行', projectSection: '项目/workflow.html#sub-agent', content: '做出将子任务交给子agent是水到渠成的，首先是设计到并行执行，所以不能是一个agent。其次是我总结出了三个优点。<br><br>第一点是每个agent只需要负责他们自己的任务，放在长链路的任务中，可以解决目标偏移的问题；<br><br>第二点是我们可以针对每一个agent的身份，控制他们能调用的skill或者tool，来实现权限控制和提高他们调用skill、tool的正确率；<br><br>第三点是我们减少了默认的、不必要的skill、tool注入，也就减少了单次的token消耗。并且由于我对子agent之间的信息传递做了格式化输出，所以不会出现上下文堆积的情况，也就进一步减少了token消耗。' },
@@ -493,9 +497,18 @@
                         { id: 'concept-claude-prompt', title: 'SystemPrompt', content: 'Claude Code 的 system prompt 是运行时组装的，分为静态和动态两类。<br><br>静态段落包括身份定义、语气风格、任务处理原则、工具使用说明等，这些是每轮对话都需要的核心指令，内容基本稳定。<br><br>动态段落包括记忆注入、会话指导、MCP 服务器指令、token 预算控制等，这些根据当前状态决定是否加载，比如记忆段落只在有记忆文件时才注入。<br><br>组装时每轮对话前会检查上下文真实状态，基于这些状态决定加载哪些段落，然后拼接成完整 prompt。' }
                     ] },
                     { id: 'concept-claude-diff', title: 'OpenClaw 和 Hermes 的区别', content: '<strong>定位</strong><br>OpenClaw 是网关调度型企业 Harness，靠配置预制技能，无自主进化。Hermes 是原生 Agent 运行时，内置自学习，能自动沉淀复用任务流程。<br><br><strong>记忆 &amp; 安全</strong><br>OpenClaw 是单层会话记忆，仅黑名单做命令拦截。Hermes 三层持久记忆，多级沙箱 + 高危人工确认，对齐 Claude Code Harness。<br><br><strong>适用场景</strong><br>OpenClaw 适用多渠道客服、政企强合规标准化任务。Hermes 适合本地编码、对接 Claude Code、个人长期自动化。' }
-                    ] }
+                    ] },
+            other: {
+                label: '🤔 其他',
+                items: [
+                    { 
+                        id: 'other-career-question', 
+                        title: '岗位归属与职业路径咨询', 
+                        content: '<strong>问：岗位归属与职业路径的顾虑</strong><br><br>有一个核心顾虑想跟您请教一下。<br><br>该岗位在公司体系内归属运营非技术序列，但实际工作内容偏向AI Agent相关技术落地。薪资定级本身也是岗位属性的一种体现，我想知道团队会严格按照纯运营标准定级，还是会参考实际技术工作内容，采用介于技术与运营之间的中间档位。<br><br>另外我未来长期职业路径确定走后端、AI Agent技术开发方向，很担心这份履历因岗位大类被划为非技术运营，削弱后续技术秋招的背书效果，所以特地想向您确认下这两点。'
+                    }
+                ]
             }
-        ;
+        };
 
         // ===== 状态变量 =====
         var currentQuestionId = 'hero-intro';
