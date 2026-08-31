@@ -311,6 +311,7 @@
                 <a href="../">首页</a>
                 <a href="../index4.html">自我介绍</a>
                 <a href="../文章/">文章</a>
+                <a href="../实习/">实习经历</a>
                 <a href="./" class="active">项目</a>
             </div>
         </div>
@@ -671,10 +672,17 @@
                     </div>
                 </div>
                 <div class="indent evolution">
-                    <div class="version"><small>1.0</small><b>可视化编排</b><p>用拖拽方式定义 AI 工作流，完成基础 DAG 执行。</p></div>
-                    <div class="version"><small>2.0</small><b>自动规划</b><p>让 Plan Agent 生成 DAG，解决跳步和路径不可控。</p></div>
-                    <div class="version"><small>3.0</small><b>长链路治理</b><p>引入节点隔离、结构化输出和上下文控制。</p></div>
-                    <div class="version"><small>4.0</small><b>GraphHarness</b><p>面向真实协作流程，统一 Agent、系统与人的职责。</p></div>
+                    <div class="version"><small>1.0</small><b>可视化编排</b><p>这是我从后端转向 Agent 后做的第一个项目。最初形态类似扣子，通过拖拽节点定义工作流，重点是把基础 DAG 跑起来。</p></div>
+                    <div class="version"><small>2.0</small><b>约束执行路径</b><p>日常使用 Agent 时，我经常遇到执行路径不可控、跳步和遗漏，于是开始用 DAG 固定必须经过的关键步骤。</p></div>
+                    <div class="version"><small>3.0</small><b>长链路治理</b><p>对比 Claude Code 的 Dynamic Workflow 后，我意识到差异不只在用代码生成 Plan，更在于如何处理长任务中的上下文膨胀、偏移与跳步，因此重新设计上下文组织方式。</p></div>
+                    <div class="version"><small>4.0</small><b>GraphHarness</b><p>实习中的固定协作流程验证了真实需求。结合 Graph Engineering，项目形成“系统管流程、Agent 管执行、人管关键决策”的核心原则。</p></div>
+                </div>
+                <div class="indent">
+                    <div class="detail">
+                        <h3>不变的是 DAG，变化的是它要解决的问题</h3>
+                        <p>从 1.0 到 3.0，DAG 先后承担了可视化编排、限制执行路径和治理长链路任务的职责，这些方向让项目逐渐具备技术意义，但仍缺少经过真实使用验证的业务场景。实习之后，我发现广告机审策略搭建这类任务天然具有固定流程、多 Agent 协作、跨平台流转和必要人工节点，原有设计第一次与真实需求对应起来。</p>
+                        <p>因此，4.0 不只是继续增加功能，而是重新确定项目边界：GraphHarness 不试图约束所有开放式 Agent 任务，而是服务于流程骨架相对稳定、需要可验证、可追踪和可干预执行的协作任务。这类需求既存在于技术部门，也存在于审核、运营、审批等非技术流程中。</p>
+                    </div>
                 </div>
             </section>
 

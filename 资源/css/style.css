@@ -363,6 +363,10 @@ footer.shrink {
     .top-nav { padding: 0 16px; }
     .top-nav .nav-brand { margin-right: 16px; font-size: 14px; }
     .top-nav .nav-links a { padding: 6px 10px; font-size: 13px; }
+    .top-nav .nav-left { min-width: 0; width: 100%; }
+    .top-nav .nav-links { min-width: 0; overflow-x: auto; scrollbar-width: none; }
+    .top-nav .nav-links::-webkit-scrollbar { display: none; }
+    .top-nav .nav-right { display: none; }
     .sidebar { display: none; }
     .main { margin-left: 0; margin-top: 60px; }
     section { padding: 60px 24px; }

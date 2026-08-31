@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="程愚瀚在字节跳动 CQC 部门从事广告机审质量运营与 AI 提效的实习经历。" />
+    <title>字节跳动 CQC 实习经历 | 程愚瀚</title>
+    <link rel="stylesheet" href="../资源/css/style.css" />
+    <style>
+        :root {
+            --ink: #14213d;
+            --muted: #52627a;
+            --line: #dce3eb;
+            --violet: #7c3aed;
+            --violet-soft: #f3efff;
+            --green: #16805d;
+            --green-soft: #eaf7f1;
+            --amber: #a45b08;
+            --amber-soft: #fff5e8;
+        }
+        body { background: #f7f9fc; }
+        .experience-shell {
+            display: grid;
+            grid-template-columns: 220px minmax(0, 880px);
+            gap: 48px;
+            width: min(1160px, calc(100% - 48px));
+            margin: 0 auto;
+            padding: 96px 0 100px;
+        }
+        .experience-nav {
+            position: sticky;
+            top: 88px;
+            align-self: start;
+            padding-right: 22px;
+            border-right: 1px solid var(--line);
+        }
+        .experience-nav a {
+            display: block;
+            padding: 8px 0;
+            color: #64748b;
+            font-size: 12px;
+            text-decoration: none;
+        }
+        .experience-nav a:hover { color: var(--violet); }
+        .nav-caption {
+            margin-bottom: 12px;
+            color: var(--ink);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0;
+        }
+        .experience-main { min-width: 0; }
+        .hero {
+            padding: 30px 0 44px;
+            border-bottom: 1px solid var(--line);
+        }
+        .hero-kicker {
+            color: var(--violet);
+            font-size: 12px;
+            font-weight: 750;
+        }
+        .hero h1 {
+            max-width: 800px;
+            margin: 10px 0 16px;
+            color: var(--ink);
+            font-size: 42px;
+            line-height: 1.18;
+            letter-spacing: 0;
+        }
+        .hero-summary {
+            max-width: 760px;
+            color: var(--muted);
+            font-size: 17px;
+            line-height: 1.8;
+        }
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 22px;
+            margin-top: 24px;
+            color: #64748b;
+            font-size: 12px;
+        }
+        .evidence-strip {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            border-bottom: 1px solid var(--line);
+        }
+        .evidence {
+            padding: 24px 22px;
+            border-right: 1px solid var(--line);
+        }
+        .evidence:first-child { padding-left: 0; }
+        .evidence:last-child { border-right: 0; }
+        .evidence strong {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--ink);
+            font-size: 19px;
+        }
+        .evidence span {
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        .content-section {
+            padding: 48px 0;
+            border-bottom: 1px solid var(--line);
+            scroll-margin-top: 76px;
+        }
+        .section-marker {
+            margin-bottom: 8px;
+            color: var(--violet);
+            font-size: 11px;
+            font-weight: 800;
+        }
+        .content-section h2 {
+            max-width: 760px;
+            margin-bottom: 16px;
+            color: var(--ink);
+            font-size: 27px;
+            line-height: 1.35;
+            letter-spacing: 0;
+        }
+        .lead {
+            max-width: 800px;
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.9;
+        }
+        .work-streams {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 28px;
+        }
+        .work-stream {
+            padding: 24px;
+            border: 1px solid var(--line);
+            border-top: 3px solid var(--violet);
+            border-radius: 6px;
+            background: #ffffff;
+        }
+        .work-stream:nth-child(2) { border-top-color: var(--green); }
+        .work-stream small {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .work-stream h3 {
+            margin: 8px 0 10px;
+            color: var(--ink);
+            font-size: 18px;
+        }
+        .work-stream p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+        .flow {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 8px;
+            margin-top: 28px;
+        }
+        .flow-step {
+            position: relative;
+            min-height: 92px;
+            padding: 16px 14px;
+            border: 1px solid var(--line);
+            border-radius: 5px;
+            background: #ffffff;
+        }
+        .flow-step:not(:last-child)::after {
+            content: "›";
+            position: absolute;
+            top: 31px;
+            right: -8px;
+            z-index: 2;
+            color: var(--violet);
+            background: #f7f9fc;
+            font-size: 18px;
+            line-height: 24px;
+        }
+        .flow-step b {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--ink);
+            font-size: 13px;
+        }
+        .flow-step span {
+            color: #64748b;
+            font-size: 11px;
+            line-height: 1.55;
+        }
+        .evolution {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 54px minmax(0, 1fr);
+            align-items: stretch;
+            margin-top: 28px;
+        }
+        .evolution-state {
+            padding: 24px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background: #ffffff;
+        }
+        .evolution-state.after {
+            border-color: #b9dfce;
+            background: var(--green-soft);
+        }
+        .evolution-state small {
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .evolution-state h3 {
+            margin: 8px 0 10px;
+            color: var(--ink);
+            font-size: 18px;
+        }
+        .evolution-state p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+        .evolution-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--green);
+            font-size: 24px;
+        }
+        .result-callout {
+            display: grid;
+            grid-template-columns: 150px minmax(0, 1fr);
+            gap: 24px;
+            align-items: center;
+            margin-top: 22px;
+            padding: 24px;
+            border-left: 4px solid var(--green);
+            background: #ffffff;
+        }
+        .result-callout strong {
+            color: var(--green);
+            font-size: 25px;
+        }
+        .result-callout p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+        .constraints {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 26px;
+        }
+        .constraint {
+            padding: 20px;
+            border: 1px solid var(--line);
+            border-radius: 5px;
+            background: #ffffff;
+        }
+        .constraint b {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--ink);
+            font-size: 14px;
+        }
+        .constraint p {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+        .boundary {
+            margin-top: 26px;
+            padding: 22px 24px;
+            border: 1px solid #f0d5ad;
+            border-radius: 5px;
+            background: var(--amber-soft);
+            color: #75430a;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+        .project-bridge {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 24px;
+            margin-top: 26px;
+            padding: 25px 26px;
+            border: 1px solid #d8cff8;
+            border-radius: 6px;
+            background: var(--violet-soft);
+        }
+        .project-bridge h3 {
+            margin-bottom: 6px;
+            color: var(--ink);
+            font-size: 17px;
+        }
+        .project-bridge p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+        .project-bridge a {
+            color: var(--violet);
+            font-size: 13px;
+            font-weight: 750;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .reflection-list {
+            display: grid;
+            gap: 14px;
+            margin-top: 24px;
+        }
+        .reflection {
+            display: grid;
+            grid-template-columns: 32px minmax(0, 1fr);
+            gap: 15px;
+            padding-top: 16px;
+            border-top: 1px solid var(--line);
+        }
+        .reflection span {
+            color: var(--violet);
+            font-size: 12px;
+            font-weight: 800;
+        }
+        .reflection p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        @media (max-width: 900px) {
+            .experience-shell { grid-template-columns: 1fr; gap: 0; }
+            .experience-nav { display: none; }
+        }
+        @media (max-width: 680px) {
+            .experience-shell { width: min(100% - 32px, 880px); padding-top: 78px; }
+            .hero h1 { font-size: 32px; }
+            .hero-summary { font-size: 15px; }
+            .evidence-strip,
+            .work-streams,
+            .constraints { grid-template-columns: 1fr; }
+            .evidence { padding: 18px 0; border-right: 0; border-bottom: 1px solid var(--line); }
+            .evidence:last-child { border-bottom: 0; }
+            .flow { grid-template-columns: 1fr; }
+            .flow-step { min-height: 0; }
+            .flow-step:not(:last-child)::after { content: "↓"; top: auto; right: 16px; bottom: -16px; }
+            .evolution { grid-template-columns: 1fr; }
+            .evolution-arrow { min-height: 46px; transform: rotate(90deg); }
+            .result-callout,
+            .project-bridge { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="nav-left">
+            <a href="../" class="nav-brand">程愚瀚</a>
+            <div class="nav-links">
+                <a href="../">首页</a>
+                <a href="../index4.html">自我介绍</a>
+                <a href="../文章/">文章</a>
+                <a href="./" class="active">实习经历</a>
+                <a href="../项目/">项目</a>
+            </div>
+        </div>
+        <div class="nav-right">
+            <a href="../问答.html" class="nav-qa">问答</a>
+        </div>
+    </nav>
+
+    <div class="experience-shell">
+        <aside class="experience-nav">
+            <div class="nav-caption">本页目录</div>
+            <a href="#role">01 角色与业务</a>
+            <a href="#work">02 两条工作主线</a>
+            <a href="#workflow">03 策略搭建流程</a>
+            <a href="#evolution">04 Agent 协作演进</a>
+            <a href="#constraints">05 真实约束</a>
+            <a href="#boundary">06 结果与边界</a>
+            <a href="#reflection">07 经历带来的判断</a>
+        </aside>
+
+        <main class="experience-main">
+            <header class="hero">
+                <div class="hero-kicker">字节跳动 · CQC 部门</div>
+                <h1>广告机审质量运营实习</h1>
+                <p class="hero-summary">围绕广告机审策略搭建和异常治理做 AI 提效。在真实业务中，我关注的不只是单个 Agent 能否完成任务，而是多个平台、权限限制和人工节点共同存在时，流程如何持续向前推进。</p>
+                <div class="hero-meta">
+                    <span>岗位方向：广告机审运营</span>
+                    <span>工作重点：Agent 应用与流程自动化</span>
+                    <span>经历时长：一个多月</span>
+                </div>
+            </header>
+
+            <div class="evidence-strip" aria-label="实习经历摘要">
+                <div class="evidence"><strong>2 条</strong><span>异常治理与策略搭建两条工作主线</span></div>
+                <div class="evidence"><strong>Skill → Multi-Agent</strong><span>从单点能力沉淀到流程级协作</span></div>
+                <div class="evidence"><strong>1 周 → 2 天</strong><span>单条策略搭建周期的业务记录</span></div>
+            </div>
+
+            <section class="content-section" id="role">
+                <div class="section-marker">01 / ROLE</div>
+                <h2>角色不是开发底层平台，而是在真实业务里验证 Agent 如何提效</h2>
+                <p class="lead">CQC 的广告机审工作需要为短视频、广告等内容搭建机审策略与 Workflow，并持续处理误判 Case 和效果问题。我主要承担 AI 提效相关工作：把重复、繁琐、需要跨平台推进的任务拆解为可复用能力，再重新组织人与 Agent 的协作关系。</p>
+            </section>
+
+            <section class="content-section" id="work">
+                <div class="section-marker">02 / WORK STREAMS</div>
+                <h2>实际工作分为异常治理自动化与策略搭建自动化</h2>
+                <p class="lead">两条主线分别解决“问题如何更快被发现和响应”以及“新策略如何更少依赖人工推进”。</p>
+                <div class="work-streams">
+                    <article class="work-stream">
+                        <small>工作主线 A</small>
+                        <h3>异常治理自动化</h3>
+                        <p>日常需要监控机审误判情况，并接收线上暴露的误判 Case。针对人工巡检和重复排查成本，搭建“定时巡检主动预警”与“群聊消息被动响应”两条链路，帮助更早发现问题并聚合处理入口。</p>
+                    </article>
+                    <article class="work-stream">
+                        <small>工作主线 B</small>
+                        <h3>策略搭建流程自动化</h3>
+                        <p>策略搭建涉及资料查找、配置、审查、跨平台流转和人工审批。由于权限与安全约束，它无法完全自动化，重点因此转向自动推进可自动化部分，并为人工节点准备足够上下文。</p>
+                    </article>
+                </div>
+            </section>
+
+            <section class="content-section" id="workflow">
+                <div class="section-marker">03 / BUSINESS WORKFLOW</div>
+                <h2>真正耗时的不是某一步，而是步骤之间反复等待和整理上下文</h2>
+                <p class="lead">每个环节都可以借助工具或 Agent 提效，但如果仍由人记住状态、切换平台、复制结果并通知下一环节，人实际上仍在承担流程调度器的职责。</p>
+                <div class="flow" aria-label="广告机审策略搭建流程">
+                    <div class="flow-step"><b>资料查询</b><span>收集规则、案例与已有策略</span></div>
+                    <div class="flow-step"><b>策略搭建</b><span>组织判断逻辑并完成配置</span></div>
+                    <div class="flow-step"><b>结果审查</b><span>检查格式、质量与覆盖情况</span></div>
+                    <div class="flow-step"><b>跨平台流转</b><span>在不同系统间传递结果</span></div>
+                    <div class="flow-step"><b>人工节点</b><span>处理权限、安全与关键判断</span></div>
+                </div>
+            </section>
+
+            <section class="content-section" id="evolution">
+                <div class="section-marker">04 / AGENT EVOLUTION</div>
+                <h2>从单点 Skill，演进为主控 Agent 负责流程推进</h2>
+                <p class="lead">第一阶段先梳理策略搭建所需能力并沉淀为独立 Skill，解决单点提效。实际使用后发现，单点能力并没有消除人和 Agent 的双向等待，因此继续向流程级协作演进。</p>
+                <div class="evolution">
+                    <div class="evolution-state">
+                        <small>第一阶段</small>
+                        <h3>多个独立 Skill</h3>
+                        <p>每个 Skill 解决一个具体步骤，但需要人工选择下一项能力、传递上下文并检查结果。</p>
+                    </div>
+                    <div class="evolution-arrow">→</div>
+                    <div class="evolution-state after">
+                        <small>第二阶段</small>
+                        <h3>主控 Agent + 多子 Agent</h3>
+                        <p>主控负责理解任务、维护上下文和推进流程；子 Agent 复用已有 Skill；人只在权限、安全或关键判断节点介入。</p>
+                    </div>
+                </div>
+                <div class="result-callout">
+                    <strong>1 周 → 2 天</strong>
+                    <p>材料中记录的结果是单条策略搭建周期由一周缩短到两天。该数据用于说明流程组织方式带来的效率变化，不扩展为机审准确率或整体业务收益。</p>
+                </div>
+                <div class="project-bridge">
+                    <div>
+                        <h3>这段经历验证了 GraphHarness 的问题来源</h3>
+                        <p>实习实践使用现有平台组织 Agent 协作；GraphHarness 则是我在个人项目中对确定性调度、上下文、Checkpoint、异常恢复和 Trace 的进一步工程化实现。</p>
+                    </div>
+                    <a href="../项目/graphharness.html">查看 GraphHarness →</a>
+                </div>
+            </section>
+
+            <section class="content-section" id="constraints">
+                <div class="section-marker">05 / REAL CONSTRAINTS</div>
+                <h2>真实落地首先受权限和平台能力约束，然后才是模型能力</h2>
+                <p class="lead">这段经历修正了我只从模型能力出发看 Agent 的视角。在办公和运营场景中，Agent 是否能完成动作，往往先取决于系统是否开放能力、权限是否允许以及人工节点能否被清晰组织。</p>
+                <div class="constraints">
+                    <div class="constraint"><b>权限边界</b><p>部分操作因权限与安全要求必须由人完成，不能为了自动化绕过业务控制。</p></div>
+                    <div class="constraint"><b>平台可操作性</b><p>平台是否提供稳定接口和可被 Agent 调用的能力，决定自动化链路能走多远。</p></div>
+                    <div class="constraint"><b>Agent 能力</b><p>在前两项成立后，检索、办公操作和上下文处理能力才决定执行质量与效率。</p></div>
+                </div>
+            </section>
+
+            <section class="content-section" id="boundary">
+                <div class="section-marker">06 / RESULT & BOUNDARY</div>
+                <h2>公开结果，也主动说明不能从材料中推出什么</h2>
+                <p class="lead">能够确认的是两条自动化链路、Agent 协作方式的演进，以及单条策略搭建周期变化。页面不使用岗位分析中的模拟数据，也不把个人项目功能写成公司内部已经部署的能力。</p>
+                <div class="boundary"><strong>经历边界：</strong>岗位长期核心仍是基于 Skill 和现有 Agent 平台完成运营提效，并围绕机审效果等业务指标持续优化。部分流程受权限与安全约束，不能完全自动化；目前没有公开误杀率、召回率或整体人效等更广泛指标。</div>
+            </section>
+
+            <section class="content-section" id="reflection">
+                <div class="section-marker">07 / REFLECTION</div>
+                <h2>这段经历最重要的产出，是建立了真实业务中的工程判断</h2>
+                <div class="reflection-list">
+                    <div class="reflection"><span>01</span><p>个人项目可以证明方案能够运行，但只有真实流程会暴露权限、跨平台协作和人工决策这些无法靠想象补齐的约束。</p></div>
+                    <div class="reflection"><span>02</span><p>Agent 提效不只是增加 Skill。单点能力越多，如果缺少统一的流程推进和上下文组织，人仍然会成为隐形调度器。</p></div>
+                    <div class="reflection"><span>03</span><p>这段经历也帮助我确认长期方向：希望继续做 Agent 工程开发，深入参与代码实现、Agent 策略、工具调用和运行时稳定性建设。</p></div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer style="margin-left: 0;">
+        &copy; 2026 程愚瀚 · Built with &hearts;
+    </footer>
+</body>
+</html>

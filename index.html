@@ -234,10 +234,69 @@
         .faq-project-link:hover {
             text-decoration: underline;
         }
+        .home-featured {
+            padding: 44px 60px 54px;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            background: #f8fafc;
+        }
+        .home-featured .section-title {
+            margin-bottom: 22px;
+        }
+        .featured-links {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            max-width: 920px;
+            border-top: 1px solid #dbe2ea;
+        }
+        .featured-link {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 18px;
+            align-items: center;
+            padding: 24px 20px 24px 0;
+            border-bottom: 1px solid #dbe2ea;
+            color: inherit;
+            text-decoration: none;
+        }
+        .featured-link:nth-child(odd) {
+            padding-right: 28px;
+            border-right: 1px solid #dbe2ea;
+        }
+        .featured-link:nth-child(even) {
+            padding-left: 28px;
+        }
+        .featured-link small {
+            display: block;
+            margin-bottom: 5px;
+            color: #7c3aed;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .featured-link strong {
+            display: block;
+            margin-bottom: 6px;
+            color: #0f172a;
+            font-size: 17px;
+        }
+        .featured-link p {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+        .featured-arrow {
+            color: #7c3aed;
+            font-size: 17px;
+            transition: transform 0.2s;
+        }
+        .featured-link:hover .featured-arrow {
+            transform: translateX(4px);
+        }
         @media (max-width: 768px) {
             .home-proof-grid,
             .experience-grid,
-            .project-shot-pair {
+            .project-shot-pair,
+            .featured-links {
                 grid-template-columns: 1fr;
             }
             .hero-actions .cta-btn {
@@ -249,6 +308,15 @@
             }
             .home-faq {
                 padding: 24px 20px 48px;
+            }
+            .home-featured {
+                padding: 38px 20px 44px;
+            }
+            .featured-link,
+            .featured-link:nth-child(odd),
+            .featured-link:nth-child(even) {
+                padding: 20px 0;
+                border-right: 0;
             }
             .faq-item summary {
                 grid-template-columns: 28px minmax(0, 1fr) 20px;
@@ -271,6 +339,7 @@
                 <a href="/" class="active">首页</a>
                 <a href="index4.html">自我介绍</a>
                 <a href="文章/">文章</a>
+                <a href="实习/">实习经历</a>
                 <a href="项目/">项目</a>
             </div>
         </div>
@@ -286,6 +355,7 @@
         <nav>
             <a href="#hero" class="active"><span class="dot"></span> 首页</a>
             <a href="#faq"><span class="dot"></span> 高频问题</a>
+            <a href="#featured"><span class="dot"></span> 深入阅读</a>
             <a href="#contact"><span class="dot"></span> 联系方式</a>
         </nav>
     </aside>
@@ -342,6 +412,29 @@
                         <a class="faq-project-link" href="项目/graphharness.html#evolution">查看 GraphHarness 项目详情 →</a>
                     </div>
                 </details>
+            </div>
+        </section>
+
+        <section id="featured" class="home-featured">
+            <div class="section-label">Explore Further</div>
+            <h2 class="section-title">进一步了解</h2>
+            <div class="featured-links">
+                <a class="featured-link" href="实习/bytedance-cqc.html">
+                    <div>
+                        <small>真实业务实践</small>
+                        <strong>字节跳动 CQC 实习经历</strong>
+                        <p>查看广告机审、异常治理与 Agent 流程自动化如何在权限和人工节点约束下落地。</p>
+                    </div>
+                    <span class="featured-arrow">→</span>
+                </a>
+                <a class="featured-link" href="项目/graphharness.html#evolution">
+                    <div>
+                        <small>核心工程项目</small>
+                        <strong>GraphHarness</strong>
+                        <p>查看如何把实习中发现的协作问题，沉淀为可调度、可恢复、可追踪的 Agent 运行系统。</p>
+                    </div>
+                    <span class="featured-arrow">→</span>
+                </a>
             </div>
         </section>
 

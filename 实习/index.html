@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="程愚瀚的实习经历，记录真实业务问题、工程行动与结果。" />
+    <title>实习经历 | 程愚瀚</title>
+    <link rel="stylesheet" href="../资源/css/style.css" />
+    <style>
+        .internship-list {
+            width: min(1040px, calc(100% - 48px));
+            margin: 0 auto;
+            padding: 112px 0 88px;
+        }
+        .list-head {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: end;
+            gap: 24px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #dfe5ec;
+        }
+        .list-head h1 {
+            margin: 6px 0 10px;
+            color: #0f172a;
+            font-size: 38px;
+            line-height: 1.2;
+            letter-spacing: 0;
+        }
+        .list-head p {
+            max-width: 680px;
+            color: #64748b;
+            font-size: 15px;
+        }
+        .record-count {
+            color: #475569;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        .internship-item {
+            display: grid;
+            grid-template-columns: 190px minmax(0, 1fr) 72px;
+            gap: 28px;
+            align-items: start;
+            padding: 34px 4px;
+            border-bottom: 1px solid #dfe5ec;
+            color: inherit;
+            text-decoration: none;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .internship-item:hover {
+            border-color: #8b5cf6;
+            background: #ffffff;
+        }
+        .company {
+            color: #0f172a;
+            font-size: 17px;
+            font-weight: 750;
+        }
+        .company-meta {
+            margin-top: 7px;
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+        .role-label {
+            color: #7c3aed;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .internship-item h2 {
+            margin: 5px 0 10px;
+            color: #0f172a;
+            font-size: 22px;
+            line-height: 1.35;
+            letter-spacing: 0;
+        }
+        .internship-item p {
+            max-width: 670px;
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-top: 15px;
+        }
+        .tags span {
+            padding: 4px 9px;
+            border: 1px solid #dbe2ea;
+            border-radius: 4px;
+            color: #475569;
+            background: #f8fafc;
+            font-size: 11px;
+        }
+        .item-arrow {
+            padding-top: 24px;
+            color: #7c3aed;
+            font-size: 13px;
+            font-weight: 700;
+            text-align: right;
+        }
+        @media (max-width: 720px) {
+            .internship-list { width: min(100% - 32px, 1040px); padding-top: 92px; }
+            .list-head { grid-template-columns: 1fr; gap: 8px; }
+            .list-head h1 { font-size: 30px; }
+            .internship-item { grid-template-columns: 1fr; gap: 14px; }
+            .item-arrow { padding-top: 0; text-align: left; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="nav-left">
+            <a href="../" class="nav-brand">程愚瀚</a>
+            <div class="nav-links">
+                <a href="../">首页</a>
+                <a href="../index4.html">自我介绍</a>
+                <a href="../文章/">文章</a>
+                <a href="./" class="active">实习经历</a>
+                <a href="../项目/">项目</a>
+            </div>
+        </div>
+        <div class="nav-right">
+            <a href="../问答.html" class="nav-qa">问答</a>
+        </div>
+    </nav>
+
+    <main class="main" style="margin-left: 0;">
+        <div class="internship-list">
+            <header class="list-head">
+                <div>
+                    <div class="section-label">Internships</div>
+                    <h1>实习经历</h1>
+                    <p>不重复简历中的职责清单，重点记录真实业务问题、采取的行动、结果与能力边界。</p>
+                </div>
+                <div class="record-count">共 1 段经历</div>
+            </header>
+
+            <a class="internship-item" href="bytedance-cqc.html">
+                <div>
+                    <div class="company">字节跳动</div>
+                    <div class="company-meta">CQC 部门<br />一个多月</div>
+                </div>
+                <div>
+                    <div class="role-label">AI 提效与流程自动化</div>
+                    <h2>广告机审质量运营实习</h2>
+                    <p>围绕广告机审策略搭建与异常治理，将零散 Skill 进一步组织为主控 Agent + 多子 Agent 的群聊协作模式，减少跨平台流程中的等待、上下文整理和人工推进。</p>
+                    <div class="tags">
+                        <span>Agent 应用</span>
+                        <span>机审策略</span>
+                        <span>Workflow</span>
+                        <span>Human in the Loop</span>
+                    </div>
+                </div>
+                <div class="item-arrow">查看经历 →</div>
+            </a>
+        </div>
+    </main>
+
+    <footer style="margin-left: 0;">
+        &copy; 2026 程愚瀚 · Built with &hearts;
+    </footer>
+</body>
+</html>
