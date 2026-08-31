@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="GraphHarness：面向固定长链路任务的人机协同 Agent 运行系统。" />
+    <title>GraphHarness | 程愚瀚</title>
+    <link rel="stylesheet" href="../资源/css/style.css" />
+    <style>
+        :root {
+            --ink: #172033;
+            --muted: #5f6b7c;
+            --line: #dfe5ec;
+            --paper: #fff;
+            --soft: #f2f5f7;
+            --green: #087f5b;
+            --green-soft: #e8f7f1;
+            --cyan: #087c91;
+            --cyan-soft: #e8f6f8;
+            --violet: #6842c2;
+            --violet-soft: #f0ecfb;
+            --amber: #9a5a05;
+            --amber-soft: #fff4dc;
+            --red: #b93838;
+        }
+        body { background: #f7f8fa; color: var(--ink); }
+        .sidebar {
+            width: 220px; min-width: 220px; max-width: 220px;
+            padding: 28px 16px; overflow-y: auto;
+        }
+        .sidebar .name { font-size: 18px; }
+        .sidebar .title { margin-bottom: 22px; line-height: 1.55; }
+        .sidebar nav a { padding: 8px 12px; border-radius: 6px; font-size: 13px; }
+        .nav-group {
+            margin: 15px 12px 4px; color: #9aa5b5;
+            font-size: 10px; font-weight: 800; letter-spacing: 0;
+        }
+        .nav-group:first-child { margin-top: 0; }
+        .main { margin: 60px 0 0 220px; }
+        .page { max-width: 1120px; margin: 0 auto; padding: 64px 56px 96px; }
+        [id] { scroll-margin-top: 88px; }
+
+        .hero { padding: 12px 0 56px; border-bottom: 1px solid var(--line); }
+        .eyebrow, .section-index {
+            color: var(--green); font-size: 12px; font-weight: 800; letter-spacing: 0;
+        }
+        .eyebrow { margin-bottom: 16px; }
+        .hero h1 {
+            margin: 0 0 18px; color: #101827; font-size: 46px;
+            line-height: 1.14; letter-spacing: 0;
+        }
+        .hero-lead {
+            max-width: 800px; margin: 0; color: #465467;
+            font-size: 18px; line-height: 1.85;
+        }
+        .principle {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            margin-top: 30px; border: 1px solid var(--line);
+        }
+        .principle div { padding: 18px 20px; background: var(--paper); border-right: 1px solid var(--line); }
+        .principle div:last-child { border-right: 0; }
+        .principle strong { display: block; margin-bottom: 4px; font-size: 15px; }
+        .principle span { color: var(--muted); font-size: 13px; }
+        .product-shot {
+            display: block; margin-top: 30px; overflow: hidden;
+            border: 1px solid #253244; background: #091019;
+        }
+        .product-shot img { display: block; width: 100%; height: auto; }
+        .shot-caption { margin-top: 9px; color: #748094; font-size: 12px; }
+
+        .section { padding: 56px 0; border-bottom: 1px solid var(--line); }
+        .section:last-of-type { border-bottom: 0; }
+        .chapter {
+            display: grid; grid-template-columns: 150px 1fr; gap: 34px;
+            margin: 72px 0 0; padding: 28px 32px; border-left: 5px solid var(--green);
+            background: #edf7f3;
+        }
+        .chapter.core { border-color: var(--violet); background: var(--violet-soft); }
+        .chapter.system { border-color: var(--cyan); background: var(--cyan-soft); }
+        .chapter.proof { border-color: var(--amber); background: var(--amber-soft); }
+        .chapter-no { color: var(--green); font-size: 40px; font-weight: 800; line-height: 1; }
+        .chapter.core .chapter-no { color: var(--violet); }
+        .chapter.system .chapter-no { color: var(--cyan); }
+        .chapter.proof .chapter-no { color: var(--amber); }
+        .chapter-kicker { margin-bottom: 4px; color: #526174; font-size: 11px; font-weight: 800; }
+        .chapter h2 { margin: 0 0 5px; color: #172033; font-size: 23px; letter-spacing: 0; }
+        .chapter p { margin: 0; color: #536071; font-size: 13px; line-height: 1.7; }
+        .section-head {
+            display: grid; grid-template-columns: 190px 1fr;
+            gap: 34px; margin-bottom: 28px;
+        }
+        .section h2 {
+            margin: 0 0 10px; color: #101827; font-size: 29px;
+            line-height: 1.28; letter-spacing: 0;
+        }
+        .section-intro { max-width: 730px; margin: 0; color: var(--muted); font-size: 15px; line-height: 1.8; }
+        .indent { margin-left: 224px; }
+        .priority {
+            display: inline-block; margin-bottom: 9px; padding: 3px 8px;
+            border-radius: 4px; color: #fff; background: var(--violet);
+            font-size: 10px; font-weight: 800;
+        }
+        .priority.support { color: var(--cyan); background: var(--cyan-soft); }
+
+        .problem-grid, .metrics {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+        }
+        .problem, .metric, .panel, .human-mode {
+            padding: 22px; border: 1px solid var(--line); background: var(--paper);
+        }
+        .problem { min-height: 150px; }
+        .problem b, .panel h3, .human-mode h3 { display: block; margin: 0 0 8px; color: #202b3b; }
+        .problem p, .panel p, .human-mode p {
+            margin: 0; color: var(--muted); font-size: 13px; line-height: 1.75;
+        }
+
+        .architecture { border: 1px solid var(--line); background: var(--paper); }
+        .arch-row { display: grid; grid-template-columns: 160px 1fr; min-height: 104px; border-bottom: 1px solid var(--line); }
+        .arch-row:last-child { border-bottom: 0; }
+        .arch-name {
+            display: flex; align-items: center; padding: 20px;
+            border-right: 1px solid var(--line); font-size: 14px; font-weight: 800;
+        }
+        .arch-row:nth-child(1) .arch-name { color: var(--violet); background: var(--violet-soft); }
+        .arch-row:nth-child(2) .arch-name { color: var(--green); background: var(--green-soft); }
+        .arch-row:nth-child(3) .arch-name { color: var(--cyan); background: var(--cyan-soft); }
+        .arch-items { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; padding: 20px; }
+        .arch-items span { padding: 6px 10px; border: 1px solid var(--line); background: #fafbfc; color: #495669; font-size: 12px; }
+        .harness {
+            margin-top: 12px; padding: 15px 18px; background: #172033;
+            color: #e9eef5; font-size: 13px; line-height: 1.75;
+        }
+        .harness strong { color: #78e8bd; }
+
+        .run-flow {
+            display: grid; grid-template-columns: repeat(6, minmax(0, 1fr));
+            border: 1px solid var(--line); background: var(--paper);
+        }
+        .run-step { min-height: 126px; padding: 18px 15px; border-right: 1px solid var(--line); }
+        .run-step:last-child { border-right: 0; }
+        .run-step small { display: block; margin-bottom: 9px; color: var(--green); font-weight: 800; }
+        .run-step b { display: block; margin-bottom: 5px; font-size: 13px; }
+        .run-step span { color: var(--muted); font-size: 11px; line-height: 1.55; }
+
+        .split { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .panel-label { margin-bottom: 8px; color: var(--green); font-size: 12px; font-weight: 800; }
+        .panel h3, .human-mode h3 { font-size: 17px; letter-spacing: 0; }
+        .plain-list { margin: 16px 0 0; padding: 0; list-style: none; }
+        .plain-list li {
+            padding: 9px 0; border-top: 1px solid #edf0f3;
+            color: #465467; font-size: 13px; line-height: 1.65;
+        }
+        .plain-list strong { color: #202b3b; }
+        .rule {
+            margin-top: 16px; padding: 13px 16px; border-left: 3px solid var(--violet);
+            background: var(--violet-soft); color: #504267; font-size: 13px;
+        }
+        .detail {
+            margin-top: 20px; padding: 22px 24px; border: 1px solid var(--line);
+            background: var(--paper);
+        }
+        .detail h3 { margin: 0 0 8px; color: #202b3b; font-size: 16px; letter-spacing: 0; }
+        .detail p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.8; }
+        .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 14px; }
+        .detail-grid div { padding-top: 12px; border-top: 2px solid #cbd5df; }
+        .detail-grid b { display: block; margin-bottom: 5px; color: #273449; font-size: 13px; }
+        .detail-grid span { color: var(--muted); font-size: 12px; line-height: 1.65; }
+        .scenario {
+            margin-top: 18px; padding: 20px 22px; border-left: 4px solid var(--green);
+            background: var(--green-soft);
+        }
+        .scenario b { display: block; margin-bottom: 7px; color: #17664d; font-size: 14px; }
+        .scenario p { margin: 0; color: #3c6759; font-size: 13px; line-height: 1.75; }
+        .context-evolution {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            margin-bottom: 18px; border: 1px solid var(--line); background: var(--paper);
+        }
+        .context-version { padding: 18px; border-right: 1px solid var(--line); }
+        .context-version:last-child { border-right: 0; }
+        .context-version small { color: var(--violet); font-weight: 800; }
+        .context-version b { display: block; margin: 6px 0; font-size: 13px; }
+        .context-version span { color: var(--muted); font-size: 12px; line-height: 1.6; }
+
+        .context-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            border: 1px solid var(--line); background: var(--paper);
+        }
+        .context-item { padding: 20px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+        .context-item:nth-child(3n) { border-right: 0; }
+        .context-item:nth-child(n+4) { border-bottom: 0; }
+        .context-item b { display: block; margin-bottom: 6px; font-size: 14px; }
+        .context-item span { color: var(--muted); font-size: 12px; line-height: 1.65; }
+        .workspace {
+            margin-top: 18px; padding: 18px 20px; border: 1px solid #b9e4d3;
+            background: var(--green-soft); color: #335f50; font-size: 13px; line-height: 1.75;
+        }
+
+        .gate-flow { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); background: var(--paper); }
+        .gate { min-height: 134px; padding: 18px; border-right: 1px solid var(--line); }
+        .gate:last-child { border-right: 0; }
+        .gate small { color: var(--violet); font-weight: 800; }
+        .gate b { display: block; margin: 7px 0; font-size: 14px; }
+        .gate span { color: var(--muted); font-size: 12px; line-height: 1.6; }
+        .recovery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 22px; }
+        .recovery div { padding: 20px; border-top: 3px solid var(--green); background: var(--paper); }
+        .recovery div:nth-child(2) { border-color: var(--amber); }
+        .recovery div:nth-child(3) { border-color: var(--red); }
+        .recovery b { display: block; margin-bottom: 8px; font-size: 14px; }
+        .recovery p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+
+        .human-modes { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        .human-mode:first-child { border-top: 3px solid var(--cyan); }
+        .human-mode:last-child { border-top: 3px solid var(--amber); }
+
+        .trace-line { display: flex; overflow-x: auto; border: 1px solid var(--line); background: var(--paper); }
+        .trace-level { min-width: 130px; flex: 1; padding: 18px 12px; text-align: center; border-right: 1px solid var(--line); }
+        .trace-level:last-child { border-right: 0; }
+        .trace-level b { display: block; margin-bottom: 4px; font-size: 13px; }
+        .trace-level span { color: var(--muted); font-size: 11px; }
+        .trace-notes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+        .trace-notes div { padding: 16px 18px; background: var(--soft); color: #536071; font-size: 13px; line-height: 1.7; }
+
+        .metric strong { display: block; margin-bottom: 5px; color: var(--green); font-size: 32px; line-height: 1; }
+        .metric b { display: block; margin-bottom: 6px; font-size: 13px; }
+        .metric span { color: var(--muted); font-size: 11px; line-height: 1.55; }
+        .boundary {
+            margin-top: 18px; padding: 16px 18px; border-left: 3px solid var(--amber);
+            background: var(--amber-soft); color: #705229; font-size: 13px; line-height: 1.75;
+        }
+        .status-table { width: 100%; margin-top: 18px; border-collapse: collapse; background: var(--paper); font-size: 13px; }
+        .status-table th, .status-table td { padding: 14px 16px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+        .status-table th { background: var(--soft); color: #364154; }
+        .status {
+            display: inline-block; padding: 2px 8px; border-radius: 4px;
+            font-size: 11px; font-weight: 800; white-space: nowrap;
+        }
+        .done { color: var(--green); background: var(--green-soft); }
+        .design { color: var(--amber); background: var(--amber-soft); }
+        .next { color: var(--violet); background: var(--violet-soft); }
+
+        .evolution { display: grid; grid-template-columns: repeat(4, 1fr); border-block: 1px solid var(--line); }
+        .version { padding: 20px 18px; border-right: 1px solid var(--line); }
+        .version:last-child { border-right: 0; }
+        .version small { color: var(--green); font-weight: 800; }
+        .version b { display: block; margin: 6px 0; font-size: 14px; }
+        .version p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.65; }
+        .page-end { display: flex; justify-content: space-between; gap: 20px; padding-top: 36px; }
+        .page-end p { margin: 0; color: var(--muted); font-size: 13px; }
+        .page-end a { color: var(--green); font-size: 13px; font-weight: 700; text-decoration: none; }
+        footer { margin-left: 220px; padding-left: 56px; }
+
+        @media (max-width: 980px) {
+            .sidebar { display: none; }
+            .main { margin-left: 0; }
+            .page { padding: 48px 28px 72px; }
+            .indent { margin-left: 0; }
+            .section-head { grid-template-columns: 1fr; gap: 8px; }
+            .chapter { grid-template-columns: 110px 1fr; }
+            .run-flow { grid-template-columns: repeat(3, 1fr); }
+            .run-step:nth-child(3) { border-right: 0; }
+            .run-step:nth-child(-n+3) { border-bottom: 1px solid var(--line); }
+            .context-grid { grid-template-columns: repeat(2, 1fr); }
+            .context-item:nth-child(3n) { border-right: 1px solid var(--line); }
+            .context-item:nth-child(2n) { border-right: 0; }
+            .context-item:nth-child(n+4) { border-bottom: 1px solid var(--line); }
+            .context-item:nth-child(n+5) { border-bottom: 0; }
+            footer { margin-left: 0; padding-left: 28px; }
+        }
+        @media (max-width: 680px) {
+            .top-nav { padding: 0 10px; }
+            .top-nav .nav-brand { margin-right: 8px; }
+            .top-nav .nav-links a { padding: 6px; font-size: 12px; }
+            .top-nav .nav-right { display: none; }
+            .page { padding: 34px 18px 60px; }
+            .hero h1 { font-size: 34px; }
+            .hero-lead { font-size: 16px; }
+            .chapter { grid-template-columns: 1fr; gap: 8px; margin-top: 48px; padding: 22px; }
+            .chapter-no { font-size: 28px; }
+            .principle, .problem-grid, .metrics, .split, .recovery, .human-modes, .evolution, .detail-grid, .context-evolution { grid-template-columns: 1fr; }
+            .principle div, .version { border-right: 0; border-bottom: 1px solid var(--line); }
+            .principle div:last-child, .version:last-child { border-bottom: 0; }
+            .context-version { border-right: 0; border-bottom: 1px solid var(--line); }
+            .context-version:last-child { border-bottom: 0; }
+            .arch-row { grid-template-columns: 1fr; }
+            .arch-name { border-right: 0; border-bottom: 1px solid var(--line); }
+            .run-flow { grid-template-columns: 1fr 1fr; }
+            .run-step { border-bottom: 1px solid var(--line); }
+            .run-step:nth-child(2n) { border-right: 0; }
+            .run-step:nth-child(3) { border-right: 1px solid var(--line); }
+            .run-step:nth-child(n+5) { border-bottom: 0; }
+            .context-grid { grid-template-columns: 1fr; }
+            .context-item, .context-item:nth-child(2n), .context-item:nth-child(3n), .context-item:nth-child(n+5) {
+                border-right: 0; border-bottom: 1px solid var(--line);
+            }
+            .context-item:last-child { border-bottom: 0; }
+            .gate-flow { grid-template-columns: 1fr 1fr; }
+            .gate { border-bottom: 1px solid var(--line); }
+            .gate:nth-child(2n) { border-right: 0; }
+            .gate:nth-child(n+3) { border-bottom: 0; }
+            .trace-notes { grid-template-columns: 1fr; }
+            .status-table { display: block; overflow-x: auto; }
+            .page-end { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="nav-left">
+            <a href="../" class="nav-brand">程愚瀚</a>
+            <div class="nav-links">
+                <a href="../">首页</a>
+                <a href="../index4.html">自我介绍</a>
+                <a href="../文章/">文章</a>
+                <a href="./" class="active">项目</a>
+            </div>
+        </div>
+        <div class="nav-right"><a href="../问答.html" class="nav-qa">问答</a></div>
+    </nav>
+
+    <aside class="sidebar">
+        <div class="name">GraphHarness</div>
+        <div class="title">长链路人机协同 Agent 运行系统</div>
+        <nav>
+            <div class="nav-group">01 · 项目定义</div>
+            <a href="#overview" class="active"><span class="dot"></span> 项目概览</a>
+            <a href="#problem"><span class="dot"></span> 为什么要做</a>
+
+            <div class="nav-group">02 · 核心运行链路</div>
+            <a href="#architecture"><span class="dot"></span> 系统架构</a>
+            <a href="#run"><span class="dot"></span> 一次 Run</a>
+            <a href="#plan"><span class="dot"></span> 两阶段 Plan</a>
+
+            <div class="nav-group">03 · Harness 工程能力</div>
+            <a href="#context"><span class="dot"></span> Context 与 Workspace</a>
+            <a href="#reliability"><span class="dot"></span> 质量与恢复</a>
+            <a href="#human"><span class="dot"></span> 人工介入</a>
+            <a href="#trace"><span class="dot"></span> Trace</a>
+
+            <div class="nav-group">04 · 证据与演进</div>
+            <a href="#evidence"><span class="dot"></span> 证据与边界</a>
+            <a href="#evolution"><span class="dot"></span> 迭代路径</a>
+        </nav>
+    </aside>
+
+    <main class="main">
+        <div class="page">
+            <header class="hero" id="overview">
+                <div class="eyebrow">PROJECT · GRAPH ENGINEERING / HARNESS ENGINEERING</div>
+                <h1>GraphHarness</h1>
+                <p class="hero-lead">面向流程相对固定、需要多 Agent 与人工协同的长链路任务，把确定性编排从人和模型手中收回，交给系统持续推进。</p>
+                <div class="principle">
+                    <div><strong>系统管流程</strong><span>DAG、依赖、状态与恢复</span></div>
+                    <div><strong>Agent 管执行</strong><span>节点内推理与工具调用</span></div>
+                    <div><strong>人管关键决策</strong><span>审批、审核、澄清与接管</span></div>
+                </div>
+                <a class="product-shot" href="../资源/images/graphharness-overview.png" target="_blank" rel="noopener">
+                    <img src="../资源/images/graphharness-overview.png" alt="GraphHarness 运行概览界面" />
+                </a>
+                <p class="shot-caption">运行概览：统一查看并行 Run、等待人工节点与异常状态。点击查看原图。</p>
+            </header>
+
+            <div class="chapter">
+                <div class="chapter-no">01</div>
+                <div>
+                    <div class="chapter-kicker">项目定义</div>
+                    <h2>先说明为什么需要这套系统</h2>
+                    <p>这一部分只回答三个问题：真实工作中哪里浪费了时间、GraphHarness 服务什么任务、系统与人分别承担什么职责。</p>
+                </div>
+            </div>
+
+            <section class="section" id="problem">
+                <div class="section-head">
+                    <div class="section-index">01 / PROBLEM</div>
+                    <div>
+                        <h2>真正的瓶颈不是 Agent 不会做，而是人一直在替系统推进流程</h2>
+                        <p class="section-intro">每一步可能都能借助 Agent 完成，但仍需要人等待结果、整理上下文、检查是否达标，再通知下一个角色。人的时间被低价值调度切碎。</p>
+                    </div>
+                </div>
+                <div class="indent problem-grid">
+                    <div class="problem"><b>双向等待</b><p>Agent 做完等人审查，人布置任务后等 Agent 返回，多个流程也无法统一管理。</p></div>
+                    <div class="problem"><b>长链路漂移</b><p>全量历史持续累积，工具结果和推理噪声挤占上下文，导致目标偏移与步骤遗漏。</p></div>
+                    <div class="problem"><b>执行不可控</b><p>把规划、调度和恢复都交给模型，会出现跳步、重复执行和异常后状态不一致。</p></div>
+                </div>
+                <div class="indent scenario">
+                    <b>真实场景：广告机审运营流程</b>
+                    <p>一条策略需要经过资料查询、策略搭建、结果审查和跨系统流转，中间还包含权限与安全审批。没有 Harness 时，人需要手动选择 Skill、复制上下文并持续关注状态；接入后，系统自动推进普通节点，只在审批、信息不足或异常时通知人介入。价值不是少点几次按钮，而是让一个人可以同时管理多条 Run。</p>
+                </div>
+            </section>
+
+            <div class="chapter core">
+                <div class="chapter-no">02</div>
+                <div>
+                    <div class="chapter-kicker">核心运行链路</div>
+                    <h2>项目最核心的三个设计</h2>
+                    <p>Planner 生成一张可执行的图，Orchestrator 确定性推进图，Agent Runtime 只在单个节点内处理不确定任务。这三部分共同构成项目主链路。</p>
+                </div>
+            </div>
+
+            <section class="section" id="architecture">
+                <div class="section-head">
+                    <div class="section-index">02 / ARCHITECTURE</div>
+                    <div>
+                        <span class="priority">核心设计</span>
+                        <h2>把概率推理限制在节点内，把确定性控制留给系统</h2>
+                        <p class="section-intro">Graph 定义协作关系，Harness 提供让这张图稳定运行的工程环境。规划策略、执行引擎与模型 Runtime 可以独立替换和测试。</p>
+                    </div>
+                </div>
+                <div class="indent">
+                    <div class="architecture">
+                        <div class="arch-row">
+                            <div class="arch-name">Planner</div>
+                            <div class="arch-items"><span>流程规划</span><span>执行配置</span><span>版本化 DAG</span><span>Review Agent</span></div>
+                        </div>
+                        <div class="arch-row">
+                            <div class="arch-name">Orchestrator</div>
+                            <div class="arch-items"><span>DAG 校验</span><span>ready queue</span><span>Kahn 并行调度</span><span>状态机</span><span>恢复策略</span></div>
+                        </div>
+                        <div class="arch-row">
+                            <div class="arch-name">Agent Runtime</div>
+                            <div class="arch-items"><span>节点内 ReAct</span><span>ToolCall</span><span>预算控制</span><span>结构化 NodeOutput</span></div>
+                        </div>
+                    </div>
+                    <div class="harness"><strong>Harness 横切能力：</strong>Context · Workspace · Checkpoint · 异常治理 · HITL / HITG · Trace</div>
+                    <div class="detail">
+                        <h3>为什么不使用 Master Agent 集中调度</h3>
+                        <p>如果让一个 Master Agent 同时负责规划、选择工具、判断依赖、保存状态和处理异常，执行语义会与模型和 Prompt 强耦合，同一任务也难以稳定复现。GraphHarness 将 Planner 的输出冻结为版本化 DAG，后续由 Orchestrator 按规则执行；更换模型或节点 Agent 时，不需要重写调度逻辑。</p>
+                        <div class="detail-grid">
+                            <div><b>模型负责不确定性</b><span>理解需求、生成计划、完成节点任务和处理语义问题。</span></div>
+                            <div><b>代码负责确定性</b><span>校验拓扑、计算依赖、推进状态、控制预算与恢复范围。</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="run">
+                <div class="section-head">
+                    <div class="section-index">03 / RUN LIFECYCLE</div>
+                    <div>
+                        <span class="priority">核心主链路</span>
+                        <h2>一次任务如何从自然语言变成可恢复的 Run</h2>
+                        <p class="section-intro">用户确认的是流程，系统执行的是带版本、契约与状态的 DAG。只有满足依赖和质量门禁的节点才会释放后继任务。</p>
+                    </div>
+                </div>
+                <div class="indent run-flow">
+                    <div class="run-step"><small>01</small><b>提交目标</b><span>任务、资料、约束与验收标准</span></div>
+                    <div class="run-step"><small>02</small><b>生成流程</b><span>拆节点、建依赖、识别并行关系</span></div>
+                    <div class="run-step"><small>03</small><b>用户校准</b><span>调整节点粒度与关键决策点</span></div>
+                    <div class="run-step"><small>04</small><b>补全配置</b><span>Agent、Tool、Schema 与数据映射</span></div>
+                    <div class="run-step"><small>05</small><b>按图执行</b><span>ready queue 自动推进节点</span></div>
+                    <div class="run-step"><small>06</small><b>交付或介入</b><span>通过门禁交付，异常按策略恢复</span></div>
+                </div>
+                <div class="indent">
+                    <a class="product-shot" href="../资源/images/graphharness-editor.png" target="_blank" rel="noopener">
+                        <img src="../资源/images/graphharness-editor.png" alt="GraphHarness DAG 可视化编辑器" loading="lazy" />
+                    </a>
+                    <p class="shot-caption">DAG 编辑器：自动规划后先校验和确认，再进入执行阶段。点击查看原图。</p>
+                    <div class="detail">
+                        <h3>调度实现：由依赖关系推导并行，而不是让模型猜哪些任务可以并行</h3>
+                        <p>Orchestrator 使用 Kahn 拓扑排序维护每个节点的剩余依赖数。入度为 0 的节点进入 ready queue 并发执行；节点进入终态后发送事件，原子更新后继节点入度，减到 0 时释放后继任务。执行结束后仍有非零入度节点，即可判定图中存在环。</p>
+                        <div class="detail-grid">
+                            <div><b>双层并行</b><span>外层并发执行无依赖节点；内层并发执行同一轮中互不依赖的 ToolCall，有数据依赖时保持串行。</span></div>
+                            <div><b>条件分支</b><span>边携带 condition，只有命中的边参与后继入度计算；未选路径执行 skip 传播，避免分支节点阻塞汇合。</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="plan">
+                <div class="section-head">
+                    <div class="section-index">04 / PLANNING</div>
+                    <div>
+                        <span class="priority">核心设计</span>
+                        <h2>两阶段 Plan：先确定做什么，再确定怎么执行</h2>
+                        <p class="section-intro">一次同时生成拓扑、工具、Schema 和数据映射会分散模型注意力。拆成两个阶段后，每次生成面对更明确的约束。</p>
+                    </div>
+                </div>
+                <div class="indent split">
+                    <div class="panel">
+                        <div class="panel-label">阶段一 · 流程规划</div>
+                        <h3>构建正确的任务骨架</h3>
+                        <p>只处理节点职责、依赖关系和并行结构，优先保证任务覆盖、粒度合理与拓扑合法。</p>
+                        <ul class="plain-list">
+                            <li><strong>确定性校验：</strong>环、非法引用、不可达节点</li>
+                            <li><strong>语义评审：</strong>任务覆盖、拆解粒度、流程逻辑</li>
+                            <li><strong>人工校准：</strong>确认后冻结拓扑与 Plan 版本</li>
+                        </ul>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-label">阶段二 · 执行配置</div>
+                        <h3>把流程变成可执行契约</h3>
+                        <p>在已确认 DAG 上补充执行细节，避免为了匹配某个 Tool 反向扭曲任务拆解。</p>
+                        <ul class="plain-list">
+                            <li><strong>执行主体：</strong>Agent、Tool 与权限</li>
+                            <li><strong>数据契约：</strong>输入来源、输出 Schema、字段映射</li>
+                            <li><strong>运行策略：</strong>验收条件、预算、HITL 与恢复策略</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="indent rule">校验原则：能用确定性代码完成的，不交给模型；只有任务语义和质量判断交给独立 Review Agent。</div>
+                <div class="indent detail">
+                    <h3>为什么 Plan 能力会退化</h3>
+                    <p>早期 Planner 只需要生成节点和边。后来又要同时选择 Agent 与 Tool、定义输入输出 Schema、建立字段映射、配置人工节点并输出复杂 JSON。流程语义和执行配置属于两个不同问题，一次完成会让模型为了适配工具而改变任务拆分，或在补配置时遗漏前置依赖。</p>
+                    <div class="detail-grid">
+                        <div><b>错误如何回流</b><span>记录原始需求、两阶段 Plan、校验结果、人工修改与执行结果，再按任务遗漏、依赖错误、Tool 选择错误分类。</span></div>
+                        <div><b>优化如何选择</b><span>确定性错误转为代码规则，典型模式沉淀为 Few-shot，语义问题才调整 Prompt 或 Review 标准。</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="chapter system">
+                <div class="chapter-no">03</div>
+                <div>
+                    <div class="chapter-kicker">Harness 工程能力</div>
+                    <h2>让长流程跑得完、跑得稳，也能解释发生了什么</h2>
+                    <p>下面四部分不是独立卖点，而是围绕主链路提供上下文隔离、质量控制、人工协作和可观测能力。</p>
+                </div>
+            </div>
+
+            <section class="section" id="context">
+                <div class="section-head">
+                    <div class="section-index">05 / CONTEXT</div>
+                    <div>
+                        <span class="priority support">工程保障</span>
+                        <h2>节点隔离不是简单压缩，而是建立稳定的数据边界</h2>
+                        <p class="section-intro">每个节点只获得完成当前任务所需的最小完整信息。大文件和完整工具结果作为 Artifact 保存，通过引用按需读取。</p>
+                    </div>
+                </div>
+                <div class="indent">
+                    <div class="context-evolution">
+                        <div class="context-version"><small>1.0</small><b>传递完整历史</b><span>对话、工具结果和推理过程持续累积，很快占满上下文。</span></div>
+                        <div class="context-version"><small>2.0</small><b>结构化 NodeOutput</b><span>默认只传直接依赖，通过工具按需查询其他节点结果。</span></div>
+                        <div class="context-version"><small>3.0</small><b>Workspace + Artifact</b><span>结构化结果走上下文，大型中间产物独立版本管理。</span></div>
+                    </div>
+                    <div class="context-grid">
+                        <div class="context-item"><b>System Prompt</b><span>身份、职责、安全边界与通用工具规则</span></div>
+                        <div class="context-item"><b>Workflow Context</b><span>原始目标、硬约束、验收标准与 DAG 概览</span></div>
+                        <div class="context-item"><b>Node Prompt</b><span>当前目标、完成条件、可读写范围与失败策略</span></div>
+                        <div class="context-item"><b>Dependency Context</b><span>直接依赖的 NodeOutput、warnings 与 ArtifactRef</span></div>
+                        <div class="context-item"><b>Tool Context</b><span>当前节点可用工具、参数、权限与预算</span></div>
+                        <div class="context-item"><b>Output Contract</b><span>动态 Schema、状态、证据、未决项与产物引用</span></div>
+                    </div>
+                    <div class="workspace"><strong>Workspace 设计：</strong>节点成功后以 Git commit 固定文件版本，Checkpoint 记录 <code>commit_sha</code>；并行节点通过 branch + worktree 隔离修改，冲突交给 Merge Agent，无法可靠处理时进入人工介入。</div>
+                </div>
+            </section>
+
+            <section class="section" id="reliability">
+                <div class="section-head">
+                    <div class="section-index">06 / RELIABILITY</div>
+                    <div>
+                        <span class="priority support">工程保障</span>
+                        <h2>质量门禁与异常恢复是两条不同的控制链</h2>
+                        <p class="section-intro">质量门禁判断结果能否过线，异常治理决定失败后由谁、在哪一层、以什么成本恢复。执行 Agent 不负责验收自己的产出。</p>
+                    </div>
+                </div>
+                <div class="indent">
+                    <div class="gate-flow">
+                        <div class="gate"><small>GATE 1</small><b>格式校验</b><span>JSON 可解析、字段完整、类型正确</span></div>
+                        <div class="gate"><small>GATE 2</small><b>图结构校验</b><span>无环、引用合法、节点可达</span></div>
+                        <div class="gate"><small>GATE 3</small><b>执行契约校验</b><span>Tool、参数、输入来源与映射一致</span></div>
+                        <div class="gate"><small>GATE 4</small><b>语义质量评审</b><span>独立 Reviewer 对照需求和检查清单判断</span></div>
+                    </div>
+                    <a class="product-shot" href="../资源/images/graphharness-exception-flow.png" target="_blank" rel="noopener">
+                        <img src="../资源/images/graphharness-exception-flow.png" alt="GraphHarness 节点异常处理三阶段流程图" loading="lazy" />
+                    </a>
+                    <p class="shot-caption">节点异常处理三阶段流程：工具调用失败、节点级异常分类与重试、流程级最终兜底。点击查看原图。</p>
+                    <div class="recovery">
+                        <div><b>工具调用级</b><p>超时、429、临时 5xx 指数退避；参数错误交给模型修正；不可恢复错误直接上抛。</p></div>
+                        <div><b>节点执行级</b><p>创建新 NodeAttempt，只继承验证过的事实和工具结果，清理错误推理轨迹后重组上下文。</p></div>
+                        <div><b>流程处置级</b><p>根据策略选择中断、显式默认值、异常分支或人工接管，再从 Checkpoint 恢复。</p></div>
+                    </div>
+                    <div class="detail">
+                        <h3>Checkpoint 恢复遵循依赖关系，而不是简单回退一页</h3>
+                        <p>Checkpoint 保存 Run 与节点状态、结构化输出、预算使用情况和 Workspace 的 <code>commit_sha</code>。节点被修改或重试时，所有依赖它的后继节点都会失效并重新初始化；已经成功且不受影响的节点不会重跑。恢复只认 Checkpoint 中的状态，不依赖 Trace 反推运行现场。</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="human">
+                <div class="section-head">
+                    <div class="section-index">07 / HUMAN IN THE GRAPH</div>
+                    <div>
+                        <span class="priority support">工程保障</span>
+                        <h2>人不是流程调度器，而是可被系统调用的关键决策者</h2>
+                        <p class="section-intro">人工介入分为预先编排的 HITG 与运行时临时触发的 HITL。系统负责准备判断所需上下文，并把人的结果写回 Workflow。</p>
+                    </div>
+                </div>
+                <div class="indent">
+                    <div class="human-modes">
+                        <div class="human-mode"><h3>HITG · 图中的正式节点</h3><p><strong>适用于已知的人工作业：</strong>审批、审核、权限受限操作。人像 Sub Agent 一样接收明确任务、上游依据和输出契约。</p></div>
+                        <div class="human-mode"><h3>HITL · 运行时中断</h3><p><strong>适用于临时不确定性：</strong>信息不足、低置信度或高风险 ToolCall。保存状态，收到人工结果后恢复。</p></div>
+                    </div>
+                    <div class="rule">人工介入承担四类职责：澄清不明确意图、审批高风险操作、审核并修改阶段产物、接管受权限或安全限制的任务。</div>
+                    <a class="product-shot" href="../资源/images/graphharness-hitl.png" target="_blank" rel="noopener">
+                        <img src="../资源/images/graphharness-hitl.png" alt="GraphHarness HITL 工作台" loading="lazy" />
+                    </a>
+                    <p class="shot-caption">HITL 工作台：集中展示上游判断依据，减少人工重新梳理上下文的成本。点击查看原图。</p>
+                </div>
+            </section>
+
+            <section class="section" id="trace">
+                <div class="section-head">
+                    <div class="section-index">08 / OBSERVABILITY</div>
+                    <div>
+                        <span class="priority support">工程保障</span>
+                        <h2>Trace 记录执行事实，不替治理模块做判断</h2>
+                        <p class="section-intro">六级 Span 能定位到某个节点的某轮推理，并区分一次逻辑调用和底层多次物理重试。Event 补充瞬时事实。</p>
+                    </div>
+                </div>
+                <div class="indent">
+                    <div class="trace-line">
+                        <div class="trace-level"><b>Run</b><span>完整任务</span></div>
+                        <div class="trace-level"><b>Node</b><span>逻辑节点</span></div>
+                        <div class="trace-level"><b>NodeAttempt</b><span>节点尝试</span></div>
+                        <div class="trace-level"><b>Round</b><span>ReAct 轮次</span></div>
+                        <div class="trace-level"><b>ToolCall</b><span>调用意图</span></div>
+                        <div class="trace-level"><b>ToolAttempt</b><span>实际请求</span></div>
+                    </div>
+                    <div class="trace-notes">
+                        <div><strong>parent_span_id</strong><br />还原“谁调用了谁”的执行树与时间线。</div>
+                        <div><strong>correlation_id</strong><br />串联同一问题引发的重试、冒泡、降级与 HITL。</div>
+                    </div>
+                    <div class="detail">
+                        <h3>两条排查路径</h3>
+                        <p>第一条按 Run → Node → NodeAttempt → Round → ToolCall → ToolAttempt 逐层下钻，回答“问题发生在哪里”；第二条按 <code>correlation_id</code> 聚合同一次故障相关的重试、异常冒泡、降级和人工处理，回答“系统后来怎样处置”。Trace 只负责记录和查询，异常分类、根因判断和动态评分由独立模块消费数据后完成。</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="chapter proof">
+                <div class="chapter-no">04</div>
+                <div>
+                    <div class="chapter-kicker">证据与演进</div>
+                    <h2>最后回答系统效果如何，以及哪些事情还没有完成</h2>
+                    <p>数据必须附带测试口径，设计方案与已有实现必须分开，项目边界也应主动说明。</p>
+                </div>
+            </div>
+
+            <section class="section" id="evidence">
+                <div class="section-head">
+                    <div class="section-index">09 / EVIDENCE & BOUNDARY</div>
+                    <div>
+                        <h2>把结果、测试口径与未完成项放在同一个视图里</h2>
+                        <p class="section-intro">指标用于解释工程取舍，不替代完整实验报告。没有完整口径的数据在页面中明确注明。</p>
+                    </div>
+                </div>
+                <div class="indent">
+                    <div class="metrics">
+                        <div class="metric"><strong>97%</strong><b>DAG 构建正确率</b><span>两阶段 Plan 与后置校验改造后的记录；评测集规模和分布仍需补齐。</span></div>
+                        <div class="metric"><strong>-23%</strong><b>端到端耗时</b><span>200 项任务，对比完全串行基线；固定模型、工具延迟与并发参数。</span></div>
+                        <div class="metric"><strong>-41%</strong><b>完整任务 Token</b><span>节点隔离、差异化 Prompt 与结构化输出后的记录；样本口径仍需补齐。</span></div>
+                    </div>
+                    <div class="boundary"><strong>适用边界：</strong>GraphHarness 不适合持续自由探索、频繁动态改写目标的开放任务。它更适合审批、审计等需要可验证、可追踪、可干预流程的场景。</div>
+                    <table class="status-table">
+                        <thead><tr><th>待完善能力</th><th>当前状态</th><th>后续方向</th></tr></thead>
+                        <tbody>
+                            <tr><td>ToolHub 工具智能化管理</td><td><span class="status next">计划中</span></td><td>利用 Trace 中的工具调用记录，为 Plan Agent 提供更充分的 Tool 选择依据。</td></tr>
+                            <tr><td>Trace 可视化</td><td><span class="status design">记录已实现</span></td><td>继续设计可视化方式，让用户能够更直观地下钻异常位置并复盘处理链路。</td></tr>
+                            <tr><td>多 LLM 模型调用</td><td><span class="status next">尚未实现</span></td><td>为 Review Agent、Plan Agent 等不同职责选择更合适的模型。</td></tr>
+                            <tr><td>上下文传递智能化</td><td><span class="status next">尚未实现</span></td><td>当前主要减少工具调用等无关信息，后续根据任务类型动态决定传递信息量，例如简单查询与复杂任务使用不同预算。</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section" id="evolution">
+                <div class="section-head">
+                    <div class="section-index">10 / EVOLUTION</div>
+                    <div>
+                        <h2>四次迭代，不变的是 DAG，变化的是问题定义</h2>
+                        <p class="section-intro">项目最终从“做一个工作流工具”转向“为真实协作任务提供可控运行环境”。</p>
+                    </div>
+                </div>
+                <div class="indent evolution">
+                    <div class="version"><small>1.0</small><b>可视化编排</b><p>用拖拽方式定义 AI 工作流，完成基础 DAG 执行。</p></div>
+                    <div class="version"><small>2.0</small><b>自动规划</b><p>让 Plan Agent 生成 DAG，解决跳步和路径不可控。</p></div>
+                    <div class="version"><small>3.0</small><b>长链路治理</b><p>引入节点隔离、结构化输出和上下文控制。</p></div>
+                    <div class="version"><small>4.0</small><b>GraphHarness</b><p>面向真实协作流程，统一 Agent、系统与人的职责。</p></div>
+                </div>
+            </section>
+
+            <div class="page-end">
+                <p>Graph 定义协作方式，Harness 保证协作稳定运行。</p>
+                <a href="workflow.html">查看前身：Workflow 2.0 →</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>&copy; 2026 程愚瀚 · Built with &hearts;</footer>
+    <script>
+        (function () {
+            var links = Array.prototype.slice.call(document.querySelectorAll('.sidebar nav a'));
+            var targets = links.map(function (link) {
+                return document.querySelector(link.getAttribute('href'));
+            }).filter(Boolean);
+            function updateNav() {
+                var current = targets[0] ? targets[0].id : '';
+                targets.forEach(function (target) {
+                    if (target.getBoundingClientRect().top <= 140) current = target.id;
+                });
+                links.forEach(function (link) {
+                    link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+                });
+            }
+            window.addEventListener('scroll', updateNav, { passive: true });
+            updateNav();
+        }());
+    </script>
+</body>
+</html>

@@ -3,8 +3,263 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>程愚瀚 | 个人简历</title>
+    <meta name="description" content="程愚瀚的个人博客。" />
+    <title>程愚瀚 | AI Agent 工程作品集</title>
     <link rel="stylesheet" href="资源/css/style.css" />
+    <style>
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 28px;
+        }
+        .hero-actions .cta-btn.secondary {
+            border: 1px solid #c7d2fe;
+            background: #fff;
+            color: #4f46e5;
+            box-shadow: none;
+        }
+        .home-proof-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            width: 100%;
+            margin-top: 8px;
+        }
+        .home-proof-item {
+            padding: 18px 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            background: #fff;
+        }
+        .home-proof-item span {
+            display: block;
+            margin-bottom: 5px;
+            color: #64748b;
+            font-size: 12px;
+        }
+        .home-proof-item strong {
+            display: block;
+            color: #0f172a;
+            font-size: 17px;
+        }
+        .experience-grid {
+            display: grid;
+            grid-template-columns: minmax(200px, 0.7fr) minmax(360px, 1.3fr);
+            gap: 16px;
+        }
+        .experience-card {
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: #fff;
+        }
+        .experience-card h3 {
+            margin: 8px 0;
+            color: #0f172a;
+            font-size: 19px;
+        }
+        .experience-card p,
+        .experience-step p {
+            color: #475569;
+            font-size: 13px;
+            line-height: 1.75;
+        }
+        .experience-badge {
+            color: #4f46e5;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .experience-metric {
+            margin-top: 22px;
+            padding-top: 18px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .experience-metric strong {
+            display: block;
+            margin-bottom: 4px;
+            color: #059669;
+            font-size: 28px;
+        }
+        .experience-steps {
+            display: grid;
+            gap: 10px;
+        }
+        .experience-step {
+            display: grid;
+            grid-template-columns: 34px 1fr;
+            gap: 12px;
+            padding: 15px 18px;
+            border-left: 3px solid #c7d2fe;
+            border-radius: 0 8px 8px 0;
+            background: #f8fafc;
+        }
+        .experience-step > span {
+            color: #4f46e5;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .experience-step h3 {
+            margin: 0 0 4px;
+            color: #0f172a;
+            font-size: 14px;
+        }
+        .project-shot {
+            margin: 18px 0;
+        }
+        .project-shot > img {
+            display: block;
+            width: 100%;
+            aspect-ratio: 2 / 1;
+            object-fit: cover;
+            object-position: top left;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            background: #0b0f16;
+        }
+        .project-shot figcaption {
+            margin-top: 7px;
+            color: #64748b;
+            font-size: 11px;
+        }
+        .project-shot-pair {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .project-shot-pair img {
+            display: block;
+            width: 100%;
+            aspect-ratio: 2 / 1;
+            object-fit: cover;
+            object-position: top left;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #0b0f16;
+        }
+        #hero {
+            min-height: auto;
+            padding: 88px 60px 44px;
+        }
+        .home-faq {
+            padding: 28px 60px 60px;
+            background: #fff;
+        }
+        .home-faq .section-title {
+            margin-bottom: 24px;
+        }
+        .faq-list {
+            display: grid;
+            gap: 10px;
+            max-width: 920px;
+        }
+        .faq-item {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #fff;
+            overflow: hidden;
+        }
+        .faq-item[open] {
+            border-color: #c7d2fe;
+            box-shadow: 0 6px 18px rgba(79, 70, 229, 0.07);
+        }
+        .faq-item summary {
+            display: grid;
+            grid-template-columns: 34px minmax(0, 1fr) 24px;
+            align-items: center;
+            gap: 12px;
+            min-height: 58px;
+            padding: 0 18px;
+            color: #0f172a;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            list-style: none;
+        }
+        .faq-item summary::-webkit-details-marker {
+            display: none;
+        }
+        .faq-item summary::after {
+            content: "+";
+            color: #64748b;
+            font-size: 22px;
+            font-weight: 400;
+            text-align: center;
+        }
+        .faq-item[open] summary {
+            color: #4f46e5;
+            background: #f8fafc;
+        }
+        .faq-item[open] summary::after {
+            content: "−";
+            color: #4f46e5;
+        }
+        .faq-index {
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .faq-answer {
+            padding: 20px 24px 24px 64px;
+            border-top: 1px solid #eef2f7;
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        .faq-answer p {
+            margin: 0 0 12px;
+        }
+        .faq-answer p:last-child {
+            margin-bottom: 0;
+        }
+        .faq-answer strong {
+            color: #4f46e5;
+        }
+        .faq-answer ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .faq-answer li + li {
+            margin-top: 8px;
+        }
+        .faq-project-link {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 14px;
+            color: #4f46e5;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .faq-project-link:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            .home-proof-grid,
+            .experience-grid,
+            .project-shot-pair {
+                grid-template-columns: 1fr;
+            }
+            .hero-actions .cta-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            #hero {
+                padding: 64px 24px 28px;
+            }
+            .home-faq {
+                padding: 24px 20px 48px;
+            }
+            .faq-item summary {
+                grid-template-columns: 28px minmax(0, 1fr) 20px;
+                gap: 8px;
+                padding: 10px 14px;
+            }
+            .faq-answer {
+                padding: 18px;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -27,13 +282,10 @@
     <!-- ===== Sidebar ===== -->
     <aside class="sidebar">
         <div class="name">程愚瀚</div>
-        <div class="title">Java 后端和 agent 开发</div>
+        <div class="title">AI Agent 工程开发</div>
         <nav>
             <a href="#hero" class="active"><span class="dot"></span> 首页</a>
-            <a href="#skills"><span class="dot"></span> 技术栈</a>
-            <a href="#projects"><span class="dot"></span> 项目</a>
-            <a href="#notes"><span class="dot"></span> 思考</a>
-            <a href="#articles"><span class="dot"></span> 文章</a>
+            <a href="#faq"><span class="dot"></span> 高频问题</a>
             <a href="#contact"><span class="dot"></span> 联系方式</a>
         </nav>
     </aside>
@@ -43,451 +295,56 @@
 
         <!-- ===== Hero ===== -->
         <section id="hero">
-            <div class="greeting">面试官，您好</div>
+            <div class="greeting">AI Agent 工程开发 · Java 后端</div>
             <h1>我是 <span class="highlight">程愚瀚</span></h1>
             <p class="school">🎓 电子科技大学 · 软件工程 · 28届本科</p>
-
-            <!-- 关键信息 -->
-            <div style="margin-bottom: 28px;">
-                <div style="display: flex; flex-wrap: wrap; gap: 24px; font-size: 14px; color: #475569; margin-bottom: 16px;">
-                    <span><strong>希望的工作方向：</strong>Agent 开发</span>
-                    <span><strong>Base 地要求：</strong>无</span>
-                    <span><strong>支持实习时间：</strong>七月 - 来年一月</span>
-                </div>
-            </div>
-
-            <!-- 横向时间轴 -->
-            <div style="margin-bottom: 36px;">
-                <div style="font-size: 13px; font-weight: 600; color: #4f46e5; margin-bottom: 16px;">学习路线</div>
-
-                <!-- 上层：主时间轴 -->
-                <div style="position: relative; padding: 4px 0 20px 0;">
-                    <div style="position: absolute; top: 12px; left: 0; right: 0; height: 2px; background: #e2e8f0; z-index: 0;"></div>
-
-                    <div style="display: flex; width: 100%; position: relative; z-index: 1; align-items: flex-start;">
-                        <!-- 节点1: 24年11月 -->
-                        <div style="display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 70px;">
-                            <div style="width: 14px; height: 14px; border-radius: 50%; background: #4f46e5; border: 3px solid #f8f9fc; box-shadow: 0 0 0 2px #4f46e5;"></div>
-                            <div style="font-size: 12px; font-weight: 600; color: #0f172a; margin-top: 8px;">24年11月</div>
-                        </div>
-
-                        <!-- 中间段1: Java 后端开发 -->
-                        <div style="flex: 1; display: flex; justify-content: center; padding-top: 0;">
-                            <div style="font-size: 13px; color: #fff; text-align: center; background: #4f46e5; padding: 4px 20px; border-radius: 20px; font-weight: 600;">Java 后端开发</div>
-                        </div>
-
-                        <!-- 节点2: 26年2月 -->
-                        <div style="display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 70px;">
-                            <div style="width: 14px; height: 14px; border-radius: 50%; background: #4f46e5; border: 3px solid #f8f9fc; box-shadow: 0 0 0 2px #4f46e5;"></div>
-                            <div style="font-size: 12px; font-weight: 600; color: #0f172a; margin-top: 8px;">26年2月</div>
-                        </div>
-
-                        <!-- 中间段2: Agent 学习 -->
-                        <div style="flex: 2; display: flex; justify-content: center; padding-top: 0;">
-                            <div style="font-size: 13px; color: #fff; text-align: center; background: #7c3aed; padding: 4px 20px; border-radius: 20px; font-weight: 600;">Agent 学习</div>
-                        </div>
-
-                        <!-- 节点3: 至今 -->
-                        <div style="display: flex; flex-direction: column; align-items: center; flex-shrink: 0; width: 70px;">
-                            <div style="width: 14px; height: 14px; border-radius: 50%; background: #10b981; border: 3px solid #f8f9fc; box-shadow: 0 0 0 2px #10b981;"></div>
-                            <div style="font-size: 12px; font-weight: 600; color: #059669; margin-top: 8px;">至今</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 下层：子项目 -->
-                <div style="position: relative; padding: 0 0 0 0; margin-top: -4px;">
-                    <div style="display: flex; width: 100%; align-items: flex-start;">
-                        <div style="width: 70px; flex-shrink: 0;"></div>
-
-                        <!-- Java 后端下的子项目：社区平台 -->
-                        <div style="flex: 1; display: flex; justify-content: center; position: relative;">
-                            <div style="position: absolute; top: -16px; left: 50%; height: 16px; width: 2px; background: #c4b5fd;"></div>
-                            <div style="display: flex; flex-direction: column; align-items: center; padding-top: 10px;">
-                                <div style="width: 10px; height: 10px; border-radius: 50%; background: #f59e0b; border: 2px solid #f8f9fc; box-shadow: 0 0 0 1px #f59e0b;"></div>
-                                <div style="font-size: 12px; color: #d97706; font-weight: 600; margin-top: 6px; text-align: center;">社区平台</div>
-                            </div>
-                        </div>
-
-                        <div style="width: 70px; flex-shrink: 0;"></div>
-
-                        <div style="flex: 2; display: flex; justify-content: space-between; position: relative;">
-                            <div style="position: absolute; top: -16px; left: 12.5%; height: 16px; width: 2px; background: #c4b5fd;"></div>
-                            <div style="position: absolute; top: -16px; left: 37.5%; height: 16px; width: 2px; background: #c4b5fd;"></div>
-                            <div style="position: absolute; top: -16px; left: 62.5%; height: 16px; width: 2px; background: #c4b5fd;"></div>
-                            <div style="position: absolute; top: -16px; left: 87.5%; height: 16px; width: 2px; background: #c4b5fd;"></div>
-                            <div style="position: absolute; top: 0; left: 5%; right: 5%; height: 2px; background: #c4b5fd;"></div>
-
-                            <div style="display: flex; flex-direction: column; align-items: center; padding-top: 10px; width: 22%;">
-                                <div style="width: 10px; height: 10px; border-radius: 50%; background: #8b5cf6; border: 2px solid #f8f9fc; box-shadow: 0 0 0 1px #8b5cf6;"></div>
-                                <div style="font-size: 12px; color: #6d28d9; font-weight: 600; margin-top: 6px; text-align: center;">RAG 项目</div>
-                            </div>
-                            <div style="display: flex; flex-direction: column; align-items: center; padding-top: 10px; width: 22%;">
-                                <div style="width: 10px; height: 10px; border-radius: 50%; background: #8b5cf6; border: 2px solid #f8f9fc; box-shadow: 0 0 0 1px #8b5cf6;"></div>
-                                <div style="font-size: 12px; color: #6d28d9; font-weight: 600; margin-top: 6px; text-align: center;">workflow 2.0</div>
-                            </div>
-                            <div style="display: flex; flex-direction: column; align-items: center; padding-top: 10px; width: 22%;">
-                                <div style="width: 10px; height: 10px; border-radius: 50%; background: #8b5cf6; border: 2px solid #f8f9fc; box-shadow: 0 0 0 1px #8b5cf6;"></div>
-                                <div style="font-size: 12px; color: #6d28d9; font-weight: 600; margin-top: 6px; text-align: center;">MyClaw 项目</div>
-                            </div>
-                            <div style="display: flex; flex-direction: column; align-items: center; padding-top: 10px; width: 22%;">
-                                <div style="width: 10px; height: 10px; border-radius: 50%; background: #8b5cf6; border: 2px solid #f8f9fc; box-shadow: 0 0 0 1px #8b5cf6;"></div>
-                                <div style="font-size: 12px; color: #6d28d9; font-weight: 600; margin-top: 6px; text-align: center;">Tree<br>(workflow 3.0)</div>
-                            </div>
-                        </div>
-
-                        <div style="width: 70px; flex-shrink: 0;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <a href="#skills" class="cta-btn">查看我的技术栈 ↓</a>
         </section>
 
-        
+        <section id="faq" class="home-faq">
+            <div class="section-label">Quick Answers</div>
+            <h2 class="section-title">常问问题</h2>
 
-        <!-- ===== Skills ===== -->
-        <section id="skills">
-            <div class="section-label">Skills</div>
-            <h2 class="section-title">技术栈</h2>
-
-            <style>
-                .skill-toggle {
-                    cursor: pointer; user-select: none; display: flex; align-items: center; justify-content: space-between;
-                    padding: 14px 20px; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
-                    font-size: 15px; font-weight: 700; color: #0f172a; transition: all 0.2s;
-                }
-                .skill-toggle:hover { border-color: #c7d2fe; background: #f8fafc; }
-                .skill-toggle .arrow { font-size: 12px; color: #94a3b8; transition: transform 0.3s; }
-                .skill-toggle.active .arrow { transform: rotate(180deg); }
-                .skill-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
-                .skill-body.open { max-height: 2000px; }
-                .skill-body-inner { padding: 16px 20px; }
-            </style>
-
-            <!-- Java 后端 -->
-            <div style="margin-bottom: 10px;">
-                <div class="skill-toggle" style="padding: 18px 24px; font-size: 17px; background: linear-gradient(135deg, #f8fafc 0%, #fff 100%); border: 2px solid #e2e8f0; border-radius: 12px;" onclick="toggleSkill(this)">
-                    <span>☕ Java 后端</span>
-                    <span class="arrow">▼</span>
-                </div>
-                <div class="skill-body">
-                    <div class="skill-body-inner" style="background: #fff; border: 2px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px;">
-                        <div style="display: flex; flex-direction: column; gap: 6px;">
-                            <div style="font-size: 14px; color: #475569; line-height: 1.8;"><span style="font-weight: 700; color: #4f46e5;">Java：</span>熟悉java语法，集合、异常、泛型、注解、反射、设计模式等内容。</div>
-                            <div style="font-size: 14px; color: #475569; line-height: 1.8;"><span style="font-weight: 700; color: #4f46e5;">JUC：</span>熟悉Java并发编程，熟悉Synchronized、AQS、CAS、volatile、ThreadLocal、线程池。</div>
-                            <div style="font-size: 14px; color: #475569; line-height: 1.8;"><span style="font-weight: 700; color: #4f46e5;">JVM：</span>对JMM、类加载机制、字节码执行、垃圾回收机制有深入理解。了解JVM调优、常见内存问题的解决。</div>
-                            <div style="font-size: 14px; color: #475569; line-height: 1.8;"><span style="font-weight: 700; color: #4f46e5;">MySQL：</span>熟练掌握MySQL，熟悉其底层原理、SQL优化、索引优化、事务、MVCC、锁机制。</div>
-                            <div style="font-size: 14px; color: #475569; line-height: 1.8;"><span style="font-weight: 700; color: #4f46e5;">Redis：</span>熟练使用Redis，了解其分布式锁、限流、消息队列的实现以及其数据结构、持久化、高可用。</div>
-                            <div style="font-size: 14px; color: #475569; line-height: 1.8;"><span style="font-weight: 700; color: #4f46e5;">框架：</span>熟练使用Spring、SpringBoot、SpringMVC，了解IOC、AOP、Bean的生命周期、自动装配。</div>
-                        </div>
+            <div class="faq-list">
+                <details class="faq-item" name="home-faq" open>
+                    <summary><span class="faq-index">01</span><span>实习安排</span></summary>
+                    <div class="faq-answer">
+                        <p><strong>到岗时间：</strong>拿到 Offer 后五天内可以到岗。</p>
+                        <p><strong>实习时长：</strong>没有时间限制，可以长期实习；每周可以到岗五天。</p>
+                        <p><strong>实习地点：</strong>没有 Base 要求。相对倾向成都，但其他城市也可以。</p>
+                        <p><strong>课程安排：</strong>学校的专业课主要集中在大二，大三上专业课较少，大三下统一没有课，主要用于实习。因此，我只需要在大三上期末回学校参加考试，不会影响实习。</p>
                     </div>
-                </div>
-            </div>
+                </details>
 
-            <!-- AI Agent 开发 -->
-            <div style="margin-bottom: 10px;">
-                <div class="skill-toggle" style="padding: 18px 24px; font-size: 17px; background: linear-gradient(135deg, #f8fafc 0%, #fff 100%); border: 2px solid #e2e8f0; border-radius: 12px;" onclick="toggleSkill(this)">
-                    <span>🤖 AI Agent 开发</span>
-                    <span class="arrow">▼</span>
-                </div>
-                <div class="skill-body">
-                    <div class="skill-body-inner" style="background: #fff; border: 2px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px;">
-                        <div style="display: flex; flex-direction: column; gap: 16px;">
-                            <div style="background: #ffffff; border: 1px solid #e9edf4; border-radius: 12px; padding: 20px 24px;">
-                                <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 6px;">1. 辅助编程层面</div>
-                                <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">对基于 <a href="文章/posts/从VibeCoding到SDD.html" style="color: #4f46e5; text-decoration: underline; text-underline-offset: 2px;">SDD</a> 利用 AI 辅助编程比较熟练，简历上展示的项目 99% 都是 vibecoding 出来的，能够熟练利用 coding 工具，写出高质量的代码。</p>
-                            </div>
-                            <div style="background: #ffffff; border: 1px solid #e9edf4; border-radius: 12px; padding: 20px 24px;">
-                                <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 6px;">2. 工具使用</div>
-                                <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 10px 0;">熟练使用多种 Agent 工具，深入学习了它们的核心策略与实现原理，并应用到了自己的项目当中：</p>
-                                <ul style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0; padding-left: 20px;">
-                                    <li><strong>OpenClaw</strong> — 在使用 OpenClaw 的过程中，察觉其记忆实现的不足，并决定做一个更加真实的长期对话 Agent，于是就诞生了 MyClaw</li>
-                                    <li><strong><a href="文章/posts/读ClaudeCode源码我学到的五个设计.html" style="color: inherit; text-decoration: underline; text-underline-offset: 2px;">Claude Code</a></strong> — 学习了压缩策略、checkpoint 机制、记忆策略，应用到 Workflow 框架的节点回滚与断点恢复中</li>
-                                    <li><strong>豆包</strong> — 学习了对话主题更新机制，应用到 MyClaw 项目的短期记忆滑动窗口策略中</li>
-                                    <li><strong>CodeBuddy</strong> — 学习了显示窗口使用量、可控的问题改写策略，应用到 RAG 项目的智能路由与问题改写中</li>
-                                </ul>
-                            </div>
-                            <div style="background: #ffffff; border: 1px solid #e9edf4; border-radius: 12px; padding: 20px 24px;">
-                                <div style="font-size: 14px; font-weight: 700; color: #4f46e5; margin-bottom: 6px;">3. 底层原理</div>
-                                <p style="font-size: 14px; color: #475569; line-height: 1.8; margin: 0;">对 <a href="文章/posts/Transformer原理.html" style="color: inherit; text-decoration: underline; text-underline-offset: 2px;">Transformer</a>（Top-p、KV Cache）、<a href="文章/posts/MCP-FunctionCalling-Skill.html" style="color: inherit; text-decoration: underline; text-underline-offset: 2px;">MCP、Function Calling、Skill</a>、Harness、ReAct、PAE 等都有了解。</p>
-                            </div>
-                        </div>
+                <details class="faq-item" name="home-faq">
+                    <summary><span class="faq-index">02</span><span>为什么上一份实习时间较短？</span></summary>
+                    <div class="faq-answer">
+                        <p><strong>首先，为什么选择加入。</strong>这是我的第一份正式实习，也是进入字节了解真实业务环境的机会。虽然入职前我知道这个岗位更偏 AI Agent 应用，而不是底层开发，但我仍然认为它值得尝试。</p>
+                        <p>一方面，我希望了解大厂真实的协作流程，以及 AI 在生产业务中到底如何落地；另一方面，我之前做 Agent 项目时，很多需求判断来自自己的想象，而这段实习让我能够接触真实业务和实际约束，知道企业真正关注的是什么。</p>
+                        <p><strong>其次，为什么决定离开。</strong>实际工作一个多月后，我发现岗位的长期核心仍然是通过 Skill 和现有 Agent 平台完成运营提效，并围绕机审效果等业务指标持续优化。我认可这些工作的价值，也确实学到了 Agent 应用和业务落地经验，但它和我的长期方向存在比较明确的差异。</p>
+                        <p>我的职业方向是 Agent 工程开发，希望深入参与代码实现、Agent 策略和工程稳定性建设，而不只是使用既有平台完成业务任务。因此，在确认这种差异是岗位长期属性，而不是暂时安排之后，我决定尽早调整方向。</p>
+                        <p><strong>这次离开并不是因为工作强度、团队氛围或者短期困难，也不是频繁尝试不同岗位。它让我更清楚地验证了自己的职业方向。</strong>下一份实习我会在加入前重点确认岗位职责和长期工作内容。如果岗位确实以 Agent 开发为主，我希望能够长期投入，并持续做出完整成果。</p>
                     </div>
-                </div>
-            </div>
+                </details>
 
-            <!-- 两个思考框并列 -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div>
-                    <div class="skill-toggle" style="padding: 10px 14px; font-size: 13px; border-left: 3px solid #f59e0b; border-radius: 8px; background: #fffbeb;" onclick="toggleSkill(this)">
-                        <span>💡 为什么从 Java 转到 AI？</span>
-                        <span class="arrow">▼</span>
+                <details class="faq-item" name="home-faq">
+                    <summary><span class="faq-index">03</span><span>在 Agent 开发方向，你了解什么，不了解什么？</span></summary>
+                    <div class="faq-answer">
+                        <p><strong>RAG：</strong>我做过完整的 RAG 项目，对 RAG 的基础流程、检索优化和测评方法比较了解。</p>
+                        <p><strong>Agent 工程：</strong>我的核心项目是一个多 Agent 编排系统，因此我对多 Agent 交互、长链路任务的难点、上下文组织、Skill 设计和 Prompt 调优比较了解。项目中也设计了 Trace 可观测性、异常处理和 Agent 测评，并实践了 Harness Engineering、Loop Engineering 和 Graph Engineering。此外，我还做过人机交互、Token 用量和 Tool 按需加载等方面的优化。</p>
+                        <p><strong>目前的能力边界：</strong>我没有做过模型微调相关工作；目前最熟悉的开发语言是 Java，其他语言的工程经验相对不足。如果岗位需要，我可以补充学习并转换语言。</p>
                     </div>
-                    <div class="skill-body">
-                        <div class="skill-body-inner" style="background: #fffbeb; border: 1px solid #f59e0b; border-top: none; border-radius: 0 0 8px 8px; font-size: 12px; color: #b45309; line-height: 1.7;">
-                            首先，AI Agent 开发是目前比较热门的方向，无论我之后从事的是后端开发还是 Agent 开发，学习 AI 相关的内容都是必要的。其次，我在学习 Agent 开发的过程中收获了更多的乐趣，我能够有一些自己的创新，比如 Workflow 项目的 DAG 实现、以及最近 Tree 项目的设计思路。
-                        </div>
+                </details>
+
+                <details class="faq-item" name="home-faq">
+                    <summary><span class="faq-index">04</span><span>项目来源</span></summary>
+                    <div class="faq-answer">
+                        <p><strong>GraphHarness 是我的个人项目。</strong>项目从年初持续开发到现在，期间经历了多次迭代和改版。</p>
+                        <a class="faq-project-link" href="项目/graphharness.html#evolution">查看 GraphHarness 项目详情 →</a>
                     </div>
-                </div>
-                <div>
-                    <div class="skill-toggle" style="padding: 10px 14px; font-size: 13px; border-left: 3px solid #f59e0b; border-radius: 8px; background: #fffbeb;" onclick="toggleSkill(this)">
-                        <span>💡 从 Java 中迁移的能力</span>
-                        <span class="arrow">▼</span>
-                    </div>
-                    <div class="skill-body">
-                        <div class="skill-body-inner" style="background: #fffbeb; border: 1px solid #f59e0b; border-top: none; border-radius: 0 0 8px 8px; font-size: 12px; color: #b45309; line-height: 1.7;">
-                            首先是我现在的项目也有一些后端的策略，比如说企业知识库的项目就涉及到登录验证、并发上传的工作，以及编排项目的异常策略。我觉得后端的经验会让我去多考虑一下这些异常处理、高并发、成本优化。第二点就是包括 MySQL、Redis、MQ 以及并发编程、内存回收这些技术栈也是我的一种积累。
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <script>
-                function toggleSkill(el) {
-                    var body = el.nextElementSibling;
-                    var isOpen = body.classList.contains('open');
-                    document.querySelectorAll('.skill-body.open').forEach(function(b) { b.classList.remove('open'); });
-                    document.querySelectorAll('.skill-toggle.active').forEach(function(t) { t.classList.remove('active'); });
-                    if (!isOpen) {
-                        body.classList.add('open');
-                        el.classList.add('active');
-                    }
-                }
-            </script>
-        </section>
-
-        <!-- ===== Projects ===== -->
-        <section id="projects">
-            <div class="section-label">Projects</div>
-            <h2 class="section-title">项目</h2>
-
-            <style>
-                .proj-tab { display: flex; gap: 4px; margin-bottom: 0; }
-                .proj-tab-btn {
-                    padding: 14px 28px; border: 1px solid #e2e8f0; border-bottom: none; border-radius: 10px 10px 0 0;
-                    background: #f1f4f9; cursor: pointer; font-size: 14px; font-weight: 600; color: #64748b;
-                    transition: all 0.2s; user-select: none;
-                }
-                .proj-tab-btn:hover { color: #4f46e5; background: #eef2ff; }
-                .proj-tab-btn.active { background: #fff; color: #4f46e5; border-color: #c7d2fe; position: relative; }
-                .proj-tab-btn.active::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 2px; background: #fff; }
-                .proj-tab-btn .status { font-size: 11px; font-weight: 600; color: #d97706; }
-                .proj-panel {
-                    background: #fff; border: 1px solid #e2e8f0; border-radius: 0 12px 12px 12px; padding: 32px 36px;
-                    display: none; min-height: 300px;
-                }
-                .proj-panel.active { display: block; }
-                .proj-panel h3 { font-size: 18px; font-weight: 700; color: #0f172a; margin: 0 0 12px; }
-                .proj-panel .desc { font-size: 14px; color: #475569; line-height: 1.8; margin: 0 0 16px; }
-                .proj-panel .links { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-                .proj-panel .links a { padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; text-decoration: none; }
-                .proj-panel .full-link { font-size: 13px; color: #4f46e5; text-decoration: none; font-weight: 600; display: inline-block; margin-top: 8px; }
-                .proj-panel .full-link:hover { text-decoration: underline; }
-                .proj-panel .note-box {
-                    margin-top: 20px; padding: 18px 22px; background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 10px;
-                    font-size: 13px; color: #b45309; line-height: 1.8;
-                }
-                .proj-panel .note-box .title { font-weight: 700; color: #d97706; margin-bottom: 6px; }
-                .proj-panel .app-box {
-                    margin-top: 14px; padding: 14px 18px; background: #f8fafc; border-left: 3px solid #f59e0b; border-radius: 0 8px 8px 0;
-                    font-size: 13px; color: #475569; line-height: 1.7;
-                }
-                .proj-panel .app-box .title { font-weight: 700; color: #d97706; margin-bottom: 4px; }
-                .proj-panel .cap-grid { display: flex; flex-direction: column; gap: 12px; margin: 12px 0; }
-                .proj-panel .cap-item {
-                    padding: 14px 18px; background: #f8fafc; border-radius: 10px;
-                }
-                .proj-panel .cap-item .name { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
-                .proj-panel .cap-item .text { font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 6px; }
-                .proj-panel .cap-item a { padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #eef2ff; color: #4f46e5; text-decoration: none; display: inline-block; }
-                .proj-panel .cap-item a:hover { text-decoration: underline; }
-            </style>
-
-            <div class="proj-tab">
-                <div class="proj-tab-btn" onclick="switchProj(this, 0)">Agentic RAG</div>
-                <div class="proj-tab-btn" onclick="switchProj(this, 1)">Workflow</div>
-                <div class="proj-tab-btn" onclick="switchProj(this, 2)">MyClaw</div>
-                <div class="proj-tab-btn" onclick="switchProj(this, 3)">Tree <span class="status">(进行中)</span></div>
-            </div>
-
-            <!-- RAG -->
-            <div class="proj-panel">
-                <h3>企业知识库 Agentic RAG</h3>
-                <div class="desc">从零搭建企业级 RAG 系统，经历四个阶段，从基础链路搭建到 Agentic 升级，再到建立测评体系，最终通过数据验证优化效果。</div>
-
-                <div style="margin-bottom: 20px;">
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">阶段一：基础建设与优化探索</div>
-                    <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 8px 0;">搭建 RAG 基础链路，应用各种检索优化策略提升召回率、降低幻觉率，同时做了文档上传优化、权限控制等工程化工作。</p>
-                    <div class="links">
-                        <a href="项目/rag.html#recall-opt" style="background: #eef2ff; color: #4f46e5;">提高召回率 →</a>
-                        <a href="项目/rag.html#halluc-opt" style="background: #eef2ff; color: #4f46e5;">降低幻觉率 →</a>
-                        <a href="项目/rag.html#upload" style="background: #eef2ff; color: #4f46e5;">分片优化 →</a>
-                        <a href="项目/rag.html#recall-opt" style="background: #eef2ff; color: #4f46e5;">问题改写 →</a>
-                        <a href="项目/rag.html#upload" style="background: #eef2ff; color: #4f46e5;">上传优化 →</a>
-                        <a href="项目/rag.html#permission" style="background: #eef2ff; color: #4f46e5;">权限控制 →</a>
-                    </div>
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">阶段二：将 RAG 变成了一个 Agentic RAG</div>
-                    <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 8px 0;">增加智能路由和特定检索策略，让 RAG 从被动检索变成主动推理的 Agentic RAG。</p>
-                    <div class="links">
-                        <a href="项目/rag.html#router" style="background: #ecfdf5; color: #059669;">智能路由 →</a>
-                        <a href="项目/rag.html#router" style="background: #ecfdf5; color: #059669;">复杂问题策略分发 →</a>
-                    </div>
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">阶段三：建立测评体系</div>
-                    <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 8px 0;">系统性地搭建测评体系，对检索和生成两个环节分别做了多轮消融实验。</p>
-                    <div class="links">
-                        <a href="项目/rag.html#eval" style="background: #f5f3ff; color: #7c3aed;">测评数据 →</a>
-                        <a href="文章/posts/RAG检索优化.html" style="background: #f5f3ff; color: #7c3aed;">RAG 测评文章 →</a>
-                    </div>
-                </div>
-
-                <div style="margin-bottom: 16px;">
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">阶段四：对测评体系的进一步验证</div>
-                    <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 8px 0;">通过智能路由的优化验证，发现不是所有合理的优化都有效，必须有测试数据支撑。</p>
-                    <div class="links">
-                        <a href="项目/rag.html#router" style="background: #fef2f2; color: #dc2626;">简单问题规则引擎拦截 →</a>
-                    </div>
-                </div>
-
-                <a href="项目/rag.html" class="full-link">查看完整项目详情 →</a>
-            </div>
-
-            <!-- Workflow -->
-            <div class="proj-panel">
-                <h3>可视化任务编排与执行系统</h3>
-                <div class="desc">针对 LLM Agent 执行路径不可控、易出现跳步和遗漏的问题，通过 DAG 规划与执行解耦，保证执行路径固定化与可见即所得。</div>
-
-                <div class="app-box">
-                    <div class="title">💡 应用场景举例</div>
-                    这套系统可以用在测试场景。比如测试 RAG 系统的回答质量，需要验证 60 条测试数据，传统做法让 Agent 去跑，它可能会偷奸耍滑——发现前几条和后面几条类型相似，就直接复制结果，最终只跑了 30 条就说完成了。但在 Workflow 中，DAG 图定义了 60 个独立节点，执行引擎强制按图执行，不存在"跳过"的可能。
-                </div>
-
-                <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin: 16px 0 8px;">核心能力</div>
-                <div class="cap-grid">
-                    <div class="cap-item" style="padding: 12px 18px; display: flex; align-items: center; justify-content: space-between;">
-                        <span class="name" style="margin: 0;">双层并行执行引擎</span>
-                        <a href="项目/workflow.html#parallel" style="padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #eef2ff; color: #4f46e5; text-decoration: none;">详细说明 →</a>
-                    </div>
-                    <div class="cap-item" style="padding: 12px 18px; display: flex; align-items: center; justify-content: space-between;">
-                        <span class="name" style="margin: 0;">节点级断点恢复</span>
-                        <a href="项目/workflow.html#rollback" style="padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #eef2ff; color: #4f46e5; text-decoration: none;">详细说明 →</a>
-                    </div>
-                    <div class="cap-item" style="padding: 12px 18px; display: flex; align-items: center; justify-content: space-between;">
-                        <span class="name" style="margin: 0;">Sub Agent 分发执行</span>
-                        <a href="项目/workflow.html#sub-agent" style="padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #eef2ff; color: #4f46e5; text-decoration: none;">详细说明 →</a>
-                    </div>
-                    <div class="cap-item" style="padding: 12px 18px; display: flex; align-items: center; justify-content: space-between;">
-                        <span class="name" style="margin: 0;">三级异常治理与条件分支路由</span>
-                        <a href="项目/workflow.html#exception" style="padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #eef2ff; color: #4f46e5; text-decoration: none;">详细说明 →</a>
-                    </div>
-                    <div class="cap-item" style="padding: 12px 18px; display: flex; align-items: center; justify-content: space-between;">
-                        <span class="name" style="margin: 0;">Plan 能力迭代优化</span>
-                        <a href="项目/workflow.html#plan-opt" style="padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #eef2ff; color: #4f46e5; text-decoration: none;">详细说明 →</a>
-                    </div>
-                </div>
-
-                <a href="项目/workflow.html" class="full-link">查看完整项目 →</a>
-            </div>
-
-            <!-- MyClaw -->
-            <div class="proj-panel">
-                <h3>MyClaw — 长期对话 AI</h3>
-                <div class="desc">一个专注于长期对话的 AI 项目，目标是让 AI 拥有长期记忆和更真实的对话能力。</div>
-
-                <div style="margin-bottom: 14px; padding: 16px 20px; background: #f8fafc; border: 1px solid #e9edf4; border-radius: 10px;">
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">项目来源</div>
-                    <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">
-                        <strong>技术层面：</strong>前面做了 Workflow 和 RAG，缺一个记忆相关的项目，对记忆方向比较感兴趣
-                        <a href="项目/myclaw.html#core" style="color: #4f46e5; text-decoration: underline; font-size: 12px;">长期记忆 →</a><br>
-                        使用 OpenClaw 发现其记忆写入确定性差，想实现一个更好的记忆系统。<br>
-                        <strong>产品层面：</strong>希望设计一个更像真人朋友的对话系统。
-                    </p>
-                </div>
-
-                <div style="margin-bottom: 16px; padding: 16px 20px; background: #f8fafc; border: 1px solid #e9edf4; border-radius: 10px;">
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px;">产品设计</div>
-                    <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0 0 8px 0;">通过给 AI 设计了一个人生体系，让他拥有了主动发起话题、时间感知、空间锚定等能力，模拟真人的日常活动和社交行为。</p>
-                    <a href="项目/myclaw.html#design" style="padding: 3px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #eef2ff; color: #4f46e5; text-decoration: none; display: inline-block;">详细说明 →</a>
-                </div>
-
-                <a href="项目/myclaw.html" class="full-link">查看完整项目 →</a>
-            </div>
-
-            <!-- Tree -->
-            <div class="proj-panel">
-                <h3>Tree — Workflow 3.0 <span style="font-size: 13px; color: #2563eb; font-weight: 600;">(进行中)</span></h3>
-                <div class="desc">Workflow 3.0，将 DAG 多层树结构应用于长链路 Agent 任务，解决上下文溢出、遗忘漂移、错误累计等问题。目前仍在开发中。</div>
-
-                <div style="margin-bottom: 12px;">
-                    <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">项目来源</div>
-                    <p style="font-size: 13px; color: #475569; line-height: 1.7; margin: 0;">在开发长链路 Agent 的过程中，发现它们普遍存在推理漂移、任务遗忘、上下文溢出等问题。核心思路是把 Workflow 的 DAG 图改造成多层树结构——外层做摘要保留任务全貌，内层保留执行细节，让 Agent 既能看见全局又不会丢失关键信息。</p>
-                </div>
-
-                <a href="项目/tree.html" class="full-link">查看完整项目 →</a>
-            </div>
-
-            <script>
-                function switchProj(btn, index) {
-                    document.querySelectorAll('.proj-tab-btn').forEach(function(b) { b.classList.remove('active'); });
-                    document.querySelectorAll('.proj-panel').forEach(function(p) { p.classList.remove('active'); });
-                    btn.classList.add('active');
-                    document.querySelectorAll('.proj-panel')[index].classList.add('active');
-                }
-            </script>
-        </section>
-
-        <!-- ===== 思考笔记 ===== -->
-        <section id="notes" style="padding: 10px 60px 30px;">
-            <div class="section-label">Notes</div>
-            <h2 class="section-title">思考</h2>
-
-            <div class="project-card" style="border-left: 5px solid #f59e0b; background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); padding: 20px 28px; border-radius: 12px; box-shadow: 0 3px 12px rgba(245,158,11,0.12);">
-                <div style="font-size: 14px; font-weight: 700; color: #92400e; margin-bottom: 8px;">💡 关于 RAG 的思考</div>
-                <div style="font-size: 13px; color: #b45309; line-height: 1.8;">
-                    <p style="margin: 0 0 6px 0;">在经历了阶段四之后，我发现 RAG 目前的主流使用场景其实就是客服类场景，但这些场景有一个共同特点：对响应时间和成本都有一定限制。</p>
-                    <p style="margin: 0 0 6px 0;">这意味着我们能够实现的优化策略其实非常有限。比如智能路由需要对问题进行分类，多跳检索需要多次调用大模型和多次向量检索，将耗时有毫秒级增加到秒级。再比如分片优化中，有一种策略是对每个分片都调用大模型来压缩上下文，避免截断；还有 GraphRAG 可以提高全局问题的检索能力——但这些策略都需要多次额外调用大模型，成本太高，根本无法在客服场景中落地。</p>
-                    <p style="margin: 0;">所以我就没有再进一步的研究向量 RAG 的相关优化，而是转向学习长期记忆的相关场景。</p>
-                </div>
+                </details>
             </div>
         </section>
 
-        <!-- ===== 文章推荐 ===== -->
-        <section id="articles" style="padding: 30px 60px;">
-            <div class="section-label">Articles</div>
-            <h2 class="section-title">文章推荐</h2>
-
-            <div style="display: flex; flex-direction: column; gap: 16px;">
-                <div class="project-card" style="padding: 20px 24px; display: flex; align-items: center; gap: 16px; cursor: pointer;" onclick="location.href='文章/posts/RAG检索优化.html'">
-                    <div style="flex: 1;">
-                        <div style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">RAG 检索优化：从 68% 到 81%</div>
-                        <div style="font-size: 13px; color: #64748b;">记录 RAG 系统的检索优化过程与消融实验数据</div>
-                    </div>
-                    <span style="font-size: 20px; color: #94a3b8;">→</span>
-                </div>
-
-                <div class="project-card" style="padding: 20px 24px; display: flex; align-items: center; gap: 16px; cursor: pointer;" onclick="location.href='文章/posts/Token优化实践.html'">
-                    <div style="flex: 1;">
-                        <div style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">Agent 检测 Token 优化实践</div>
-                        <div style="font-size: 13px; color: #64748b;">在 Workflow 项目中的 Token 优化策略与效果数据</div>
-                    </div>
-                    <span style="font-size: 20px; color: #94a3b8;">→</span>
-                </div>
-
-                <div class="project-card" style="padding: 20px 24px; display: flex; align-items: center; gap: 16px; cursor: pointer;" onclick="location.href='文章/posts/做项目的四个阶段.html'">
-                    <div style="flex: 1;">
-                        <div style="font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">做项目的四个阶段</div>
-                        <div style="font-size: 13px; color: #64748b;">从"能做"到"能说明白"——做项目的四个阶段复盘</div>
-                    </div>
-                    <span style="font-size: 20px; color: #94a3b8;">→</span>
-                </div>
-            </div>
-        </section>
         <section id="contact">
             <div class="section-label">Contact</div>
             <h2 class="section-title">联系方式</h2>

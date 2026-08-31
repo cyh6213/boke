@@ -60,6 +60,9 @@ body {
     text-decoration: none;
     transition: all 0.2s;
 }
+.top-nav .nav-links a[href*="index4.html"] {
+    display: none;
+}
 .top-nav .nav-links a:hover {
     background: #f1f4f9;
     color: #0f172a;
