@@ -557,22 +557,22 @@
                 if (items[i].id === id) return parent || items[i];
                 if (items[i].children) {
                     var found = findParent(items[i].children, id, items[i]);
-
-                font.replaceWith.apply(font, Array.from(font.childNodes));
-            });
-
-            return template.innerHTML;
+                    if (found) return found;
+                }
+            }
+            return null;
         }
 
+        // ===== 获取父节点的所有内容（包括子节点） =====
         function getFullContent(item) {
-                    html += '<div class="qa-body">' + item.content + '</div>';
+            var html = '';
             function renderBlock(item, level) {
                 var tag = level === 0 ? 'h3' : (level === 1 ? 'h4' : 'h5');
                 var cls = level > 0 ? 'qa-block child' : 'qa-block';
                 html += '<div class="' + cls + '" data-id="' + item.id + '">';
                 html += '<' + tag + '>' + item.title + '</' + tag + '>';
                 if (item.content) {
-                    html += '<div class="qa-body">' + normalizeAnswerContent(item.content) + '</div>';
+                    html += '<div class="qa-body">' + item.content + '</div>';
                 }
                 html += '</div>';
                 
