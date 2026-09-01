@@ -164,12 +164,12 @@
         }
         .qa-content .content-body {
             font-size: 13px;
-            color: #3f3f46;
+            color: #0f172a;
             line-height: 1.6;
         }
         .qa-content .content-body strong {
-            color: #6D28D9;
-            font-weight: 600;
+            color: inherit;
+            font-weight: 700;
         }
         
         /* 父问题/子问题内容块 */
@@ -195,7 +195,7 @@
         }
         .qa-content .qa-block .qa-body {
             font-size: 13px;
-            color: #3f3f46;
+            color: #0f172a;
             line-height: 1.7;
             padding-left: 0;
         }
@@ -203,13 +203,8 @@
             padding-left: 15px;
         }
         .qa-content .qa-block .qa-body strong {
-            color: #6D28D9;
-            font-weight: 600;
-        }
-        /* 深色正文总结/要点 <font style="color:#6D28D9"> 保持紫色（因为颜色已经映射）；
-           为了防止 content-body 的根容器里出现默认黑色，这里兜底用紫色覆盖 font style=深色 的情况 */
-        .qa-content .qa-block .qa-body font[style*="6D28D9"] {
-            /* 不用再覆盖，这是目标紫色 */
+            color: inherit;
+            font-weight: 700;
         }
         
         /* 分隔线 */

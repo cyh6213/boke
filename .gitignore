@@ -5,5 +5,10 @@ Thumbs.db
 # IDE
 .idea/
 .vscode/
+.tools/
+.trae/
+.trae-cn/
+agentbuddy.yaml
+agentbuddy-lock.yaml
 *.swp
 *.swo

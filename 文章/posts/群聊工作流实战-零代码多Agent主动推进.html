@@ -86,6 +86,21 @@
         .sidebar-sub:hover .dot { background: #4f46e5; }
         .sidebar-sub.active .dot { background: #4f46e5; }
         .sidebar-sub-group { margin: 2px 0 6px 20px; border-left: 2px solid #e2e8f0; padding-left: 6px; }
+        .sidebar .title { margin-bottom: 16px; line-height: 1.55; }
+        .sidebar nav { gap: 1px; }
+        .sidebar nav a { padding: 7px 12px; border-radius: 6px; font-size: 13px; }
+        .nav-group {
+            display: flex; align-items: center; justify-content: space-between;
+            margin: 15px 12px 4px; color: #94a3b8;
+            font-size: 10px; font-weight: 800; line-height: 1.3;
+        }
+        .nav-group:first-child { margin-top: 0; }
+        .nav-group.core { color: #4f46e5; }
+        .nav-group em {
+            padding: 2px 5px; border-radius: 3px;
+            background: #eef2ff; color: #4f46e5;
+            font-size: 9px; font-style: normal;
+        }
         .post > h1:not(:first-child) {
             font-size: 22px; font-weight: 700; color: #0f172a;
             margin-top: 48px; margin-bottom: 16px;
@@ -128,15 +143,20 @@
     </nav>
 
     <aside class="sidebar">
-        <div class="name">程愚瀚</div>
-        <div class="title">Java 后端和 agent 开发</div>
+        <div class="name">群聊工作流实战</div>
+        <div class="title">从业务问题到工程取舍</div>
         <nav>
+            <div class="nav-group">01 · 问题与动机</div>
             <a href="#why-group" class="active"><span class="dot"></span> 为什么搬进群聊</a>
             <a href="#core-problem"><span class="dot"></span> 核心问题</a>
+
+            <div class="nav-group core"><span>02 · 方案与机制</span><em>核心</em></div>
             <a href="#design-philosophy"><span class="dot"></span> 设计哲学</a>
             <a href="#architecture"><span class="dot"></span> 四种角色</a>
             <a href="#state-machine"><span class="dot"></span> 状态机</a>
             <a href="#declarative-sop"><span class="dot"></span> 声明式 SOP</a>
+
+            <div class="nav-group">03 · 落地与使用</div>
             <a href="#case-study"><span class="dot"></span> 实际案例</a>
             <a href="#setup"><span class="dot"></span> 怎么搭</a>
             <a href="#download"><span class="dot"></span> 下载 Skill</a>
@@ -144,6 +164,8 @@
                 <a href="#usage" class="sidebar-sub"><span class="dot"></span> 如何使用</a>
             </div>
             <a href="#results"><span class="dot"></span> 效果</a>
+
+            <div class="nav-group">04 · 工程判断</div>
             <a href="#comparison"><span class="dot"></span> Skill 与 DAG</a>
             <div class="sidebar-sub-group">
                 <a href="#skill-strengths" class="sidebar-sub"><span class="dot"></span> Skill 优势</a>
