@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>群聊工作流实战：零代码搭一个会“主动推进”的多 Agent 协作群 | 程愚瀚</title>
+    <link rel="stylesheet" href="../../资源/css/style.css" />
+    <style>
+        .post { max-width: 800px; margin: 0 auto; padding: 120px 40px 80px; }
+        .post h1 { font-size: 32px; font-weight: 800; color: #0f172a; line-height: 1.3; margin-bottom: 8px; }
+        .post .post-meta { font-size: 13px; color: #94a3b8; margin-bottom: 40px; }
+        .post h2 {
+            font-size: 22px; font-weight: 700; color: #0f172a;
+            margin-top: 48px; margin-bottom: 16px;
+            padding-bottom: 8px; border-bottom: 2px solid #eef2ff;
+        }
+        .post h3 { font-size: 17px; font-weight: 700; color: #0f172a; margin-top: 28px; margin-bottom: 10px; }
+        .post h4 { font-size: 15px; font-weight: 700; color: #4f46e5; margin-top: 24px; margin-bottom: 8px; }
+        .post p, .post li { font-size: 15px; color: #475569; line-height: 1.9; }
+        .post p { margin-bottom: 14px; }
+        .post ul, .post ol { padding-left: 20px; margin-bottom: 16px; }
+        .post li { margin-bottom: 6px; }
+        .post strong { color: #0f172a; }
+        .post blockquote {
+            border-left: 4px solid #4f46e5; background: #f8f9fc;
+            padding: 14px 20px; margin: 20px 0; border-radius: 0 8px 8px 0;
+            font-size: 14px; color: #475569;
+        }
+        .post pre {
+            background: #1e293b; color: #e2e8f0; padding: 16px 20px;
+            border-radius: 10px; overflow-x: auto; font-size: 13px;
+            line-height: 1.6; margin-bottom: 16px;
+        }
+        .post code { font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+        .post :not(pre) > code {
+            background: #f1f4f9; padding: 2px 8px; border-radius: 4px;
+            font-size: 14px; color: #4f46e5;
+        }
+        .post .callout {
+            padding: 16px 20px; border-radius: 10px; margin: 20px 0;
+            font-size: 14px; line-height: 1.8;
+        }
+        .post .callout-tip { background: #ecfdf5; border-left: 4px solid #10b981; }
+        .post .callout-warn { background: #fff7ed; border-left: 4px solid #f59e0b; }
+        .post .callout-danger { background: #fef2f2; border-left: 4px solid #ef4444; }
+        .post table {
+            width: 100%; border-collapse: collapse; font-size: 14px;
+            margin-bottom: 16px;
+        }
+        .post th {
+            background: #f1f4f9; padding: 10px 14px; text-align: left;
+            font-weight: 700; color: #0f172a; border-bottom: 2px solid #e2e8f0;
+        }
+        .post td {
+            padding: 10px 14px; border-bottom: 1px solid #e9edf4; color: #475569;
+        }
+        .post .tag {
+            display: inline-block; padding: 3px 12px; border-radius: 20px;
+            font-size: 12px; font-weight: 600; background: #eef2ff; color: #4f46e5;
+            margin-right: 6px; margin-bottom: 6px;
+        }
+        .post .highlight-box {
+            background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+            border: 1px solid #c7d2fe; border-radius: 12px;
+            padding: 20px 24px; margin: 20px 0;
+        }
+        .post .timeline { position: relative; padding-left: 24px; margin: 20px 0; }
+        .post .timeline::before {
+            content: ''; position: absolute; left: 8px; top: 0; bottom: 0;
+            width: 2px; background: #e2e8f0;
+        }
+        .post .timeline-item {
+            position: relative; margin-bottom: 24px; padding-left: 20px;
+        }
+        .post .timeline-item::before {
+            content: ''; position: absolute; left: -20px; top: 8px;
+            width: 12px; height: 12px; border-radius: 50%;
+            background: #4f46e5; border: 2px solid #f8f9fc;
+        }
+        .post .timeline-item .tl-label { font-size: 13px; color: #4f46e5; font-weight: 700; }
+
+        .sidebar-sub { display: flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #64748b; text-decoration: none; transition: all 0.2s; }
+        .sidebar-sub:hover { background: #f1f4f9; color: #0f172a; }
+        .sidebar-sub.active { background: #eef2ff; color: #4f46e5; }
+        .sidebar-sub .dot { width: 4px; height: 4px; border-radius: 50%; background: #cbd5e1; flex-shrink: 0; transition: background 0.2s; }
+        .sidebar-sub:hover .dot { background: #4f46e5; }
+        .sidebar-sub.active .dot { background: #4f46e5; }
+        .sidebar-sub-group { margin: 2px 0 6px 20px; border-left: 2px solid #e2e8f0; padding-left: 6px; }
+        .post > h1:not(:first-child) {
+            font-size: 22px; font-weight: 700; color: #0f172a;
+            margin-top: 48px; margin-bottom: 16px;
+            padding-bottom: 8px; border-bottom: 2px solid #eef2ff;
+        }
+        .post img {
+            display: block; width: 100%; height: auto; margin: 24px auto;
+            border: 1px solid #e2e8f0; border-radius: 8px;
+        }
+        .post a[href$=".zip"] {
+            display: inline-flex; align-items: center; min-height: 44px;
+            padding: 0 18px; border-radius: 7px; background: #4f46e5;
+            color: #fff; font-weight: 700; text-decoration: none;
+        }
+        .post a[href$=".zip"]:hover { background: #4338ca; }
+        .post hr { border: 0; border-top: 1px solid #e2e8f0; margin: 36px 0; }
+        [id] { scroll-margin-top: 100px; }
+        @media (max-width: 640px) {
+            .post { padding: 96px 20px 60px; }
+            .post h1 { font-size: 27px; }
+            .post table { display: block; overflow-x: auto; white-space: nowrap; }
+        }    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <div class="nav-left">
+            <a href="../../" class="nav-brand">程愚瀚</a>
+            <div class="nav-links">
+                <a href="../../">首页</a>
+                <a href="../../index4.html">自我介绍</a>
+                <a href="../" class="active">文章</a>
+                <a href="../../实习/">实习经历</a>
+                <a href="../../项目/">项目</a>
+            </div>
+        </div>
+        <div class="nav-right">
+            <a href="../../问答.html" class="nav-qa">问答</a>
+        </div>
+    </nav>
+
+    <aside class="sidebar">
+        <div class="name">程愚瀚</div>
+        <div class="title">Java 后端和 agent 开发</div>
+        <nav>
+            <a href="#why-group" class="active"><span class="dot"></span> 为什么搬进群聊</a>
+            <a href="#core-problem"><span class="dot"></span> 核心问题</a>
+            <a href="#design-philosophy"><span class="dot"></span> 设计哲学</a>
+            <a href="#architecture"><span class="dot"></span> 四种角色</a>
+            <a href="#state-machine"><span class="dot"></span> 状态机</a>
+            <a href="#declarative-sop"><span class="dot"></span> 声明式 SOP</a>
+            <a href="#case-study"><span class="dot"></span> 实际案例</a>
+            <a href="#setup"><span class="dot"></span> 怎么搭</a>
+            <a href="#download"><span class="dot"></span> 下载 Skill</a>
+            <div class="sidebar-sub-group">
+                <a href="#usage" class="sidebar-sub"><span class="dot"></span> 如何使用</a>
+            </div>
+            <a href="#results"><span class="dot"></span> 效果</a>
+            <a href="#comparison"><span class="dot"></span> Skill 与 DAG</a>
+            <div class="sidebar-sub-group">
+                <a href="#skill-strengths" class="sidebar-sub"><span class="dot"></span> Skill 优势</a>
+                <a href="#skill-limitations" class="sidebar-sub"><span class="dot"></span> Skill 缺点</a>
+                <a href="#dag-strengths" class="sidebar-sub"><span class="dot"></span> DAG 优势</a>
+                <a href="#evolution" class="sidebar-sub"><span class="dot"></span> 演进路径</a>
+            </div>
+            <a href="#use-cases"><span class="dot"></span> 适用场景</a>
+        </nav>
+    </aside>
+
+    <div class="main">
+        <div class="post">
+<h1>群聊工作流实战：零代码搭一个会&quot;主动推进&quot;的多 Agent 协作群</h1>
+<blockquote>
+<p>我没有写一行编排代码，也没有自建工作流引擎。我只是在一个飞书群里，把一个 Agent 变成&quot;调度员&quot;，把其他 Agent 和人变成&quot;干活的角色&quot;，让一条原本要盯一周的跨平台审核流程，自己往前跑。</p>
+<p>这篇文章讲清楚：为什么这么做、它是怎么跑起来的、以及它和真正的工作流引擎差在哪。</p>
+</blockquote>
+<hr>
+<h1 id="why-group">为什么我把工作流搬进了群聊</h1>
+<p>我在字节做广告机审运营的 AI 提效。一类核心工作是<strong>搭机审策略</strong>：给短视频、广告这些内容配置审核规则。一条策略从无到有，要经过资料查询、策略搭建、结果审查、跨系统流转，中间还夹着因为权限和安全原因<strong>必须由人来做</strong>的审批。</p>
+<p>提效的第一步很自然：把流程里每个能自动化的能力，逐个做成独立 Skill / Bot。这个阶段解决的是<strong>单点提效</strong>——查资料有查资料的 Bot，搭策略有搭策略的 Bot。</p>
+<p>但真正用起来之后，瓶颈不在&quot;某一步能不能自动化&quot;，而在<strong>步与步之间</strong>：</p>
+<ul>
+<li>Agent 干完一步，停下来等人看结果；</li>
+<li>人把任务派出去，又得等着 Agent 做完；</li>
+<li>跨平台时，人还要手动把上一个系统的产物复制、整理、喂给下一个 Bot。</li>
+</ul>
+<p><strong>人实际上在充当调度器</strong>：记住现在到哪一步了、该叫谁、上下文是什么、做完没、然后通知下一个角色。时间被大量等待和协调切碎。这和有没有 Skill 无关——缺的不是某个能力，而是一个<strong>持续管理流程、主动往前推</strong>的东西。</p>
+<hr>
+<h1 id="core-problem">核心问题：为什么一个 Agent、一堆 Skill 都不够</h1>
+<p>我试过让一个 Agent 从头干到尾，也试过把一堆 Skill 摊开手动调用，都不理想。根因有四个：</p>
+<p><strong>1. 权限是割裂的，而且卡得最死。</strong>
+从关键平台取数、在审核系统里建流程，只能由字节<strong>内部的 Agent</strong> 操作。这些内部 Agent 进不了我自己写的系统，但它们<strong>都能被拉进飞书群</strong>。这是整个方案的约束前提：编排载体必须是群聊，而不是我自建的程序。</p>
+<p><strong>2. 单 Agent 跑长流程，必然劣化。</strong>
+一个 Agent 执行全部任务，上下文一长，就很难全程遵循 SOP——它会忘记&quot;这一步该让人介入了&quot;，会在切换任务时跳步、漏步，执行质量明显下降。</p>
+<p><strong>3. 双向等待把时间打碎。</strong>
+Agent 等人、人等 Agent，流程的推进依赖某一方&quot;想起来该动了&quot;。</p>
+<p><strong>4. 上下文要人肉组织。</strong>
+每跨一个平台、每转一次手，都得有人把前因后果重新捋一遍再贴过去。</p>
+<p>结论：我需要的不是更强的单点能力，而是一层<strong>编排</strong>——把确定性的&quot;流程推进&quot;从人和模型手里收回来，交给一个专职角色。</p>
+<hr>
+<h1 id="design-philosophy">设计哲学：流程图交给主控 Agent，执行交给群里的角色</h1>
+<p>我个人项目里有个概念叫 Graph Engineering，一句话是<strong>&quot;系统管流程、Agent 管执行、人管关键决策&quot;</strong>。在群聊里，这句话原样成立，只是<strong>编排引擎的载体变了</strong>：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>我自研的 GraphHarness（技术侧）</th>
+<th>群聊工作流（业务侧 / 本文）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>流程定义</td>
+<td>声明式 workflow JSON（DAG）</td>
+<td>主控 Agent 的 <strong>SOP Prompt</strong>（结构化流程卡）</td>
+</tr>
+<tr>
+<td>运行时引擎</td>
+<td>Orchestrator 代码 + 状态机</td>
+<td><strong>主控 Agent</strong> 在群里靠消息维护状态</td>
+</tr>
+<tr>
+<td>执行者</td>
+<td>Agent Runtime 节点</td>
+<td>被 @ 的<strong>子 Agent</strong>（各自绑 Skill）</td>
+</tr>
+<tr>
+<td>质量门禁</td>
+<td>校验 + 重试</td>
+<td>独立的<strong>审查 Agent</strong>，打回触发回环</td>
+</tr>
+<tr>
+<td>人工节点</td>
+<td>HITL</td>
+<td><strong>HITG</strong>：把人当成一种特殊&quot;子 Agent&quot;，@ 他干活</td>
+</tr>
+<tr>
+<td>依赖推导</td>
+<td>从图的边自动算</td>
+<td>从 <strong>@ 关系和话题回复</strong>自动体现</td>
+</tr>
+</tbody></table>
+<p>两个核心借鉴，和正式工作流引擎完全一致：</p>
+<ul>
+<li><strong>声明式流程</strong>：我只描述&quot;做什么、先后顺序、谁来做、什么条件算过、不过打回给谁&quot;，不描述执行细节。流程是一张稳定的图。</li>
+<li><strong>运行时状态机</strong>：每个步骤有明确状态，状态之间有确定的流转规则。只不过这台状态机不是代码跑的，而是主控 Agent 读着 SOP、盯着群消息在跑。</li>
+</ul>
+<p>代价是牺牲了一部分<strong>确定性</strong>（流转靠模型遵循 prompt，而非代码强约束）；但因为是多 Agent 调度，主控的上下文很短（只装 SOP + 当前节点状态），它的可控性反而比&quot;一个 Agent 包打全程&quot;高得多——跳步漏步几乎消失。</p>
+<hr>
+<h1 id="architecture">框架架构：一个群，四种角色</h1>
+<pre><code>                 ┌─────────────────────────────┐
+                 │      主控 Agent（调度员）      │
+                 │  读 SOP · 维护状态 · 派发      │
+                 │  收结果 · 判断下一步 · 主动推进 │
+                 └──────────────┬──────────────┘
+        ┌───────────────┬───────┴────────┬────────────────┐
+        ▼               ▼                ▼                ▼
+  ┌───────────┐  ┌───────────┐   ┌─────────────┐   ┌───────────┐
+  │ 资料子Agent │  │ 搭建子Agent │   │ 审查 Agent   │   │   人(审批)  │
+  │ 绑查询Skill │  │ 绑搭建Skill │   │ 不执行,只门禁 │   │ 关键决策点  │
+  └───────────┘  └───────────┘   └─────────────┘   └───────────┘
+        各自在独立&quot;话题&quot;里工作，上下文互相隔离
+</code></pre>
+<ul>
+<li><strong>主控 Agent（Orchestrator）</strong>：配置了全流程 SOP。负责理解任务、维护当前进度、在群里 <strong>@ 对应的子 Agent 或人</strong>、收集结果、判断下一步。它自己<strong>不干活</strong>。</li>
+<li><strong>子 Agent（Worker）</strong>：每个绑定一类任务的 Skill。只在<strong>被 @ 的那个话题（thread）里</strong>工作，天然上下文隔离，互不污染。</li>
+<li><strong>审查 Agent（Reviewer）</strong>：独立角色，<strong>不参与执行</strong>，只在子 Agent 产出后按预设准出标准检查；不通过就打回，形成回环。</li>
+<li><strong>人（HITG，Human in the Graph）</strong>：被建模成一种特殊子 Agent。需要人操作的节点，主控 <strong>@ 具体的人</strong>，并直接给齐&quot;当前任务上下文 + 检查对象 + 要做什么&quot;，人做完在群里回复，主控检测到回复后继续。人不需要回头翻整段流程。</li>
+</ul>
+<hr>
+<h1 id="state-machine">状态机：群聊里的节点生命周期</h1>
+<p>正式引擎有七种状态，群聊里每一种都有对应表现，主控就是靠识别这些状态来推进的：</p>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>群里的表现</th>
+<th>主控 Agent 的动作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>todo</code> 待派发</td>
+<td>还没轮到</td>
+<td>等前置节点完成</td>
+</tr>
+<tr>
+<td><code>running</code> 进行中</td>
+<td>已 @ 子 Agent，话题里在干活</td>
+<td>等该话题回复</td>
+</tr>
+<tr>
+<td><code>review</code> 待审查</td>
+<td>子 Agent 交活</td>
+<td>@ 审查 Agent，附产物和准出标准</td>
+</tr>
+<tr>
+<td><code>rework</code> 回环</td>
+<td>审查不通过</td>
+<td>把审查意见 @ 回执行方，重做</td>
+</tr>
+<tr>
+<td><code>blocked_user</code> 等人工</td>
+<td>需审批 / 信息不足</td>
+<td>@ 具体人 + 给齐上下文与操作要求</td>
+</tr>
+<tr>
+<td><code>blocked_external</code> 等外部</td>
+<td>等内部平台 / 审批系统返回</td>
+<td>挂起，定时巡检回来捞结果</td>
+</tr>
+<tr>
+<td><code>done</code> 完成</td>
+<td>产物落群 / 落文档</td>
+<td>推进下一节点</td>
+</tr>
+</tbody></table>
+<p><strong>&quot;主动推进&quot;到底靠什么？</strong> 两个机制：</p>
+<ol>
+<li><strong>事件驱动</strong>：主控监听群消息和话题回复。谁回复了、产物到了、人审批了，它就把对应节点从 <code>blocked/running</code> 推到下一个 <code>ready</code>，自动 @ 下一个角色。全程不需要人催。</li>
+<li><strong>定时兜底</strong>：对于&quot;等外部系统&quot;的节点，没有消息事件可等，主控就<strong>定时巡检</strong>回来捞结果（这正是我另一条&quot;定时巡检主动预警&quot;链路的思路），避免流程死等。</li>
+</ol>
+<hr>
+<h1 id="declarative-sop">声明式 SOP：流程怎么写</h1>
+<p>和 workflow JSON 只描述结构、不写运行态一样，主控的 SOP 也只写<strong>流程骨架和准出标准</strong>，运行到哪一步由主控在群里动态维护。一张流程卡长这样：</p>
+<pre><code class="language-markdown"># 策略搭建 SOP
+
+- step: query_material   角色: 资料Agent   做什么: 查策略所需素材与历史case
+  准出: 素材清单齐(≥N条)且来源可追溯        下一步: build
+- step: build            角色: 搭建Agent   做什么: 在审核平台搭建策略
+  准出: 策略保存成功且配置完整              下一步: review
+- step: review           角色: 审查Agent   做什么: 按准出标准检查策略
+  准出: 通过 → approve                     不通过 → 打回 build(带意见)
+- step: cross_system     角色: 搭建Agent   做什么: 流转到下游系统
+  准出: 下游回执成功                        下一步: approve
+- step: approve          角色: 人(@负责人)  做什么: 审批上线
+  准出: 人在群里回复&quot;通过&quot;                  下一步: archive
+- step: archive          角色: 主控        做什么: 归档产物并通知
+</code></pre>
+<p>关键约束和正式引擎一致：<strong>SOP 里只写&quot;做什么 / 谁做 / 准出 / 下一步 / 打回给谁&quot;，不写 status、不写当前上下文</strong>。这样流程卡干净、可读、可复用——同类任务换个输入就能再跑一遍。</p>
+<p>下面是这条广告机审策略自动推进流程的 DAG 可视化。图中展示了入口、任务节点、人工介入节点、条件分支和结果节点之间的流转关系：</p>
+<p><img src="../../%E8%B5%84%E6%BA%90/images/group-chat-workflow-dag.png" alt="广告机审策略自动推进 DAG"></p>
+<hr>
+<h1 id="case-study">实际案例：一条机审策略在群里是怎么自己跑完的</h1>
+<blockquote>
+<p>我：在群里发起&quot;给 XX 场景搭一条策略&quot;，附上初始资料。</p>
+</blockquote>
+<ol>
+<li>主控读到 SOP，第一步是 <code>query_material</code>，<strong>@ 资料 Agent</strong> 开了个话题，把需求贴进去。</li>
+<li>资料 Agent 在话题里查完，回复素材清单。主控识别到该话题有产物 → 节点 <code>done</code>。</li>
+<li>主控自动 <strong>@ 搭建 Agent</strong>，并把素材清单作为上下文带过去（不用我复制）。</li>
+<li>搭建 Agent 建完策略回交。主控 <strong>@ 审查 Agent</strong>，附上策略和准出标准。</li>
+<li>审查发现规则有漏召，<strong>打回</strong>：主控把意见 @ 回搭建 Agent（<code>rework</code> 回环），重做后再审，通过。</li>
+<li>流转下游系统后，到 <code>approve</code>：主控 <strong>@ 我（负责人）</strong>，直接给出&quot;策略链接 + 变更点 + 需要你确认什么&quot;。</li>
+<li>我在群里回&quot;通过&quot;。主控检测到回复 → 归档、通知，流程 <code>done</code>。</li>
+</ol>
+<p>整个过程里，我只在第 7 步真正做了决策。其余的推进、转交、上下文组织、打回重做，都是主控在做。</p>
+<hr>
+<h1 id="setup">怎么搭（零代码）</h1>
+<ol>
+<li><strong>拆能力</strong>：把流程涉及的能力逐项做成独立 Skill / Bot（单点提效阶段的产物）。</li>
+<li><strong>建群拉人</strong>：把能用的内部 Agent 都拉进同一个飞书群——它们进不了我的代码，但都能进群。</li>
+<li><strong>写主控 SOP Prompt</strong>：给主控一份结构化流程卡 + 推进规则（模板见下）。</li>
+<li><strong>约定协议</strong>：每个子 Agent 只在自己被 @ 的话题里干活；主控靠 @ 和话题回复判断流转。</li>
+<li><strong>跑一条再补</strong>：先用真实任务跑一遍，把每步的&quot;准出标准&quot;补明确——准出越可验证，审查和自动推进越靠谱。</li>
+</ol>
+<p><strong>主控 SOP Prompt 模板（可直接改）：</strong></p>
+<pre><code>你是本群的流程调度员，严格按下面的 SOP 推进，不要自己执行具体任务。
+
+【推进规则】
+- 每一步只 @ 对应角色，并在消息里给齐：该步目标、所需上下文、准出标准。
+- 子 Agent 在独立话题里工作；它在话题回复产物后，你判断准出是否满足：
+  满足 → @ 下一步角色；不满足且该步有审查 → 带意见打回重做。
+- 需要人时，@ 具体的人，写清&quot;检查对象 + 要做什么&quot;，人回复后再继续。
+- 等外部系统的步骤，不要死等，每隔一段时间回来检查一次结果。
+- 全程用一张状态清单记录：每个 step 当前是 待派发/进行中/待审查/打回/等人/等外部/完成。
+
+【SOP】
+&lt;贴上面那张流程卡&gt;
+</code></pre>
+<hr>
+<h1 id="download">下载并使用这个 Skill</h1>
+<p>为了让这套群聊工作流不只停留在思路层面，我把主控 Agent 的角色定义、状态维护规则、@ 协作协议、审查回环和人工介入规则封装成了一个可复用的 Skill。你不需要从零写整份 Prompt，只需下载 Skill，并根据自己的业务替换角色和 SOP，就可以搭出一条会主动推进的群聊流程。</p>
+<p><a href="../../资源/downloads/ad-strategy-main-controller.zip" download><strong>下载「群聊工作流」Skill</strong></a></p>
+<h2 id="usage">如何使用</h2>
+<h3>1. 下载并启用 Skill</h3>
+<p>点击上方按钮进入 Skill 页面，下载或添加到支持 Skill 的 Agent 平台，并将它启用为群聊中的<strong>主控 Agent</strong>。这个 Skill 负责维护流程和派发任务，不负责替代所有子 Agent 执行具体工作。</p>
+<h3>2. 准备群聊角色</h3>
+<p>把流程需要的角色拉进同一个群：</p>
+<ul>
+<li>一个启用了本 Skill 的<strong>主控 Agent</strong>；</li>
+<li>若干绑定了查询、搭建、流转等能力的<strong>子 Agent</strong>；</li>
+<li>一个只做结果校验的<strong>审查 Agent</strong>；</li>
+<li>需要执行审批或关键决策的<strong>负责人</strong>。</li>
+</ul>
+<h3>3. 提供业务 SOP</h3>
+<p>把自己的流程按“步骤、执行角色、输入、准出标准、下一步、失败后回到哪里”整理成流程卡，发给主控 Agent。可以直接使用前文模板，也可以先用自然语言描述，让主控整理后由人确认。</p>
+<p><strong>示例 Prompt：</strong></p>
+<pre><code class="language-text">请使用群聊工作流 Skill 管理下面的任务：
+目标：完成一条 XX 场景的机审策略搭建并推进至审批。
+
+参与角色：
+- 资料查询：@资料Agent
+- 策略搭建：@搭建Agent
+- 结果审查：@审查Agent
+- 最终审批：@负责人
+
+流程：
+查询资料 → 搭建策略 → 审查 → 跨系统流转 → 人工审批 → 归档。
+审查不通过时返回“搭建策略”，并把审查意见一同带回。
+开始前先输出流程和角色映射，待我确认后再执行。
+</code></pre>
+<h3>4. 确认流程并启动</h3>
+<p>主控会先输出流程步骤、角色映射和人工介入点。确认无误后回复“开始执行”，它会从第一个就绪节点开始 @ 对应角色，并在每个节点完成后主动推进。</p>
+<h3>5. 只处理被 @ 的关键节点</h3>
+<p>执行过程中不需要持续盯群。只有流程进入 <code>blocked_user</code> 时，主控才会 @ 负责人，并附上决策所需的上下文、待检查对象和具体操作。回复处理结果后，主控会自动续跑。</p>
+<h3>6. 查看结果与运行记录</h3>
+<p>流程结束后，让主控输出一份汇总：各节点状态、关键产物、审查与返工次数、人工介入记录、异常情况。群消息本身也保留了完整执行轨迹，方便复盘和追溯。</p>
+<hr>
+<h1 id="results">效果</h1>
+<ul>
+<li><strong>单条策略搭建周期从一周缩短到两天</strong>，大量等待和协调时间被消掉。</li>
+<li>人的角色从&quot;流程调度者&quot;变成&quot;关键决策者&quot;，不用一直盯住单条任务，<strong>可以同时管多条流程</strong>。</li>
+<li>跨平台上下文由主控自动组织，不再人肉复制。</li>
+<li>因为主控上下文短、只认 SOP，<strong>跳步漏步基本不再出现</strong>。</li>
+</ul>
+<hr>
+<h1 id="comparison">Skill 编排与 DAG 引擎有什么区别</h1>
+<p>这套群聊方案和我的 GraphHarness 都在解决同一个问题：<strong>如何让多 Agent、工具和人围绕一条流程持续协作，而不是每做一步都等人手动推进。</strong> 但两者不是同一种实现。最大的区别是<strong>可控制性</strong>。</p>
+<p>Skill 本质上仍是一份结构化 Prompt：它把 SOP、角色分工和流转规则交给模型理解，再由模型判断当前状态与下一步。因此它提供的是<strong>语义层面的软约束</strong>。DAG 则把节点、依赖、条件分支和状态转移编码成机器可执行的数据结构，再由 Orchestrator 调度，提供的是<strong>运行时层面的硬约束</strong>。</p>
+<p>例如，同样面对“审查失败后回到搭建节点，最多重试三次”：</p>
+<ul>
+<li>Skill 方案是告诉主控 Agent“失败后回到搭建，最多三次”，依赖模型正确计数、选择节点并携带上下文；</li>
+<li>DAG 方案会显式记录当前节点、重试次数和跳转边。只有满足条件的节点能进入 <code>ready queue</code>，超过阈值则由状态机强制进入异常分支。</li>
+</ul>
+<p>这不是“一个高级、一个低级”，而是两种不同的工程取舍。</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>Skill / 群聊工作流</th>
+<th>DAG + Harness</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>流程约束</td>
+<td>Prompt 软约束，依赖模型理解与遵循</td>
+<td>图结构和状态机硬约束，流转由代码保证</td>
+</tr>
+<tr>
+<td>可控制性</td>
+<td>较弱；复杂分支、循环计数可能受模型波动影响</td>
+<td>较强；节点只能按依赖、条件和状态规则执行</td>
+</tr>
+<tr>
+<td>灵活性</td>
+<td>很强；自然语言即可临时调整步骤和角色</td>
+<td>相对较低；修改流程图后需重新校验、发布</td>
+</tr>
+<tr>
+<td>接入成本</td>
+<td>低；下载 Skill、拉群、填 SOP 即可使用</td>
+<td>高；需要开发 Runtime、适配工具和部署服务</td>
+</tr>
+<tr>
+<td>权限接入</td>
+<td>强；能直接复用群里已有权限的内部 Agent</td>
+<td>取决于 API、凭证和系统集成，常受权限阻断</td>
+</tr>
+<tr>
+<td>状态持久化</td>
+<td>主要依赖群消息和模型总结，状态可能漂移</td>
+<td>Checkpoint 持久化，可跨会话精确恢复</td>
+</tr>
+<tr>
+<td>异常恢复</td>
+<td>依赖 Prompt 约定和 Agent 自主判断</td>
+<td>可实现节点重试、异常传播、补偿和断点续跑</td>
+</tr>
+<tr>
+<td>幂等与副作用</td>
+<td>难以强保证，重试可能重复执行外部操作</td>
+<td>可用幂等键、执行记录和提交协议约束</td>
+</tr>
+<tr>
+<td>可观测性</td>
+<td>群消息天然可读，业务人员容易理解和介入</td>
+<td>Trace 更精细，可定位到节点、模型、工具调用</td>
+</tr>
+<tr>
+<td>并行调度</td>
+<td>可同时 @ 多个 Agent，但缺少严格资源控制</td>
+<td>调度器可计算就绪节点并控制并发与资源</td>
+</tr>
+<tr>
+<td>复用与修改</td>
+<td>非研发也能复制、修改 Prompt，传播成本低</td>
+<td>流程可版本化、测试和复现，工程复用更稳定</td>
+</tr>
+<tr>
+<td>适用规模</td>
+<td>小到中型、流程相对固定、人工协作密集</td>
+<td>长链路、高风险、高并发、要求稳定运行</td>
+</tr>
+</tbody></table>
+<h2 id="skill-strengths">Skill 方案的优势：不是“简单”，而是“够轻”</h2>
+<p><strong>1. 零代码、启动快。</strong> 业务人员只需写 SOP、配置角色，不必搭建服务和运行时。很多流程可以先跑起来，再决定是否值得工程化。</p>
+<p><strong>2. 对变化更宽容。</strong> 真实业务经常临时插入一步、换负责人、补一份材料。自然语言编排能直接理解这些非结构化变化，不必每次修改 DAG。</p>
+<p><strong>3. 能绕过系统接入的现实障碍。</strong> 我无法把内部 Agent 接进个人项目，却能把它们拉进群。群聊把权限已经存在的角色组织起来，比重新申请 API 和凭证更可行。</p>
+<p><strong>4. 人机协作自然。</strong> 人和 Agent 在同一条消息流里。主控可以直接 @ 人、补齐上下文并等待回复，不需要额外开发审批页面和回调协议。</p>
+<p><strong>5. 天然可视化。</strong> 业务人员能直接看到谁在做什么、卡在哪里、为什么打回。相比后台 Trace，群消息更符合非研发人员的使用习惯。</p>
+<h2 id="skill-limitations">Skill 方案的缺点：可靠性上限由 Prompt 决定</h2>
+<ul>
+<li>模型可能误判状态、遗漏步骤或错误选择分支，Prompt 只能降低概率，不能从机制上禁止；</li>
+<li>上下文过长或历史消息被截断后，主控可能丢失早期状态；</li>
+<li>对重复执行、并发写入和外部副作用缺乏强一致性保障；</li>
+<li>流程越长、条件越复杂，Prompt 的维护难度和不可预测性越高；</li>
+<li>很难做严格的自动化测试，复现同一条执行路径也更困难。</li>
+</ul>
+<h2 id="dag-strengths">DAG 方案的优势：把“应该这样做”变成“只能这样做”</h2>
+<p>DAG 与 Harness 的核心价值不是流程画得更漂亮，而是将关键控制权从模型推理转移到系统：依赖是否满足、哪些节点可以并行、失败后跳到哪里、最多重试几次、从哪个 Checkpoint 恢复，都由确定性代码负责。Agent 只在节点内部处理需要语义理解和工具调用的不确定任务。</p>
+<p>因此，DAG 方案更适合线上生产、高风险操作和长时间运行的任务，也更容易做版本管理、自动化测试、Trace、指标统计和故障复现。</p>
+<p>它的代价同样明显：开发和接入成本高；每个外部平台都需要 API、凭证和适配器；流程频繁变化时需要修改、校验和发布；对一个还没证明价值的业务流程来说，可能过早工程化。</p>
+<h2 id="evolution">两者不是替代关系，而是一条演进路径</h2>
+<p>我更倾向于把它们看成一条从业务验证到工程生产化的路径：</p>
+<ol>
+<li><strong>先用 Skill 跑通。</strong> 用最低成本验证流程是否稳定、哪些节点可自动化、哪里必须有人、准出标准是什么。</li>
+<li><strong>再把稳定骨架固化成 DAG。</strong> 当流程高频运行、风险上升或 Prompt 误差不可接受时，把节点、依赖和状态迁移到 GraphHarness。</li>
+<li><strong>节点内部继续使用 Skill。</strong> DAG 负责确定性的流程控制，Skill 负责节点内部的语义执行。两者结合，形成“外层 DAG 管流转、内层 Agent/Skill 管执行”的分层架构。</li>
+</ol>
+<p>也就是说，Skill 版本不是 GraphHarness 的竞争方案，而是它的<strong>低成本原型和业务验证层</strong>；GraphHarness 则把已验证的流程升级成稳定、可观测、可恢复的生产系统。</p>
+<blockquote>
+<p>一句话总结：<strong>Skill 用自然语言换取灵活性和低门槛，DAG 用工程复杂度换取确定性和可控制性。最合理的方案不是二选一，而是让 DAG 管流程，让 Skill 管节点。</strong></p>
+</blockquote>
+<hr>
+<h1 id="use-cases">适用场景</h1>
+<p>这套模式不挑业务内容，挑的是<strong>结构</strong>。只要一个任务同时满足——<strong>流程骨架相对固定、由多个相互依赖的子任务组成、数据和操作分散在不同系统、部分节点因权限/风险/判断必须有人介入</strong>——就适合：合规审核、运营活动上线、内容生产审批、故障排查、采购申请、软件发布……</p>
+<p>它们业务不同，结构相同：<strong>确定性的流程骨架 + 不确定性的执行节点 + 不可缺少的人工决策点。</strong></p>
+
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 程愚瀚 · Built with &hearts;
+    </footer>
+
+    <script src="../../资源/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var headings = document.querySelectorAll('.post h1[id], .post h2[id]');
+            var navLinks = document.querySelectorAll('.sidebar nav a');
+
+            function updateNav() {
+                var scrollY = window.scrollY;
+                var current = '';
+                var positions = [];
+
+                headings.forEach(function(heading) {
+                    positions.push({ id: heading.id, top: heading.offsetTop });
+                });
+
+                for (var i = 0; i < positions.length; i++) {
+                    var sectionTop = positions[i].top - 130;
+                    var sectionBottom = i < positions.length - 1
+                        ? positions[i + 1].top - 130
+                        : document.documentElement.scrollHeight;
+                    if (scrollY >= sectionTop && scrollY < sectionBottom) {
+                        current = positions[i].id;
+                        break;
+                    }
+                }
+
+                if (!current && positions.length) {
+                    current = scrollY < positions[0].top - 130
+                        ? positions[0].id
+                        : positions[positions.length - 1].id;
+                }
+
+                navLinks.forEach(function(link) {
+                    link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+                });
+            }
+
+            window.addEventListener('scroll', updateNav, { passive: true });
+            updateNav();
+        });
+    </script>
+</body>
+</html>
