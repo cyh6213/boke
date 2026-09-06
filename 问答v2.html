@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>问答 | 程愚瀚</title>
+    <title>问答（目录全展开） | 程愚瀚</title>
     <link rel="stylesheet" href="资源/css/style.css" />
     <style>
         body { display: flex; flex-direction: column; overflow: hidden; }
@@ -504,6 +504,21 @@
         var allButtons = [];
         var expandedParents = {}; // 存储展开的父节点ID
 
+        // ===== V2：默认展开所有父节点 =====
+        function expandAllParents() {
+            function walk(items) {
+                items.forEach(function(item) {
+                    if (item.hasChildren && item.children && item.children.length > 0) {
+                        expandedParents[item.id] = true;
+                        walk(item.children);
+                    }
+                });
+            }
+            for (var ck in qaData) {
+                walk(qaData[ck].items);
+            }
+        }
+
         // ===== DOM元素 =====
         var qaNav = document.getElementById('qaNav');
         var categoryTag = document.getElementById('categoryTag');
@@ -713,18 +728,12 @@
                 parentToExpand = findParent(qaData[categoryKey].items, item.id);
             }
             
-            // 清除所有已有的展开状态
-            for (var key in expandedParents) {
-                if (expandedParents.hasOwnProperty(key)) {
-                    delete expandedParents[key];
+            // V2：不清除其他展开状态，保持目录全部展开；仅确保当前父节点展开
+            if (parentToExpand && parentToExpand.hasChildren && parentToExpand.children && parentToExpand.children.length > 0) {
+                if (!expandedParents[parentToExpand.id]) {
+                    expandedParents[parentToExpand.id] = true;
                     needRerender = true;
                 }
-            }
-            
-            // 展开当前父节点
-            if (parentToExpand && parentToExpand.hasChildren && parentToExpand.children && parentToExpand.children.length > 0) {
-                expandedParents[parentToExpand.id] = true;
-                needRerender = true;
             }
             
             if (needRerender) renderNav();
@@ -1019,6 +1028,7 @@
         }
 
         // ===== 初始化 =====
+        expandAllParents();
         renderNav();
         // 默认展示 hero 分类第一个 item（自我介绍）
         var firstCategory = Object.keys(qaData)[0];

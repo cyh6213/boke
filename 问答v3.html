@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>问答 | 程愚瀚</title>
+    <title>问答（答案连通） | 程愚瀚</title>
     <link rel="stylesheet" href="资源/css/style.css" />
     <style>
         body { display: flex; flex-direction: column; overflow: hidden; }
@@ -213,7 +213,42 @@
             background: linear-gradient(to right, transparent, #ddd6fe, transparent);
             margin: 8px 0;
         }
-        
+
+        /* ===== V3：分类分隔横幅 ===== */
+        .qa-content .qa-category-banner {
+            margin: 48px 0 8px 0;
+            padding: 16px 18px;
+            background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+            border: 1px solid #c4b5fd;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #4c1d95;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+        .qa-content .qa-category-banner:first-child {
+            margin-top: 0;
+        }
+
+        /* ===== V3：大问题横幅（明显标志） ===== */
+        .qa-content .qa-block.parent-block h3 {
+            margin-top: 32px;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+            border-left: 5px solid #7c3aed;
+            border-radius: 8px;
+            font-size: 17px;
+            box-shadow: 0 1px 4px rgba(124, 58, 237, 0.08);
+        }
+
+        /* ===== V3：大问题之间的明显间隔线 ===== */
+        .qa-content .qa-parent-divider {
+            height: 2px;
+            background: linear-gradient(to right, transparent, #a78bfa 30%, #7c3aed 50%, #a78bfa 70%, transparent);
+            margin: 28px 0 0 0;
+        }
+
         /* 底部spacer，确保最后一个问题可以滚到顶部 */
         .qa-content .qa-bottom-spacer {
             height: 60vh;
@@ -502,7 +537,6 @@
         // ===== 状态变量 =====
         var currentQuestionId = 'hero-intro';
         var allButtons = [];
-        var expandedParents = {}; // 存储展开的父节点ID
 
         // ===== DOM元素 =====
         var qaNav = document.getElementById('qaNav');
@@ -511,60 +545,48 @@
         var answerContent = document.getElementById('answerContent');
         var miniNav = document.getElementById('miniNav');
 
-        // ===== 渲染导航（支持层级结构和折叠展开）=====
+        // ===== 渲染导航（V3：全部展开，不折叠）=====
         function renderNav() {
             var html = '';
             allButtons = [];
-            
+
             for (var categoryKey in qaData) {
                 var category = qaData[categoryKey];
                 html += '<div class="nav-section">';
                 html += '<div class="section-title">' + category.label + '</div>';
-                
+
                 // 递归渲染items
                 function renderItems(items, level, categoryKey, parentId) {
                     items.forEach(function(item) {
                         var activeClass = item.id === currentQuestionId ? ' active' : '';
                         var levelClass = 'level-' + level;
-                        
-                        // 如果是子节点且父节点未展开，则隐藏
-                        var hiddenStyle = '';
-                        if (level > 1 && parentId && !expandedParents[parentId]) {
-                            hiddenStyle = 'display: none !important;';
-                        }
-                        
-                        // 记录可点击按钮用于键盘导航
-                        if (level === 1 || (parentId && expandedParents[parentId])) {
-                            allButtons.push(item.id);
-                        }
-                        
+
+                        // V3：记录所有按钮用于键盘导航和滚动同步
+                        allButtons.push(item.id);
+
                         var hasChildren = item.hasChildren && item.children && item.children.length > 0;
-                        var isExpanded = expandedParents[item.id];
-                        var arrowIcon = hasChildren ? (isExpanded ? '▼' : '▶') : '';
-                        
-                        // 渲染当前项
-                        html += '<button class="nav-btn ' + levelClass + activeClass + '" data-id="' + item.id + '" data-category="' + categoryKey + '" style="' + hiddenStyle + '">';
-                        if (hasChildren) {
-                            html += '<span class="nav-arrow" data-toggle="' + item.id + '" style="display: inline-block; width: 16px; text-align: center; font-size: 10px; color: #94a3b8; margin-right: 4px;">' + arrowIcon + '</span>';
-                        } else if (level > 1) {
+
+                        // 渲染当前项（父节点用占位span保持对齐）
+                        html += '<button class="nav-btn ' + levelClass + activeClass + '" data-id="' + item.id + '" data-category="' + categoryKey + '">';
+                        if (hasChildren || level > 1) {
                             html += '<span style="display: inline-block; width: 16px; margin-right: 4px;"></span>';
                         }
                         html += item.title;
                         html += '</button>';
-                        
+
                         // 如果有子节点，递归渲染（缩进更深）
                         if (hasChildren) {
                             renderItems(item.children, level + 1, categoryKey, item.id);
                         }
                     });
                 }
-                
+
                 // 从 level-1 开始渲染
                 renderItems(category.items, 1, categoryKey, null);
-                
+
                 html += '</div>';
             }
-            
+
             qaNav.innerHTML = html;
         }
 
@@ -592,19 +614,20 @@
             return null;
         }
 
-        // ===== 获取父节点的所有内容（包括子节点） =====
-        function getFullContent(item) {
+        // ===== V3：渲染全部问题的内容（答案连通，大问题之间有明显分隔标志） =====
+        function renderAllContent() {
             var html = '';
+
             function renderBlock(item, level) {
                 var tag = level === 0 ? 'h3' : (level === 1 ? 'h4' : 'h5');
-                var cls = level > 0 ? 'qa-block child' : 'qa-block';
+                var cls = level > 0 ? 'qa-block child' : 'qa-block parent-block';
                 html += '<div class="' + cls + '" data-id="' + item.id + '">';
                 html += '<' + tag + '>' + item.title + '</' + tag + '>';
                 if (item.content) {
                     html += '<div class="qa-body">' + item.content + '</div>';
                 }
                 html += '</div>';
-                
+
                 if (item.hasChildren && item.children) {
                     item.children.forEach(function(child) {
                         html += '<div class="qa-divider"></div>';
@@ -612,12 +635,26 @@
                     });
                 }
             }
-            renderBlock(item, 0);
-            
+
+            for (var categoryKey in qaData) {
+                var category = qaData[categoryKey];
+
+                // 分类横幅
+                html += '<div class="qa-category-banner" data-category="' + categoryKey + '">' + category.label + '</div>';
+
+                category.items.forEach(function(item, idx) {
+                    // 大问题之间的明显间隔
+                    if (idx > 0) {
+                        html += '<div class="qa-parent-divider"></div>';
+                    }
+                    renderBlock(item, 0);
+                });
+            }
+
             // 添加底部spacer，让最后一个问题可以滚到顶部
             html += '<div class="qa-bottom-spacer"></div>';
-            
-            return html;
+
+            answerContent.innerHTML = html;
         }
 
         // ===== 微型目录更新 =====
@@ -691,78 +728,51 @@
             }
         });
 
-        // ===== 显示答案（展开整个父节点） =====
+        // ===== V3：选中问题（右侧内容已全部连通，这里只做定位滚动） =====
         function showAnswer(item, categoryKey, scrollToId) {
             if (!item) return;
-            
+
             // 清除待处理的滚动同步，防止快速切换时导航闪烁
             clearTimeout(scrollTimeout);
-            
-            isScrolling = true;
-            
-            var parentItem = findParent(qaData[categoryKey].items, item.id);
-            currentQuestionId = scrollToId || item.id;
-            
-            var needRerender = false;
-            
-            // 先清除所有展开状态，只展开当前选中项的父节点
-            var parentToExpand = null;
-            if (item.hasChildren && item.children && item.children.length > 0) {
-                parentToExpand = item;
-            } else {
-                parentToExpand = findParent(qaData[categoryKey].items, item.id);
-            }
-            
-            // 清除所有已有的展开状态
-            for (var key in expandedParents) {
-                if (expandedParents.hasOwnProperty(key)) {
-                    delete expandedParents[key];
-                    needRerender = true;
-                }
-            }
-            
-            // 展开当前父节点
-            if (parentToExpand && parentToExpand.hasChildren && parentToExpand.children && parentToExpand.children.length > 0) {
-                expandedParents[parentToExpand.id] = true;
-                needRerender = true;
-            }
-            
-            if (needRerender) renderNav();
-            
-            var category = qaData[categoryKey];
-            categoryTag.textContent = category.label;
-            
-            questionTitle.style.display = 'none';
-            
-            answerContent.innerHTML = getFullContent(parentItem);
 
+            isScrolling = true;
+
+            currentQuestionId = scrollToId || item.id;
+
+            // 更新分类标签
+            var category = qaData[categoryKey];
+            if (category) {
+                categoryTag.textContent = category.label;
+            }
+
+            questionTitle.style.display = 'none';
+
+            // 高亮左侧对应按钮
             var btns = qaNav.querySelectorAll('.nav-btn');
             btns.forEach(function(btn) {
                 btn.classList.remove('active');
             });
-            
-            var activeId = scrollToId || parentItem.id;
-            var targetBtn = qaNav.querySelector('[data-id="' + activeId + '"]');
+
+            var targetBtn = qaNav.querySelector('[data-id="' + currentQuestionId + '"]');
             if (targetBtn) {
                 targetBtn.classList.add('active');
             }
 
+            // 右侧滚动到对应问题块
             setTimeout(function() {
                 var contentArea = document.querySelector('.qa-content');
-                if (scrollToId && scrollToId !== parentItem.id) {
-                    var targetBlock = answerContent.querySelector('[data-id="' + scrollToId + '"]');
-                    if (targetBlock) {
-                        contentArea.scrollTo({ top: targetBlock.offsetTop - 20, behavior: 'instant' });
-                    }
+                var targetBlock = answerContent.querySelector('[data-id="' + currentQuestionId + '"]');
+                if (targetBlock) {
+                    contentArea.scrollTo({ top: targetBlock.offsetTop - 20, behavior: 'instant' });
                 } else {
                     contentArea.scrollTo({ top: 0, behavior: 'instant' });
                 }
-                
+
                 setTimeout(function() {
                     isScrolling = false;
                 }, 500);
             }, 50);
-            
+
             updateMiniNav();
         }
 
@@ -820,7 +830,7 @@
                 e.preventDefault();
                 
                 // 切换到下一个项目分类
-                var categoryOrder = ['hero', 'rag', 'workflow', 'concepts'];
+                var categoryOrder = ['hero', 'gh', 'concepts'];
                 var currentCategory = null;
                 for (var ck in qaData) {
                     var found = findParent(qaData[ck].items, currentQuestionId);
@@ -1002,17 +1012,31 @@
                 
                 if (currentId && currentId !== currentQuestionId) {
                     currentQuestionId = currentId;
-                    
+
                     var btns = qaNav.querySelectorAll('.nav-btn');
                     btns.forEach(function(btn) {
                         btn.classList.remove('active');
                     });
-                    
+
                     var targetBtn = qaNav.querySelector('[data-id="' + currentId + '"]');
                     if (targetBtn) {
                         targetBtn.classList.add('active');
+                        // 左侧目录跟随滚动（不打扰用户点击）
+                        targetBtn.scrollIntoView({ behavior: 'instant', block: 'nearest' });
                     }
-                    
+
+                    // 同步分类标签
+                    var categoryKey = null;
+                    for (var ck in qaData) {
+                        if (findParent(qaData[ck].items, currentId)) {
+                            categoryKey = ck;
+                            break;
+                        }
+                    }
+                    if (categoryKey) {
+                        categoryTag.textContent = qaData[categoryKey].label;
+                    }
+
                     updateMiniNav();
                 }
             }, 50);
@@ -1020,10 +1044,11 @@
 
         // ===== 初始化 =====
         renderNav();
-        // 默认展示 hero 分类第一个 item（自我介绍）
+        renderAllContent();
+        // 默认定位到 hero 分类第一个 item（自我介绍）
         var firstCategory = Object.keys(qaData)[0];
         showAnswer(qaData[firstCategory].items[0], firstCategory);
-        
+
         var contentArea = document.querySelector('.qa-content');
         if (contentArea) {
             contentArea.addEventListener('scroll', handleContentScroll);
