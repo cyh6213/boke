@@ -379,6 +379,15 @@
         .qa-content .qa-block .qa-body pre code { display: block !important; padding: 0 !important; background: transparent; white-space: pre; }
         .mini-nav { top: 0; right: 150px; max-width: 160px; max-height: 56px; overflow-y: auto; pointer-events: auto; }
         .qa-nav .nav-btn { width: calc(100% - 16px) !important; box-sizing: border-box; }
+
+        /* 左侧目录按小标题折叠 */
+        .qa-nav .nav-children[hidden] { display: none !important; }
+        .qa-nav .nav-btn { display: flex !important; align-items: flex-start; gap: 7px; min-height: 30px; }
+        .qa-nav .nav-btn .nav-label { flex: 1; min-width: 0; white-space: normal; overflow-wrap: anywhere; }
+        .qa-nav .nav-arrow { display: inline-block; width: 12px; height: 16px; flex: 0 0 12px; position: relative; color: currentColor; }
+        .qa-nav .nav-arrow:not(.is-leaf)::after { content: ''; position: absolute; width: 5px; height: 5px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; left: 2px; top: 4px; transform: rotate(-45deg); transition: transform .15s ease; }
+        .qa-nav .nav-arrow.is-open::after { transform: rotate(45deg); top: 3px; }
+        .qa-nav .nav-btn:focus-visible { outline: 2px solid #7c3aed; outline-offset: -2px; }
     </style>
 </head>
 <body>
@@ -452,49 +461,113 @@
         var answerContent = document.getElementById('answerContent');
         var miniNav = document.getElementById('miniNav');
 
-        // ===== 渲染导航（V3：全部展开，不折叠）=====
+        // ===== 左侧目录：按小标题折叠，右侧正文保持连续 =====
+        var expandedParents = Object.create(null);
+        var navParents = Object.create(null);
+        var navCategories = Object.create(null);
+
+        function indexNavItems(items, categoryKey, parentId) {
+            items.forEach(function(item) {
+                navParents[item.id] = parentId;
+                navCategories[item.id] = categoryKey;
+                if (item.children) indexNavItems(item.children, categoryKey, item.id);
+            });
+        }
+        Object.keys(qaData).forEach(function(key) {
+            indexNavItems(qaData[key].items, key, null);
+        });
+
+        function hasNavChildren(item) {
+            return !!(item && item.children && item.children.length);
+        }
+
+        function visibleNavId(id) {
+            var result = id;
+            var parent = navParents[id];
+            while (parent) {
+                if (!expandedParents[parent]) result = parent;
+                parent = navParents[parent];
+            }
+            return result;
+        }
+
         function renderNav() {
-            var html = '';
+            var oldScroll = qaNav.scrollTop;
+            var fragment = document.createDocumentFragment();
+            var activeId = visibleNavId(currentQuestionId);
             allButtons = [];
 
-            for (var categoryKey in qaData) {
+            Object.keys(qaData).forEach(function(categoryKey) {
                 var category = qaData[categoryKey];
-                html += '<div class="nav-section">';
-                html += '<div class="section-title">' + category.label + '</div>';
+                var section = document.createElement('div');
+                section.className = 'nav-section';
+                var title = document.createElement('div');
+                title.className = 'section-title';
+                title.textContent = category.label;
+                section.appendChild(title);
 
-                // 递归渲染items
-                function renderItems(items, level, categoryKey, parentId) {
+                function appendItems(items, level, container) {
                     items.forEach(function(item) {
-                        var activeClass = item.id === currentQuestionId ? ' active' : '';
-                        var levelClass = 'level-' + level;
-
-                        // V3：记录所有按钮用于键盘导航和滚动同步
+                        var parent = hasNavChildren(item);
+                        var open = !!expandedParents[item.id];
                         allButtons.push(item.id);
 
-                        var hasChildren = item.hasChildren && item.children && item.children.length > 0;
-
-                        // 渲染当前项（父节点用占位span保持对齐）
-                        html += '<button class="nav-btn ' + levelClass + activeClass + '" data-id="' + item.id + '" data-category="' + categoryKey + '">';
-                        if (hasChildren || level > 1) {
-                            html += '<span style="display: inline-block; width: 16px; margin-right: 4px;"></span>';
+                        var button = document.createElement('button');
+                        button.type = 'button';
+                        button.className = 'nav-btn level-' + level + (item.id === activeId ? ' active' : '');
+                        button.dataset.id = item.id;
+                        button.dataset.category = categoryKey;
+                        if (parent) {
+                            button.setAttribute('aria-expanded', String(open));
+                            button.setAttribute('aria-controls', 'nav-children-' + item.id);
                         }
-                        html += item.title;
-                        html += '</button>';
+                        var arrow = document.createElement('span');
+                        arrow.className = 'nav-arrow ' + (parent ? (open ? 'is-open' : 'is-closed') : 'is-leaf');
+                        arrow.setAttribute('aria-hidden', 'true');
+                        button.appendChild(arrow);
+                        var label = document.createElement('span');
+                        label.className = 'nav-label';
+                        label.textContent = item.title;
+                        button.appendChild(label);
+                        container.appendChild(button);
 
-                        // 如果有子节点，递归渲染（缩进更深）
-                        if (hasChildren) {
-                            renderItems(item.children, level + 1, categoryKey, item.id);
+                        if (parent) {
+                            var group = document.createElement('div');
+                            group.id = 'nav-children-' + item.id;
+                            group.className = 'nav-children';
+                            group.hidden = !open;
+                            if (open) appendItems(item.children, level + 1, group);
+                            container.appendChild(group);
                         }
                     });
                 }
+                appendItems(category.items, 1, section);
+                fragment.appendChild(section);
+            });
+            qaNav.replaceChildren(fragment);
+            qaNav.scrollTop = oldScroll;
+        }
 
-                // 从 level-1 开始渲染
-                renderItems(category.items, 1, categoryKey, null);
-
-                html += '</div>';
+        function revealNavAncestors(id) {
+            var parent = navParents[id];
+            var changed = false;
+            while (parent) {
+                if (!expandedParents[parent]) {
+                    expandedParents[parent] = true;
+                    changed = true;
+                }
+                parent = navParents[parent];
             }
+            if (changed) renderNav();
+        }
 
-            qaNav.innerHTML = html;
+        function toggleNavGroup(item, categoryKey) {
+            expandedParents[item.id] = !expandedParents[item.id];
+            currentQuestionId = item.id;
+            renderNav();
+            showAnswer(item, categoryKey, item.id);
+            var button = qaNav.querySelector('[data-id="' + item.id + '"]');
+            if (button) button.focus({preventScroll: true});
         }
 
         // ===== 查找项目数据 =====
@@ -566,7 +639,7 @@
 
         // ===== 微型目录更新 =====
         function updateMiniNav() {
-            var idx = allButtons.indexOf(currentQuestionId);
+            var idx = allButtons.indexOf(visibleNavId(currentQuestionId));
             if (idx === -1 || allButtons.length === 0) {
                 miniNav.classList.remove('show');
                 miniNav.innerHTML = '';
@@ -645,6 +718,7 @@
             isScrolling = true;
 
             currentQuestionId = scrollToId || item.id;
+            revealNavAncestors(currentQuestionId);
 
             // 更新分类标签
             var category = qaData[categoryKey];
@@ -765,7 +839,7 @@
                 lastKeyboardNav = Date.now();
                 isScrolling = true;
                 
-                var currentIndex = allButtons.indexOf(currentQuestionId);
+                var currentIndex = allButtons.indexOf(visibleNavId(currentQuestionId));
                 var newIndex;
                 
                 if (e.key === 'ArrowDown') {
@@ -863,31 +937,19 @@
 
         // ===== 事件监听 =====
         
-        // 导航点击
+        // 点击小标题展开/收起；点击具体问题定位右侧正文。
         qaNav.addEventListener('click', function(e) {
-            var btn = e.target.closest('.nav-btn');
-            if (btn && btn.dataset.id) {
-                var id = btn.dataset.id;
-                var categoryKey = btn.dataset.category;
-                
-                var item = findItem(qaData[categoryKey].items, id);
-                
-                if (item) {
-                    showAnswer(item, categoryKey, id);
-                    
-                    var newBtn = qaNav.querySelector('[data-id="' + id + '"]');
-                    if (newBtn) {
-                        newBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                    
-                    if (isProjectPanelOpen) {
-                        if (item && item.projectSection) {
-                            openProjectPanel(item);
-                        } else {
-                            closeProjectPanel();
-                        }
-                    }
-                }
+            var button = e.target.closest('.nav-btn');
+            if (!button || !qaNav.contains(button)) return;
+            var id = button.dataset.id;
+            var categoryKey = button.dataset.category;
+            var item = findItem(qaData[categoryKey].items, id);
+            if (!item) return;
+            if (hasNavChildren(item)) toggleNavGroup(item, categoryKey);
+            else showAnswer(item, categoryKey, id);
+            if (isProjectPanelOpen) {
+                if (item.projectSection) openProjectPanel(item);
+                else closeProjectPanel();
             }
         });
 
@@ -936,7 +998,7 @@
                         btn.classList.remove('active');
                     });
 
-                    var targetBtn = qaNav.querySelector('[data-id="' + currentId + '"]');
+                    var targetBtn = qaNav.querySelector('[data-id="' + visibleNavId(currentId) + '"]');
                     if (targetBtn) {
                         targetBtn.classList.add('active');
                         // 左侧目录跟随滚动（不打扰用户点击）
